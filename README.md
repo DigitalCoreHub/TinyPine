@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.5.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.6.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-10KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -18,7 +18,7 @@
 
 **CDN:**
 ```html
-<script src="https://unpkg.com/tinypine@0.5.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -53,7 +53,7 @@ npm install tinypine
 
 ## Features
 
-✅ **14KB** minified · No build tools · No virtual DOM
+✅ **15KB** minified · No build tools · No virtual DOM
 ✅ **Proxy-based reactivity** · Instant updates
 ✅ **Directive-based** · Clean `t-*` syntax
 ✅ **Scoped contexts** · `$parent`, `$root`, `$refs`, `$el`
@@ -65,6 +65,7 @@ npm install tinypine
 ✅ **SSR hydration** · Auto-load from `window.__TINYPINE_STATE__`
 ✅ **Lifecycle hooks** · `t-init`, `t-effect`, `t-destroy`
 ✅ **Plugin API** · `TinyPine.use()`, `TinyPine.directive()`
+✅ **Transitions** · `t-transition`, `t-motion` for animations
 ✅ **Zero dependencies** · Works anywhere
 
 ---
@@ -351,6 +352,40 @@ TinyPine.use({
 
 ---
 
+## Transitions & Animations
+
+### t-transition
+
+```html
+<div t-data="{ open: true }">
+  <button t-click="open = !open">Toggle</button>
+  <div t-show="open" t-transition="fade">
+    Fading content
+  </div>
+</div>
+```
+
+### t-motion
+
+```html
+<div t-data="{ x: 0 }">
+  <button t-click="x += 100">Move</button>
+  <div t-motion="'translateX(' + x + 'px)'">Ball</div>
+</div>
+```
+
+### Custom Transitions
+
+```js
+TinyPine.transition('slide-scale', {
+  enter: 'slide-scale-enter',
+  active: 'slide-scale-active',
+  leave: 'slide-scale-leave'
+});
+```
+
+---
+
 ## How It Works
 
 1. **Initialize** - Scan DOM for `t-data`
@@ -370,7 +405,8 @@ TinyPine.use({
 - ✅ **v0.3.0** - t-for, event modifiers
 - ✅ **v0.4.0** - Global store, watcher API, SSR hydration
 - ✅ **v0.5.0** - Lifecycle hooks, plugin API, reactive effects
-- 🚧 **v0.6.0** - Transitions, animations, build tools
+- ✅ **v0.6.0** - Transitions, motion animations, visual effects
+- 🚧 **v0.7.0** - Async fetch, router, loading states
 
 ---
 

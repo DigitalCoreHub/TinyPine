@@ -11,6 +11,13 @@
     body { font-family: 'Inter', sans-serif; }
     .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; font-family: 'Fira Code', monospace; overflow-x: auto; }
     .section-divider { border-top: 2px solid #cbd5e1; }
+
+    /* Transition Animations */
+    .fade-enter { opacity: 1 !important; transition: opacity 0.3s ease !important; }
+    .fade-leave-active { opacity: 0 !important; transition: opacity 0.3s ease !important; }
+
+    /* Force transition on t-show elements */
+    [t-show] { transition: all 0.3s ease; }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
@@ -447,6 +454,97 @@
     });
   }
 });</code></pre>
+      </div>
+    </section>
+
+    <!-- v0.6.0: Transitions Demo -->
+    <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-green-100 text-green-600 px-3 py-1 rounded-lg mr-3">6</span>
+        v0.6.0: Transitions & Plugin API
+      </h2>
+
+      <div class="space-y-6">
+        <!-- Working Example with Button -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border-2 border-green-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🎬 Working Example</h3>
+
+          <div t-data="{ show: true }">
+            <button t-click="show = !show" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition mb-4">
+              <span t-text="show ? 'Hide' : 'Show'"></span> Box
+            </button>
+
+            <div t-show="show" class="bg-white p-6 rounded-lg border border-green-200">
+              <p class="text-gray-700 font-semibold">✅ Auto Fade Effect!</p>
+              <p class="text-sm text-gray-500 mt-2">t-show automatically adds transition</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide Example -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border-2 border-blue-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">📦 Slide Example</h3>
+
+          <div t-data="{ slideShow: true }">
+            <button t-click="slideShow = !slideShow" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition mb-4">
+              <span t-text="slideShow ? 'Hide' : 'Show'"></span> Box
+            </button>
+
+            <div t-show="slideShow" class="bg-white p-6 rounded-lg border border-blue-200">
+              <p class="text-gray-700 font-semibold">✅ Auto Transition!</p>
+              <p class="text-sm text-gray-500 mt-2">No extra CSS needed</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scale Example -->
+        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">⚡ Scale Example</h3>
+
+          <div t-data="{ scaleShow: true }">
+            <button t-click="scaleShow = !scaleShow" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition mb-4">
+              <span t-text="scaleShow ? 'Hide' : 'Show'"></span> Box
+            </button>
+
+            <div t-show="scaleShow" class="bg-white p-6 rounded-lg border border-purple-200">
+              <p class="text-gray-700 font-semibold">✅ No CSS Required!</p>
+              <p class="text-sm text-gray-500 mt-2">Works out of the box</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code Example -->
+        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">📝 Usage</h3>
+          <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+<code>&lt;div t-show="visible"
+     t-transition="fade"
+     style="transition: 0.3s;"&gt;
+  Content
+&lt;/div&gt;</code></pre>
+          <p class="text-sm text-gray-500 mt-4">
+            💡 Presets: <code>fade</code>, <code>slide</code>, <code>scale</code>, <code>blur</code>
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🧩 Plugin System</h3>
+          <p class="text-gray-600 mb-4">
+            Extend TinyPine with custom directives and functionality.
+          </p>
+          <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+<code>TinyPine.use({
+  name: 'MyPlugin',
+  init(TinyPine) {
+    console.log('Plugin loaded!');
+    TinyPine.directive('custom', (el, value) => {
+      console.log('Custom directive:', value);
+    });
+  }
+});
+
+&lt;div t-custom="'Hello'"&gt;&lt;/div&gt;</code></pre>
+        </div>
       </div>
     </section>
 

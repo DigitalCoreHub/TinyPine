@@ -127,8 +127,27 @@ const directiveHandlers = {
      * t-show: Element'i condition'a göre gösterir/gizler
      * Örnek: <div t-show="isVisible">Hidden</div>
      */
-    't-show': function(element, expression, state) {
-        element.style.display = evaluateExpression(expression, state) ? '' : 'none';
+    't-show': function(element, expression, state, contextObj) {
+        const isVisible = evaluateExpression(expression, state, contextObj);
+
+        // Auto-add transition CSS if not already set
+        if (!element._tinypineShowTransition) {
+            element.style.transition = element.style.transition || 'opacity 0.3s ease';
+            element._tinypineShowTransition = true;
+        }
+
+        if (isVisible) {
+            element.style.display = '';
+            element.style.opacity = '1';
+        } else {
+            element.style.opacity = '0';
+            // After transition, set display to none
+            setTimeout(() => {
+                if (element.style.opacity === '0') {
+                    element.style.display = 'none';
+                }
+            }, 300); // Match transition duration
+        }
     },
 
     /**
@@ -284,6 +303,36 @@ const directiveHandlers = {
         }
     },
 
+    /**
+     * t-transition: Apply enter/leave transitions
+     */
+    't-transition': function(element, expression, state, contextObj) {
+        if (!element._tinypineTransition) {
+            const presetName = expression.trim();
+            element._tinypineTransition = presetName;
+
+            // Register transition hooks
+            applyTransition(element, presetName);
+
+            if (debugMode) {
+                console.log('[TinyPine] [Transition]', presetName, '→', element);
+            }
+        }
+    },
+
+    /**
+     * t-motion: Apply CSS transforms reactively
+     */
+    't-motion': function(element, expression, state, contextObj) {
+        const transformValue = evaluateExpression(expression, state, contextObj);
+        if (transformValue) {
+            element.style.transform = transformValue;
+            if (debugMode) {
+                console.log('[TinyPine] [Motion]', expression, '→', transformValue);
+            }
+        }
+    },
+
   't-click': function(element, expression, state) {
 
         // Parse modifiers from expression FIRST to check for .once
@@ -376,8 +425,21 @@ const directiveHandlers = {
                                 }
                             }
                         } else {
-                            // Regular state assignment
-                            state[prop] = eval(value);
+                            // Regular state assignment - evaluate with proper context
+                            try {
+                                // Build context from state
+                                const context = {};
+                                Object.keys(state).forEach(k => {
+                                    try { context[k] = state[k]; } catch (e) {}
+                                });
+
+                                // Evaluate with context
+                                const Func = Function(...Object.keys(context), `return (${value})`);
+                                const result = Func(...Object.values(context));
+                                state[prop] = result;
+                            } catch (e) {
+                                console.warn('[TinyPine] Could not evaluate:', value, e);
+                            }
                         }
                     } catch (e) {
                         console.warn('[TinyPine] Could not evaluate:', value, e);
@@ -407,20 +469,9 @@ const directiveHandlers = {
                                 const currentState = scopeElement._tinypineState;
                                 // Get the actual target behind the Proxy
                                 const actualState = currentState._tinypineTarget || currentState;
-                                // Create method context with $store
-                                const methodContext = Object.assign({}, actualState);
-                                // Add $store to method context
-                                if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getAllStores) {
-                                    try {
-                                        const stores = window.TinyPine.getAllStores();
-                                        methodContext.$store = {};
-                                        Object.keys(stores).forEach(storeName => {
-                                            methodContext.$store[storeName] = stores[storeName];
-                                        });
-                                    } catch (e) {}
-                                }
-                                // Use methodContext instead of actualState for apply
-                                return method.apply(methodContext, args);
+
+                                // Bind method to actual state so this.show works
+                                return method.apply(actualState, args);
                             };
                         });
                         context.methods = boundMethods;
@@ -1114,4 +1165,53 @@ if (typeof window !== 'undefined') {
             console.log('[TinyPine] Custom directive registered: t-' + name);
         }
     };
+
+    // Transition System
+    window.TinyPine.transitions = window.TinyPine.transitions || new Map();
+
+    window.TinyPine.transition = function(name, config) {
+        window.TinyPine.transitions.set(name, config);
+        if (debugMode) {
+            console.log('[TinyPine] [Transition] Registered preset:', name);
+        }
+    };
+
+    // Register default presets
+    window.TinyPine.transition('fade', {
+        enter: 'fade-enter',
+        active: 'fade-enter-active',
+        leave: 'fade-leave-active'
+    });
+
+    window.TinyPine.transition('slide', {
+        enter: 'slide-enter',
+        active: 'slide-enter-active',
+        leave: 'slide-leave-active'
+    });
+
+    window.TinyPine.transition('scale', {
+        enter: 'scale-enter',
+        active: 'scale-enter-active',
+        leave: 'scale-leave-active'
+    });
+
+    window.TinyPine.transition('blur', {
+        enter: 'blur-enter',
+        active: 'blur-enter-active',
+        leave: 'blur-leave-active'
+    });
+}
+
+// Apply transition classes to element
+function applyTransition(element, presetName) {
+    const config = window.TinyPine?.transitions?.get(presetName);
+    if (!config) return;
+
+    // Add enter classes
+    if (config.enter) {
+        element.classList.add(config.enter);
+    }
+    if (config.active) {
+        element.classList.add(config.active);
+    }
 }
