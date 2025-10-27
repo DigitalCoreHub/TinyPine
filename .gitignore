@@ -18,6 +18,11 @@ Thumbs.db
 *.swp
 *.swo
 
+# GitHub
+.github/*
+!.github/workflows/
+!.github/dependabot.yml
+
 # Logs
 *.log
 npm-debug.log*
