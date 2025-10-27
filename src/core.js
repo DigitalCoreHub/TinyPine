@@ -409,6 +409,11 @@ const directiveHandlers = {
     't-await': function(element, expression, state, contextObj) {
         if (!element._tinypineAwaitHandler) {
             element._tinypineAwaitHandler = true;
+
+            // Get scope element and state (closure)
+            const scopeElement = element.closest('[t-data]');
+            const currentState = scopeElement?._tinypineState || state;
+
             const promise = evaluateExpression(expression, state, contextObj);
 
             if (promise && typeof promise.then === 'function') {
@@ -426,6 +431,31 @@ const directiveHandlers = {
                         element._tinypineAwaitData = data;
                         element._tinypineLoading = false;
                         element._tinypineError = false;
+
+                        // Update state with data
+                        if (currentState && typeof data === 'object' && !Array.isArray(data)) {
+                            const rawState = currentState._tinypineTarget || currentState;
+
+                            // Filter out internal keys (_tinypine*)
+                            const stateKeys = Object.keys(rawState).filter(key => !key.startsWith('_tinypine'));
+                            if (stateKeys.length === 1) {
+                                const firstKey = stateKeys[0];
+                                currentState[firstKey] = data;
+                            } else {
+                                // Otherwise merge all properties
+                                Object.keys(data).forEach(key => {
+                                    if (rawState.hasOwnProperty(key)) {
+                                        currentState[key] = data[key];
+                                    }
+                                });
+                            }
+
+                            // Trigger update
+                            if (scopeElement) {
+                                updateDirectives(scopeElement, currentState);
+                            }
+                        }
+
                         if (element.querySelector('[t-loading]')) {
                             element.querySelector('[t-loading]').style.display = 'none';
                         }
@@ -999,8 +1029,15 @@ function applyDirective(element, directive, value, state, context) {
     // Normal directive (t-text, t-show, vs.)
     const handler = directiveHandlers[directive];
     if (handler) {
-        // Context'i handler'a geç (t-route için de gerekli)
-        if (context) {
+        // t-await, t-loading, t-error need state + scope element
+        if (directive === 't-await' || directive === 't-loading' || directive === 't-error') {
+            const scopeElement = element.closest('[t-data]');
+            if (scopeElement && scopeElement._tinypineState) {
+                handler(element, value, scopeElement._tinypineState, context);
+            } else {
+                handler(element, value, state, context);
+            }
+        } else if (context) {
             handler(element, value, state, context);
         } else {
             handler(element, value, state);

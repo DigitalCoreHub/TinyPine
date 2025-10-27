@@ -570,6 +570,34 @@
       </div>
     </div>
 
+    <!-- t-await + t-loading + t-error Demo -->
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3>⏳ t-await: Async with Loading & Error States</h3>
+      <div t-data="{ user: null }">
+        <div t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())">
+          <div t-loading="'⏳ Loading user data...'" style="padding: 20px; text-align: center;">Loading...</div>
+          <div t-error="'❌ Failed to load user!'" style="padding: 20px; text-align: center; color: #ff6b6b;">Error!</div>
+          <div style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 10px;">
+            <p><strong>Name:</strong> <span t-text="user.name"></span></p>
+            <p><strong>Email:</strong> <span t-text="user.email"></span></p>
+            <p><strong>Website:</strong> <span t-text="user.website"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cache System Demo -->
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3>💾 TinyPine.cache(): Cache System</h3>
+      <div style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+        <p>Open console to see cache operations:</p>
+        <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; font-size: 12px;">const cache = TinyPine.cache();
+cache.set('key', 'value');
+cache.get('key'); // returns 'value'</pre>
+        <button onclick="(()=>{const c=TinyPine.cache();c.set('demo','Works!');console.log('Set: demo =',c.get('demo'))})()" style="padding: 10px 20px; margin-top: 10px; background: #48bb78; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Cache (check console)</button>
+      </div>
+    </div>
+
     <!-- Router Demo -->
     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
       <h3>🛣️ Hash Router (t-route)</h3>
