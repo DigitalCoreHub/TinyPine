@@ -1,231 +1,131 @@
 <div align="center">
-  <img src="favicon.svg" alt="TinyPine.js" width="120" height="120">
+  <img src="favicon.svg" alt="TinyPine.js" width="100" height="100">
 
   # TinyPine.js
 
-  **Minimal, comfortable & intuitive reactive micro-framework**
-  *"HTML reactivity, zero build, zero stress."*
+  **Minimal reactive micro-framework**
+
+  Zero build · Zero config · Just write HTML
 
   [![Version](https://img.shields.io/badge/version-v0.3.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Size](https://img.shields.io/badge/size-10KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
 ---
 
-## ✨ Overview
+## Quick Start
 
-TinyPine.js is a lightweight reactive framework that brings instant reactivity to HTML without build tools, virtual DOM, or complex setup. Write reactive HTML directly in the browser—no bundlers, no transpilation, no configuration.
+**CDN:**
+```html
+<script src="https://unpkg.com/tinypine@0.3.0/dist/tinypine.min.js"></script>
+<script>TinyPine.init();</script>
+```
 
-**v0.3.0** adds `t-for` list rendering, event modifiers (.prevent, .stop, .once, .outside), and enhanced directive processing.
-
-## 🚀 Features
-
-- ⚡ **Instant Reactivity** - Proxy-based reactive state management
-- 🎯 **Zero Build Tools** - Works directly in the browser
-- 📦 **Tiny Footprint** - Less than 10 KB minified
-- 🎨 **Directive-Based** - Clean `t-*` attribute syntax
-- 🔄 **Two-Way Binding** - Full data binding on inputs
-- 🎭 **No Virtual DOM** - Direct DOM manipulation
-- 🌳 **Scoped Contexts** - Nested reactive scopes with $parent, $root
-- 🔍 **Debug Mode** - Built-in debugging utility
-- 🎪 **Methods Support** - Component-like methods in scope
-- 🔁 **List Rendering** - t-for directive for dynamic lists
-- 🎯 **Event Modifiers** - .prevent, .stop, .once, .outside
-
-## 📦 Installation
-
-### NPM
+**NPM:**
 ```bash
 npm install tinypine
 ```
 
-Then in your HTML:
 ```html
 <script type="module">
-  import { init } from './node_modules/tinypine/src/core.js';
-  TinyPine.init();
+  import core from './node_modules/tinypine/src/core.js';
 </script>
 ```
 
-### CDN (Unpkg)
-```html
-<script src="https://unpkg.com/tinypine@0.3.0/dist/tinypine.min.js"></script>
-```
-
-### Local Setup
-1. Clone the repository
-2. Include the core file in your HTML:
-```html
-<script type="module">
-  import core from './src/core.js';
-  // TinyPine auto-initializes
-</script>
-```
-
-## 🎯 Quick Start
+## Example
 
 ```html
-<!DOCTYPE html>
-<html>
-<body>
-  <div t-data="{ count: 0, message: 'Hello TinyPine!' }">
-    <!-- Display reactive value -->
-    <h1 t-text="message"></h1>
-    <p>Count: <span t-text="count"></span></p>
+<div t-data="{ count: 0, name: 'World' }">
+  <h1 t-text="'Hello ' + name"></h1>
+  <p>Count: <span t-text="count"></span></p>
 
-    <!-- Click event handler -->
-    <button t-click="count++">Increment</button>
+  <button t-click="count++">Increment</button>
+  <input t-model="name" placeholder="Your name">
 
-    <!-- Two-way binding -->
-    <input type="text" t-model="message">
-
-    <!-- Conditional display -->
-    <p t-show="count > 5">Wow! Count is greater than 5!</p>
-
-    <!-- Dynamic class -->
-    <div t-class:active="count > 0">Status: <span t-text="count > 0 ? 'Active' : 'Inactive'"></span></div>
-  </div>
-
-  <script type="module">
-    import core from './src/core.js';
-  </script>
-</body>
-</html>
-```
-
-## 📚 Directives
-
-### `t-data`
-Defines reactive data scope for a container element. Now supports nested scopes and methods!
-
-**Basic usage:**
-```html
-<div t-data="{ count: 0, name: 'John', active: true }">
-  <span t-text="name"></span>
-  <span t-text="count"></span>
+  <p t-show="count > 5">Great job!</p>
 </div>
 ```
 
-**With methods (v0.2.0):**
+[📖 View Full Documentation](#documentation)
+
+---
+
+## Features
+
+✅ **10KB** minified · No build tools · No virtual DOM
+✅ **Proxy-based reactivity** · Instant updates
+✅ **Directive-based** · Clean `t-*` syntax
+✅ **Scoped contexts** · `$parent`, `$root`, `$refs`, `$el`
+✅ **List rendering** · `t-for` directive
+✅ **Event modifiers** · `.prevent`, `.stop`, `.once`, `.outside`
+✅ **Methods support** · Component-like functions
+✅ **Zero dependencies** · Works anywhere
+
+---
+
+## Documentation
+
+### Directives
+
+#### `t-data`
+Create a reactive scope.
+
 ```html
-<div t-data="{ count: 0, methods: { increment() { this.count++; } } }">
-  <button t-click="methods.increment()">Add</button>
-  <span t-text="count"></span>
+<div t-data="{ count: 0, name: 'John' }">
+  <!-- content -->
 </div>
 ```
 
-**With nested scopes (v0.2.0):**
+**With methods:**
 ```html
-<div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++; } } }">
-  <div t-data="{ childCount: 0, methods: { inc() { this.childCount++; } } }">
-    <p t-text="$parent.parentCount"></p>
-    <button t-click="methods.inc()">Increment Child</button>
-  </div>
-  <button t-click="methods.inc()">Increment Parent</button>
+<div t-data="{ count: 0, methods: { inc() { this.count++; } } }">
+  <button t-click="methods.inc()">Add</button>
 </div>
 ```
 
-### v0.2.0 Context Accessors
-
-Access contextual data and elements within scoped components:
-
-- **$parent** - Access parent scope data
-  ```html
-  <div t-data="{ count: 0 }">
-    <div t-data="{ parentCount: $parent.count }">
-      Parent count: <span t-text="parentCount"></span>
-    </div>
+**Nested scopes:**
+```html
+<div t-data="{ parent: 'data' }">
+  <div t-data="{ child: 'data' }">
+    <span t-text="$parent.parent"></span>
   </div>
-  ```
+</div>
+```
 
-- **$root** - Access root scope data
-  ```html
-  <div t-data="{ rootData: 'Root' }">
-    <div t-data="{ nested: true }">
-      <span t-text="$root.rootData"></span>
-    </div>
-  </div>
-  ```
-
-- **$refs** - Access registered DOM elements (with t-ref directive)
-  ```html
-  <div t-data="{ methods: { focus() { this.$refs.myInput.focus(); } } }">
-    <input t-ref="myInput">
-    <button t-click="methods.focus()">Focus</button>
-  </div>
-  ```
-
-- **$el** - Access current scope's HTMLElement
-  ```html
-  <div t-data="{ methods: { logEl() { console.log(this.$el.tagName); } } }">
-    <button t-click="methods.logEl()">Log Element</button>
-  </div>
-  ```
-
-### `t-text`
-Updates element's text content reactively.
+#### `t-text`
+Update text content.
 
 ```html
 <span t-text="count"></span>
 <span t-text="'Hello ' + name"></span>
 ```
 
-### `t-show`
-Toggles element visibility based on expression truthiness.
+#### `t-show`
+Toggle visibility.
 
 ```html
-<p t-show="isVisible">I'm shown when isVisible is true</p>
-<p t-show="count > 10">Only visible when count exceeds 10</p>
+<p t-show="isVisible">Visible content</p>
+<p t-show="count > 10">Conditional content</p>
 ```
 
-### `t-bind`
-Dynamically binds any HTML attribute.
+#### `t-click`
+Click handlers with event modifiers.
 
-```html
-<img t-bind:src="imageUrl" t-bind:alt="imageName">
-<a t-bind:href="linkUrl" t-bind:target="linkTarget">Link</a>
-```
-
-### `t-class`
-Conditionally applies CSS classes.
-
-```html
-<!-- Toggle single class -->
-<div t-class:active="isActive">Button</div>
-
-<!-- Full class name replacement -->
-<div t-class="getClass()">Element</div>
-```
-
-### `t-click`
-Attaches click event handler with optional event modifiers.
-
-**Basic usage:**
 ```html
 <button t-click="count++">Increment</button>
-<button t-click="count--">Decrement</button>
-<button t-click="count = 0">Reset</button>
+<button t-click="methods.save.prevent">Save (no page refresh)</button>
+<button t-click="methods.init.once">Initialize once</button>
 ```
 
-**With event modifiers (v0.3.0):**
-```html
-<!-- Prevent default behavior -->
-<a href="#" t-click="doSomething.prevent">Link</a>
+**Event modifiers:**
+- `.prevent` - `event.preventDefault()`
+- `.stop` - `event.stopPropagation()`
+- `.once` - Execute only once
+- `.outside` - Detect clicks outside element
 
-<!-- Stop event propagation -->
-<div t-click="parentHandler">
-  <button t-click="childHandler.stop">Button</button>
-</div>
-
-<!-- Execute only once -->
-<button t-click="setup.once">Initialize</button>
-
-<!-- Click outside to close -->
-<div t-click="methods.close.outside">Close me by clicking outside</div>
-```
-
-### `t-model`
-Two-way data binding for form inputs.
+#### `t-model`
+Two-way data binding.
 
 ```html
 <input type="text" t-model="name">
@@ -233,33 +133,103 @@ Two-way data binding for form inputs.
 <textarea t-model="description"></textarea>
 ```
 
-### `t-for` (v0.3.0)
-Iterates over an array to render list items.
+#### `t-for` *(v0.3.0)*
+List rendering.
 
 ```html
-<div t-data="{ items: ['Apple', 'Banana', 'Cherry'] }">
-  <ul>
-    <li t-for="item in items">
-      <span t-text="item"></span>
-    </li>
-  </ul>
-</div>
+<ul>
+  <li t-for="item in items">
+    <span t-text="item"></span>
+  </li>
+</ul>
 ```
 
 **With index:**
 ```html
-<div t-data="{ items: ['A', 'B', 'C'] }">
-  <ul>
-    <li t-for="(item, index) in items">
-      <span t-text="index"></span>: <span t-text="item"></span>
-    </li>
-  </ul>
-</div>
+<li t-for="(item, index) in items">
+  <span t-text="index"></span>: <span t-text="item"></span>
+</li>
 ```
 
 **With removal:**
 ```html
-<div t-data="{ items: ['Apple', 'Banana'], methods: { remove(index) { this.items.splice(index, 1); } } }">
+<div t-data="{ items: ['A', 'B'], methods: { remove(i) { this.items.splice(i, 1); } } }">
+  <li t-for="(item, index) in items">
+    <span t-text="item"></span>
+    <button t-click="methods.remove(index)">Remove</button>
+  </li>
+</div>
+```
+
+#### `t-bind`
+Dynamic attributes.
+
+```html
+<img t-bind:src="imageUrl" t-bind:alt="title">
+<a t-bind:href="url" t-bind:target="target">Link</a>
+```
+
+#### `t-class`
+Conditional CSS classes.
+
+```html
+<div t-class:active="isActive">Toggle active class</div>
+<div t-class="className">Dynamic class</div>
+```
+
+#### `t-ref`
+Register DOM references.
+
+```html
+<div t-data="{ methods: { focus() { this.$refs.input.focus(); } } }">
+  <input t-ref="input">
+  <button t-click="methods.focus()">Focus</button>
+</div>
+```
+
+### Context Accessors
+
+- **`$parent`** - Parent scope data
+- **`$root`** - Root scope data
+- **`$refs`** - Registered DOM elements
+- **`$el`** - Current element
+
+```html
+<div t-data="{ root: 'data' }">
+  <div t-data="{ child: 'data' }">
+    <span t-text="$root.root"></span>
+    <span t-text="$parent.child"></span>
+  </div>
+</div>
+```
+
+### Debug Mode
+
+```javascript
+TinyPine.debug = true;
+```
+
+---
+
+## Examples
+
+### Counter
+```html
+<div t-data="{ count: 0 }">
+  <button t-click="count--">-</button>
+  <span t-text="count"></span>
+  <button t-click="count++">+</button>
+</div>
+```
+
+### Todo List
+```html
+<div t-data="{ items: [], newItem: '', methods: {
+  add() { if(this.newItem) { this.items.push(this.newItem); this.newItem = ''; } },
+  remove(index) { this.items.splice(index, 1); }
+} }">
+  <input t-model="newItem" placeholder="Add item">
+  <button t-click="methods.add()">Add</button>
   <ul>
     <li t-for="(item, index) in items">
       <span t-text="item"></span>
@@ -269,187 +239,52 @@ Iterates over an array to render list items.
 </div>
 ```
 
-### `t-ref`
-Registers DOM elements for access via `$refs`.
-
-```html
-<div t-data="{ methods: { focusInput() { this.$refs.username.focus(); } } }">
-  <input t-ref="username" type="text" placeholder="Username">
-  <button t-click="methods.focusInput()">Focus Input</button>
-</div>
-```
-
-## 📖 Examples
-
-### Counter App
-
-```html
-<div t-data="{ count: 0 }">
-  <button t-click="count--">−</button>
-  <span t-text="count"></span>
-  <button t-click="count++">+</button>
-</div>
-```
-
-### Todo List (Basic)
-
-```html
-<div t-data="{ items: ['Task 1', 'Task 2'], newItem: '' }">
-  <input t-model="newItem" placeholder="Add item">
-  <button t-click="items.push(newItem); newItem = ''">Add</button>
-  <ul>
-    <li t-text="item" t-repeat="item in items"></li>
-  </ul>
-</div>
-```
-
 ### Form Validation
-
 ```html
 <div t-data="{ email: '', isValid: false }">
-  <input type="email" t-model="email" placeholder="Email">
-  <span t-show="email.length > 0 && !isValid" style="color: red;">Invalid email</span>
+  <input t-model="email" type="email" placeholder="Email">
+  <span t-show="!isValid && email">Invalid</span>
   <button t-click="isValid = true">Submit</button>
 </div>
 ```
 
-## 🏗️ Architecture
+---
 
-### Core Files
+## How It Works
 
-```
-tinypine/
-├── src/
-│   ├── core.js     # Reactivity engine + directive handlers
-│   └── index.js    # TinyPine entrypoint
-├── dist/
-│   └── tinypine.min.js
-└── demo/
-    └── index.html  # Live examples
-```
+1. **Initialize** - Scan DOM for `t-data`
+2. **Reactive State** - Create Proxy objects
+3. **Parse Directives** - Process `t-*` attributes
+4. **Watch Changes** - Update DOM automatically
+5. **Event Handlers** - Attach listeners
 
-### How It Works
-
-1. **Initialization**: Scans DOM for `t-data` attributes
-2. **Reactive State**: Creates Proxy objects for reactive get/set
-3. **Directive Parsing**: Processes `t-*` attributes on elements
-4. **Change Detection**: Updates DOM when state changes
-5. **Event Binding**: Attaches event listeners for `t-click`, `t-model`
-
-## 🎨 Styling
-
-TinyPine doesn't include any CSS—you have full control. Style your components however you like!
-
-```html
-<style>
-  .my-component {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-
-  .active {
-    background: #4CAF50;
-    color: white;
-  }
-</style>
-
-<div t-data="{ active: true }" class="my-component" t-class:active="active">
-  Content
-</div>
-```
-
-## 🐛 Debug Mode
-
-Enable debug mode to see detailed reactivity logs in the console:
-
-```javascript
-TinyPine.debug = true;
-```
-
-This will log all state changes with their respective elements and values.
-
-## 🧪 Testing
-
-Open the demo file in your browser:
-
-```bash
-# Serve the project
-npm run dev
-# or
-npx serve -p 8000
-
-# Open in browser
-http://localhost:8000/demo/index.html
-```
-
-## 🐛 Debugging
-
-TinyPine logs helpful warnings in the console:
-
-- `[TinyPine] Unknown directive: t-xyz` - Invalid directive used
-- `[TinyPine] Expression evaluation failed` - JavaScript error in expression
-- `[TinyPine] Failed to parse t-data` - Invalid data object
-
-Enable debug mode for more verbose logging:
-
-```javascript
-window.TinyPine.debug = true;
-```
-
-## 📊 Performance
-
-- **Initial Load**: ~4 KB gzipped
-- **Reactivity**: Proxy-based, minimal overhead
-- **DOM Updates**: Direct manipulation (no VDOM)
-- **Memory**: Efficient, no memory leaks
-
-## 🛠️ Browser Support
-
-- Chrome/Edge 49+
-- Firefox 18+
-- Safari 10+
-- IE 11 (limited Proxy support)
-
-## 🗺️ Roadmap
-
-### v0.1.0 ✅
-- Core reactivity engine
-- Basic directive set (t-data, t-text, t-show, t-bind, t-class, t-click, t-model)
-- DOM initialization
-- Zero build setup
-
-### v0.2.0 ✅ (Current)
-- Scoped contexts ($parent, $root, $refs, $el)
-- Methods object support
-- Debug mode
-- t-ref directive
-- Nested scope isolation
-- Context-aware directive evaluation
-
-### v0.3.0 ✅ (Current)
-- `t-for` directive for list rendering
-- Event modifiers (.prevent, .stop, .once, .outside)
-- Enhanced directive processing
-
-### v0.4.0 (Planned)
-- Plugin API
-- Directive extension system
-- Build tool integration (optional)
-- Advanced array reactivity
-
-## 📝 License
-
-MIT License - feel free to use TinyPine in your projects!
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 👤 Author
-
-Built with ❤️ by the TinyPine team
+**No virtual DOM** · **Direct DOM updates** · **10KB footprint**
 
 ---
 
-**Start building reactive UIs today with TinyPine.js!** 🌲
+## Roadmap
+
+- ✅ **v0.1.0** - Core directives
+- ✅ **v0.2.0** - Scoped contexts, methods
+- ✅ **v0.3.0** - t-for, event modifiers
+- 🚧 **v0.4.0** - Plugin API, extensions
+
+---
+
+## Browser Support
+
+✅ Chrome/Edge 49+ · Firefox 18+ · Safari 10+
+
+---
+
+## License
+
+MIT License - Use freely in your projects!
+
+---
+
+<div align="center">
+  Made with ❤️ by TinyPine Team
+
+  [GitHub](https://github.com/DigitalCoreHub/TinyPine) · [Issues](https://github.com/DigitalCoreHub/TinyPine/issues)
+</div>
