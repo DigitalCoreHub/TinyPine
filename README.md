@@ -47,7 +47,7 @@ Then in your HTML:
 
 ### CDN (Unpkg)
 ```html
-<script src="https://unpkg.com/tinypine@0.1.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.2.0/dist/tinypine.min.js"></script>
 ```
 
 ### Local Setup
