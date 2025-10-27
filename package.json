@@ -10,6 +10,7 @@
     "serve": "npx serve -p 8000",
     "demo": "npx serve -p 8000 -o demo/index.html",
     "build": "node build.cjs",
+    "build:rollup": "rollup -c",
     "minify": "npm run build",
     "test": "vitest",
     "test:run": "vitest run"
@@ -35,6 +36,12 @@
     "README.md"
   ],
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.9",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.52.5",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "terser": "^5.44.0",
     "vitest": "^1.2.0"
   }

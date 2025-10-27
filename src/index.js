@@ -1,17 +1,12 @@
 /**
- * TinyPine.js v0.1.0
- * Minimal, comfortable & intuitive reactive micro-framework
+ * TinyPine.js v1.0.0
+ * Main entry point - combines all modules
  */
 
-// Initialize TinyPine when DOM is ready
-if (typeof window !== 'undefined') {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            window.TinyPine.init();
-        });
-    } else {
-        window.TinyPine.init();
-    }
-}
+// Import all TinyPine modules
+import './store.js';
+import './core.js';
+import './devtools.js';
 
+// Export TinyPine for ESM
 export default window.TinyPine;
