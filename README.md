@@ -6,7 +6,7 @@
   **Minimal, comfortable & intuitive reactive micro-framework**
   *"HTML reactivity, zero build, zero stress."*
 
-  [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.2.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
@@ -16,16 +16,19 @@
 
 TinyPine.js is a lightweight reactive framework that brings instant reactivity to HTML without build tools, virtual DOM, or complex setup. Write reactive HTML directly in the browser—no bundlers, no transpilation, no configuration.
 
-**v0.1.0** focuses on the foundation: core reactivity engine, directive parsing, and DOM binding.
+**v0.2.0** adds scoped reactivity with $parent, $root, $refs, method support, and debug mode.
 
 ## 🚀 Features
 
 - ⚡ **Instant Reactivity** - Proxy-based reactive state management
 - 🎯 **Zero Build Tools** - Works directly in the browser
-- 📦 **Tiny Footprint** - Less than 4 KB minified
+- 📦 **Tiny Footprint** - Less than 10 KB minified
 - 🎨 **Directive-Based** - Clean `t-*` attribute syntax
 - 🔄 **Two-Way Binding** - Full data binding on inputs
 - 🎭 **No Virtual DOM** - Direct DOM manipulation
+- 🌳 **Scoped Contexts** - Nested reactive scopes with $parent, $root
+- 🔍 **Debug Mode** - Built-in debugging utility
+- 🎪 **Methods Support** - Component-like methods in scope
 
 ## 📦 Installation
 
@@ -91,13 +94,71 @@ Then in your HTML:
 ## 📚 Directives
 
 ### `t-data`
-Defines reactive data scope for a container element.
+Defines reactive data scope for a container element. Now supports nested scopes and methods!
 
+**Basic usage:**
 ```html
-<div t-data="{ name: 'John', age: 25 }">
-  <!-- Child elements can access name and age -->
+<div t-data="{ count: 0, name: 'John', active: true }">
+  <span t-text="name"></span>
+  <span t-text="count"></span>
 </div>
 ```
+
+**With methods (v0.2.0):**
+```html
+<div t-data="{ count: 0, methods: { increment() { this.count++; } } }">
+  <button t-click="methods.increment()">Add</button>
+  <span t-text="count"></span>
+</div>
+```
+
+**With nested scopes (v0.2.0):**
+```html
+<div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++; } } }">
+  <div t-data="{ childCount: 0, methods: { inc() { this.childCount++; } } }">
+    <p t-text="$parent.parentCount"></p>
+    <button t-click="methods.inc()">Increment Child</button>
+  </div>
+  <button t-click="methods.inc()">Increment Parent</button>
+</div>
+```
+
+### v0.2.0 Context Accessors
+
+Access contextual data and elements within scoped components:
+
+- **$parent** - Access parent scope data
+  ```html
+  <div t-data="{ count: 0 }">
+    <div t-data="{ parentCount: $parent.count }">
+      Parent count: <span t-text="parentCount"></span>
+    </div>
+  </div>
+  ```
+
+- **$root** - Access root scope data
+  ```html
+  <div t-data="{ rootData: 'Root' }">
+    <div t-data="{ nested: true }">
+      <span t-text="$root.rootData"></span>
+    </div>
+  </div>
+  ```
+
+- **$refs** - Access registered DOM elements (with t-ref directive)
+  ```html
+  <div t-data="{ methods: { focus() { this.$refs.myInput.focus(); } } }">
+    <input t-ref="myInput">
+    <button t-click="methods.focus()">Focus</button>
+  </div>
+  ```
+
+- **$el** - Access current scope's HTMLElement
+  ```html
+  <div t-data="{ methods: { logEl() { console.log(this.$el.tagName); } } }">
+    <button t-click="methods.logEl()">Log Element</button>
+  </div>
+  ```
 
 ### `t-text`
 Updates element's text content reactively.
@@ -150,6 +211,16 @@ Two-way data binding for form inputs.
 <input type="text" t-model="name">
 <input type="number" t-model="age">
 <textarea t-model="description"></textarea>
+```
+
+### `t-ref`
+Registers DOM elements for access via `$refs`.
+
+```html
+<div t-data="{ methods: { focusInput() { this.$refs.username.focus(); } } }">
+  <input t-ref="username" type="text" placeholder="Username">
+  <button t-click="methods.focusInput()">Focus Input</button>
+</div>
 ```
 
 ## 📖 Examples
@@ -231,6 +302,16 @@ TinyPine doesn't include any CSS—you have full control. Style your components 
   Content
 </div>
 ```
+
+## 🐛 Debug Mode
+
+Enable debug mode to see detailed reactivity logs in the console:
+
+```javascript
+TinyPine.debug = true;
+```
+
+This will log all state changes with their respective elements and values.
 
 ## 🧪 Testing
 

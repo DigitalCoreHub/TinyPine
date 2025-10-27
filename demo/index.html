@@ -124,6 +124,80 @@
           </div>
         </div>
       </div>
+
+      <!-- v0.2.0: Nested Scope & $parent Demo -->
+      <div class="mt-8 p-6 bg-gradient-to-r from-teal-50 to-blue-50 border-l-4 border-teal-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: Nested Scopes & $parent</h3>
+        <p class="text-gray-600 mb-4">Parent scope'dan child scope'a data erişimi</p>
+
+        <div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++ } } }" class="space-y-4">
+          <div class="p-4 bg-white rounded-lg shadow-sm">
+            <p class="font-semibold text-gray-700 mb-2">Parent Scope:</p>
+            <span class="text-2xl font-bold text-teal-600" t-text="parentCount"></span>
+            <button t-click="methods.inc()" class="ml-4 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+              + Parent
+            </button>
+          </div>
+
+          <div t-data="{ childCount: 0, methods: { inc() { this.childCount++ } } }" class="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+            <p class="font-semibold text-gray-700 mb-2">Child Scope:</p>
+            <div class="space-y-2">
+              <p>Child count: <span class="text-xl font-bold text-blue-600" t-text="childCount"></span></p>
+              <p class="text-sm text-gray-600">Parent count: <span class="font-bold" t-text="$parent?.parentCount ?? 'N/A'"></span></p>
+              <p class="text-xs text-gray-500" t-text="'Has $parent: ' + ($parent ? 'Yes' : 'No')"></p>
+            </div>
+            <button t-click="methods.inc()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              + Child
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- $el and $root Demo -->
+      <div class="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: $el & $root Accessors</h3>
+        <p class="text-gray-600 mb-4">Access current element and root scope</p>
+
+        <div t-data="{ rootMsg: 'Root Message', methods: { getInfo() { console.log('$el:', this.$el); console.log('$root:', this.$root); alert('Check console!'); } } }">
+          <div t-data="{ childMsg: 'Child Message', methods: { getInfo() { console.log('$el:', this.$el); console.log('$root:', this.$root); console.log('$parent:', this.$parent); alert('Check console!'); } } }" class="p-4 bg-white rounded-lg border-2 border-yellow-200">
+            <p class="text-sm text-gray-600 mb-2">This is a nested child scope</p>
+            <p class="text-xs text-gray-500">$el tagName: <span t-text="$el ? $el.tagName : 'N/A'"></span></p>
+            <p class="text-xs text-gray-500">$root message: <span t-text="$root?.rootMsg ?? 'N/A'"></span></p>
+            <button t-click="methods.getInfo()"
+                    class="mt-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+              🔍 Log $el, $root & $parent
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- t-ref Demo -->
+      <div class="mt-8 p-6 bg-indigo-50 border-l-4 border-indigo-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: t-ref Directive</h3>
+        <p class="text-gray-600 mb-4">DOM element'lerine referans erişimi</p>
+
+        <div t-data="{ message: 'Hello from refs!', methods: { focusInput() { if (this.$refs.myInput) this.$refs.myInput.focus(); } } }">
+          <input t-ref="myInput" type="text" t-model="message" placeholder="Type here..."
+                 class="px-4 py-2 border border-gray-300 rounded-lg w-full max-w-md">
+          <button t-click="methods.focusInput()"
+                  class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+            📍 Focus Input via $refs
+          </button>
+          <p class="mt-2 text-sm text-gray-600">$refs.myInput: <span t-text="$refs.myInput ? '✓ Found' : '✗ Not found'"></span></p>
+        </div>
+      </div>
+
+      <!-- Debug Mode Demo -->
+      <div class="mt-8 p-6 bg-purple-50 border-l-4 border-purple-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: Debug Mode</h3>
+        <p class="text-gray-600 mb-4">Browser console'da debug loglarını görmek için:</p>
+        <button onclick="TinyPine.debug = true; alert('Debug mode enabled! Check console.')"
+                class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 font-semibold">
+          🔍 Enable Debug Mode
+        </button>
+        <p class="mt-3 text-sm text-gray-500">State değişikliklerini console'da izleyin</p>
+      </div>
+
     </div>
 
     <!-- Features -->

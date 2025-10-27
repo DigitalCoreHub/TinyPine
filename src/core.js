@@ -48,12 +48,27 @@ function reactive(data, callback) {
  * - Sadece state property'lerine erişim var
  * - Global scope'a erişim yok (security)
  */
-function evaluateExpression(expression, state) {
+function evaluateExpression(expression, state, contextObj) {
     try {
-        const context = Object.keys(state).reduce((ctx, key) => {
-            ctx[key] = state[key];
-            return ctx;
-        }, {});
+        const context = {};
+
+        // Context obj varsa, ondan başla ($parent, $root, $refs, $el)
+        if (contextObj) {
+            if (contextObj.root) context.$root = contextObj.root.data;
+            if (contextObj.parent) context.$parent = contextObj.parent.data;
+            context.$refs = contextObj.refs || {};
+            context.$el = contextObj.el;
+        }
+
+        // State property'lerini ekle
+        Object.keys(state).forEach(key => {
+            try {
+                context[key] = state[key];
+            } catch (e) {
+                // Get trap error - skip
+            }
+        });
+
         return Function(...Object.keys(context), `"use strict"; return (${expression})`)(...Object.values(context));
     } catch (error) {
         console.warn('[TinyPine] Expression evaluation failed:', expression, error);
@@ -70,8 +85,8 @@ const directiveHandlers = {
      * t-text: Element'in textContent'ini günceller
      * Örnek: <span t-text="count"></span>
      */
-    't-text': function(element, value, state) {
-        element.textContent = evaluateExpression(value, state);
+    't-text': function(element, value, state, contextObj) {
+        element.textContent = evaluateExpression(value, state, contextObj);
     },
 
     /**
@@ -137,7 +152,15 @@ const directiveHandlers = {
      * - ++ ve -- operatörlerini doğrudan state'e yazamayız (primitive değerler)
      * - Bu yüzden parse edip manuel güncelliyoruz
      */
-    't-click': function(element, expression, state) {
+    't-ref': function(element, value, state, context) {
+    const refName = value.trim();
+    if (context && refName) {
+      context.refs[refName] = element;
+      debugLog(`Registered ref: ${refName}`, element);
+    }
+  },
+
+  't-click': function(element, expression, state) {
         // Önceki handler varsa temizle (memory leak önleme)
         if (element._tinypineClickHandler) {
             element.removeEventListener('click', element._tinypineClickHandler);
@@ -150,6 +173,7 @@ const directiveHandlers = {
                 if (!scopeElement || !scopeElement._tinypineState) return;
 
                 const state = scopeElement._tinypineState;
+                const contextObj = scopeElement._tinypineContext;
 
                 // Özel expression'ları parse et ve çalıştır
                 if (expression.includes('++')) {
@@ -169,10 +193,38 @@ const directiveHandlers = {
                         console.warn('[TinyPine] Could not evaluate:', value);
                     }
                 } else {
-                    // Generic expression evaluation
-                    const stateKeys = Object.keys(state);
+                    // Generic expression evaluation with methods
                     const context = {};
-                    stateKeys.forEach(k => context[k] = state[k]);
+
+                    // State property'lerini ekle
+                    const stateKeys = Object.keys(state);
+                    stateKeys.forEach(k => {
+                        try {
+                            context[k] = state[k];
+                        } catch (e) {
+                            // Skip
+                        }
+                    });
+
+                    // Methods'u ekle (context'ten) - her method'u this bind ederek ekle
+                    if (contextObj && contextObj.methods) {
+                        const boundMethods = {};
+                        Object.keys(contextObj.methods).forEach(key => {
+                            const method = contextObj.methods[key];
+                            // this'i state'e bind et
+                            boundMethods[key] = method.bind(state);
+                        });
+                        context.methods = boundMethods;
+                    }
+
+                    // $parent, $root, $refs, $el'i ekle
+                    if (contextObj) {
+                        if (contextObj.root) context.$root = contextObj.root.data;
+                        if (contextObj.parent) context.$parent = contextObj.parent.data;
+                        context.$refs = contextObj.refs || {};
+                        context.$el = contextObj.el;
+                    }
+
                     const func = new Function(...Object.keys(context), 'event', `"use strict"; return (${expression})`);
                     func(...Object.values(context), event);
                 }
@@ -264,19 +316,50 @@ function init(root = document.body) {
  * - Çoklu state güncellemelerinde performans için
  * - setTimeout(0) ile ertelenir ve batching yapılır
  */
+function processChildDirectives(element, state, context) {
+    const children = element.children;
+    for (let i = 0; i < children.length; i++) {
+        const el = children[i];
+        if (el.hasAttribute('t-data')) {
+            // Kendi scope'u varsa initialize et
+            initializeScope(el);
+            // Şimdi child'ın kendi state'ini kullan
+            const childState = el._tinypineState || state;
+            const childContext = el._tinypineContext || context;
+            // Child'ın child'larını process et (recursive)
+            if (childState) {
+                processChildDirectives(el, childState, childContext);
+            }
+        } else {
+            // Parent state ve context kullan
+            processDirectives(el, state, context);
+            // Recursive olarak child'larını da process et
+            processChildDirectives(el, state, context);
+        }
+    }
+}
+
 function initializeScope(element) {
     const dataAttr = element.getAttribute('t-data');
     if (!dataAttr) return;
 
     try {
         // t-data'daki JSON object'i parse et
-        const dataObject = Function('"use strict"; return (' + dataAttr + ')')();
+        let dataObject = Function('"use strict"; return (' + dataAttr + ')')();
+
+        // Methods'u ayır
+        const methods = dataObject.methods || {};
+        delete dataObject.methods;
+
+        // Parent context bul
+        const parentContext = getParentContext(element);
 
         // Debounce için flag
         let updatePending = false;
 
         // Reaktif state oluştur - Proxy callback ile auto-update
         const state = reactive(dataObject, () => {
+            debugLog('State changed', { element: element, data: dataObject });
             if (!updatePending) {
                 updatePending = true;
                 setTimeout(() => {
@@ -286,14 +369,60 @@ function initializeScope(element) {
             }
         });
 
-        // State'i element üzerinde sakla (sonra erişim için)
-        element._tinypineState = state;
+        // Context objesi oluştur
+        const context = {
+            el: element,
+            data: state,
+            parent: parentContext,
+            root: parentContext ? parentContext.root : null,
+            refs: {},
+            methods: methods
+        };
 
-        // İlk directive processing
-        processDirectives(element, state);
+        // Root ayarla
+        if (!context.root) {
+            context.root = context;
+        }
 
-        // Child elementlerdeki directive'leri de işle
-        element.querySelectorAll('*').forEach(el => processDirectives(el, state));
+        // Context'i kaydet
+        registerContext(element, context);
+
+        // $parent, $root, $refs proxy'si oluştur
+        const proxiedData = new Proxy(state, {
+            get(target, prop) {
+                if (prop === '$parent') return context.parent?.data || null;
+                if (prop === '$root') return context.root?.data || state;
+                if (prop === '$refs') return context.refs;
+                if (prop === '$el') return context.el;
+                return target[prop];
+            },
+            set(target, prop, value) {
+                target[prop] = value;
+                return true;
+            }
+        });
+
+        // Proxied data'yı kullan
+        context.data = proxiedData;
+        element._tinypineState = proxiedData;
+        element._tinypineContext = context;
+
+        debugLog('Context created', {
+            element,
+            hasParent: !!parentContext,
+            root: !!context.root,
+            methods: Object.keys(methods)
+        });
+
+        // İlk directive processing - sadece bu element'in directive'leri
+        Array.from(element.attributes).forEach(attr => {
+            if (attr.name.startsWith('t-') && attr.name !== 't-data') {
+                applyDirective(element, attr.name, attr.value, proxiedData, context);
+            }
+        });
+
+        // Child elementlerdeki directive'leri de işle - recursive yapı
+        processChildDirectives(element, proxiedData, context);
     } catch (error) {
         console.warn('[TinyPine] Failed to parse t-data:', dataAttr, error);
     }
@@ -309,10 +438,10 @@ function initializeScope(element) {
  * 2. t- ile başlayan attribute'leri bulur
  * 3. applyDirective ile her directive'i uygular
  */
-function processDirectives(element, state) {
+function processDirectives(element, state, context) {
     Array.from(element.attributes).forEach(attr => {
         if (attr.name.startsWith('t-') && attr.name !== 't-data') {
-            applyDirective(element, attr.name, attr.value, state);
+            applyDirective(element, attr.name, attr.value, state, context);
         }
     });
 }
@@ -329,7 +458,7 @@ function processDirectives(element, state) {
  * 2. İlgili handler'ı directive registry'den bulur
  * 3. Handler'ı çalıştırır
  */
-function applyDirective(element, directive, value, state) {
+function applyDirective(element, directive, value, state, context) {
     // t-bind:attribute syntax'ı
     if (directive.startsWith('t-bind:')) {
         const attrName = directive.split(':')[1];
@@ -346,10 +475,23 @@ function applyDirective(element, directive, value, state) {
         return;
     }
 
+    // t-ref directive
+    if (directive === 't-ref') {
+        const contextObj = element._tinypineContext || (element.closest('[t-data]')?._tinypineContext);
+        const handler = directiveHandlers['t-ref'];
+        if (handler) handler(element, value, state, contextObj);
+        return;
+    }
+
     // Normal directive (t-text, t-show, vs.)
     const handler = directiveHandlers[directive];
     if (handler) {
-        handler(element, value, state);
+        // Context'i handler'a geç
+        if (context && directiveHandlers['t-text'] === handler) {
+            handler(element, value, state, context);
+        } else {
+            handler(element, value, state);
+        }
     } else {
         console.warn(`[TinyPine] Unknown directive: ${directive}`);
     }
@@ -369,15 +511,108 @@ function applyDirective(element, directive, value, state) {
  * - Çünkü directive'ler state'i kullanıyor
  */
 function updateDirectives(scopeElement, state) {
-    scopeElement.querySelectorAll('*').forEach(el => processDirectives(el, state));
+    const context = scopeElement._tinypineContext;
+
+    // Sadece bu scope'un kendi elementlerini güncelle (child scope'ları dahil etme)
+    function updateRecursive(element) {
+        // Bu element'in kendi directive'lerini güncelle
+        processDirectives(element, state, context);
+
+        // Direct child'ları işle
+        const children = element.children;
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+
+            // Eğer child kendi scope'una sahipse, skip et (çünkü kendi update'ini yapacak)
+            if (child.hasAttribute('t-data')) {
+                continue;
+            }
+
+            // Normal element, recursive update
+            updateRecursive(child);
+        }
+    }
+
+    // Scope element'in direct child'ları ile başla
+    const children = scopeElement.children;
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+
+        // Eğer child kendi scope'una sahipse, skip et
+        if (child.hasAttribute('t-data')) {
+            continue;
+        }
+
+        // Normal element, güncelle
+        updateRecursive(child);
+    }
+}
+
+// Context Store - Her element'in context'ini tutar
+const contextStore = new WeakMap();
+
+/**
+ * Context'i kaydeder
+ */
+function registerContext(element, context) {
+    contextStore.set(element, context);
+}
+
+/**
+ * Context'i alır
+ */
+function getContext(element) {
+    return contextStore.get(element);
+}
+
+/**
+ * Parent context'i bulur
+ */
+function getParentContext(element) {
+    let parent = element.parentElement;
+    while (parent) {
+        if (parent.hasAttribute('t-data')) {
+            return getContext(parent);
+        }
+        parent = parent.parentElement;
+    }
+    return null;
+}
+
+/**
+ * Debug modu kontrolü
+ */
+let debugMode = false;
+
+function enableDebug() {
+    debugMode = true;
+    console.log('🔍 TinyPine debug mode enabled');
+}
+
+function debugLog(message, data = null) {
+    if (debugMode) {
+        console.log(`[TinyPine] ${message}`, data || '');
+    }
 }
 
 // Module exports (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { reactive, init, initializeScope, evaluateExpression, directiveHandlers };
+    module.exports = { reactive, init, initializeScope, evaluateExpression, directiveHandlers, registerContext, getContext };
 }
 
 // Global API (Browser)
 if (typeof window !== 'undefined') {
-    window.TinyPine = { init, reactive, evaluateExpression, initializeScope };
+    window.TinyPine = {
+        init,
+        reactive,
+        evaluateExpression,
+        initializeScope,
+        enableDebug,
+        disableDebug: () => debugMode = false,
+        get debug() { return debugMode; },
+        set debug(val) {
+            debugMode = val;
+            if (val) console.log('🔍 TinyPine debug enabled');
+        }
+    };
 }
