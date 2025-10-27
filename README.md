@@ -8,7 +8,8 @@
   Zero build · Zero config · Just write HTML
 
   [![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
-  [![Size](https://img.shields.io/badge/size-15KB-blue.svg)](https://unpkg.com/tinypine)
+  [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
+  [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
@@ -21,8 +22,10 @@ TinyPine is the **simplest** way to build reactive interfaces. No build tools, n
 **Perfect for:**
 - 🎨 **Quick prototypes** - Get started in seconds
 - 📱 **Interactive UIs** - Smooth, reactive interfaces
-- 🚀 **Lightweight apps** - Only 15KB minified
+- 🚀 **Lightweight apps** - Only 30KB minified
 - 🎓 **Learning** - Understand reactivity from the ground up
+- ✅ **Fully tested** - 29 passing tests with Vitest
+- 🔧 **TypeScript ready** - Built-in type definitions
 
 ---
 
@@ -49,6 +52,21 @@ Add one script tag and you're ready:
 ```
 
 **That's it!** No build step. No webpack. No npm install. Just pure, reactive HTML.
+
+---
+
+## ✨ v1.0.0 Features
+
+- 🎯 **29 Passing Tests** - Comprehensive test coverage
+- 📘 **TypeScript Support** - Full type definitions included
+- 🛠️ **DevTools Integration** - Live debugging & inspection
+- 🌍 **i18n Ready** - Built-in internationalization
+- 🔄 **Global Store** - Shared state management
+- 📡 **Async Support** - t-fetch, t-await directives
+- 🌐 **Router System** - Hash-based navigation
+- 🎨 **Transitions** - Smooth animations built-in
+- 🔌 **Plugin API** - Extensible architecture
+- 📊 **Performance** - Optimized for production
 
 ---
 
@@ -281,7 +299,7 @@ TinyPine.loadLocale('en', '/lang/en.json');
 ### CDN (Recommended)
 
 ```html
-<script src="https://unpkg.com/tinypine@0.8.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@1.0.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -290,6 +308,30 @@ TinyPine.loadLocale('en', '/lang/en.json');
 ```bash
 npm install tinypine
 ```
+
+**TypeScript Support:**
+```typescript
+import TinyPine from 'tinypine';
+// Full IntelliSense and type checking
+```
+
+### Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:run
+```
+
+**Test Coverage:**
+- ✅ 29 passing tests
+- ✅ Core directives (t-text, t-show, t-click, t-model)
+- ✅ Global stores and reactivity
+- ✅ t-for lists and iteration
+- ✅ Context management
+- ✅ Edge cases and performance
 
 ### Download
 
@@ -389,6 +431,7 @@ TinyPine.debug.inspect($store.auth);
 - ✅ **v0.7.0** - Async fetch, router
 - ✅ **v0.8.0** - Internationalization (i18n)
 - ✅ **v0.9.0** - DevTools & Inspector
+- ✅ **v1.0.0** - Stable Release with TypeScript & Tests
 
 ---
 
