@@ -29,7 +29,20 @@ TinyPine.js is a lightweight reactive framework that brings instant reactivity t
 
 ## 📦 Installation
 
-### CDN (Coming Soon)
+### NPM
+```bash
+npm install tinypine
+```
+
+Then in your HTML:
+```html
+<script type="module">
+  import { init } from './node_modules/tinypine/src/core.js';
+  TinyPine.init();
+</script>
+```
+
+### CDN (Unpkg)
 ```html
 <script src="https://unpkg.com/tinypine@0.1.0/dist/tinypine.min.js"></script>
 ```
