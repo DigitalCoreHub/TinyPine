@@ -1,7 +1,7 @@
 <div align="center">
   <img src="favicon.svg" alt="TinyPine.js" width="120" height="120">
 
-  # 🌲 TinyPine.js
+  # TinyPine.js
 
   **Minimal, comfortable & intuitive reactive micro-framework**
   *"HTML reactivity, zero build, zero stress."*
