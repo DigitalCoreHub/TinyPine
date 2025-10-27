@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.8.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.9.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-15KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -42,7 +42,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@0.8.0/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@0.9.0/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -353,6 +353,31 @@ Works everywhere JavaScript Proxies are supported.
 
 ---
 
+## 🔧 DevTools & Inspector
+
+TinyPine includes a built-in developer tools panel for real-time debugging:
+
+```html
+<script>
+TinyPine.debug = true;
+TinyPine.devtools({ position: 'bottom-right', theme: 'dark' });
+</script>
+```
+
+**Features:**
+- 📊 **Live Store Inspector** - View all global stores in real-time
+- 🎯 **Context Viewer** - Inspect component state and data
+- ⏱️ **Reactivity Timeline** - Track all state changes chronologically
+- 📈 **Performance Monitor** - Measure render and diff times
+
+**Debug Utilities:**
+```js
+TinyPine.debug.log('Custom event', { data: 'value' });
+TinyPine.debug.inspect($store.auth);
+```
+
+---
+
 ## 📈 Roadmap
 
 - ✅ **v0.1.0** - Core directives
@@ -363,6 +388,7 @@ Works everywhere JavaScript Proxies are supported.
 - ✅ **v0.6.0** - Smooth transitions
 - ✅ **v0.7.0** - Async fetch, router
 - ✅ **v0.8.0** - Internationalization (i18n)
+- ✅ **v0.9.0** - DevTools & Inspector
 
 ---
 

@@ -10,9 +10,10 @@ const { minify } = require('terser');
 // Read source files
 const storeSource = fs.readFileSync('src/store.js', 'utf8');
 const coreSource = fs.readFileSync('src/core.js', 'utf8');
+const devtoolsSource = fs.readFileSync('src/devtools.js', 'utf8');
 
 // Combine sources
-const combinedSource = storeSource + '\n\n' + coreSource;
+const combinedSource = storeSource + '\n\n' + coreSource + '\n\n' + devtoolsSource;
 
 // Create dist directory if it doesn't exist
 if (!fs.existsSync('dist')) {

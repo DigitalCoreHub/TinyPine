@@ -656,6 +656,7 @@ cache.get('key'); // returns 'value'</pre>
   <!-- TinyPine Core -->
   <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
+  <script src="/src/devtools.js"></script>
   <script>
     console.log('[Demo] Creating stores...');
 
@@ -709,6 +710,12 @@ cache.get('key'); // returns 'value'</pre>
       onChange(route) {
         console.log('[TinyPine][Router] Route changed →', route);
       }
+    });
+
+    // Initialize DevTools for v0.9.0 demo
+    TinyPine.devtools({
+      position: 'bottom-right',
+      theme: 'dark'
     });
   </script>
 
