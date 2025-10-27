@@ -95,13 +95,15 @@ function evaluateExpression(expression, state, contextObj, depTracker) {
         }
 
         // State property'lerini ekle
-        Object.keys(state).forEach(key => {
-            try {
-                context[key] = state[key];
-            } catch (e) {
-                // Get trap error - skip
-            }
-        });
+        if (state && typeof state === 'object') {
+            Object.keys(state).forEach(key => {
+                try {
+                    context[key] = state[key];
+                } catch (e) {
+                    // Get trap error - skip
+                }
+            });
+        }
 
         return Function(...Object.keys(context), `"use strict"; return (${expression})`)(...Object.values(context));
     } catch (error) {
@@ -330,6 +332,165 @@ const directiveHandlers = {
             if (debugMode) {
                 console.log('[TinyPine] [Motion]', expression, '→', transformValue);
             }
+        }
+    },
+
+    /**
+     * t-fetch: Fetch data from URL and store in state
+     */
+    't-fetch': function(element, expression, state, contextObj) {
+        if (!element._tinypineFetchFired) {
+            // Remove quotes if present
+            let url = expression.trim();
+            if ((url.startsWith('"') && url.endsWith('"')) || (url.startsWith("'") && url.endsWith("'"))) {
+                url = url.slice(1, -1);
+            }
+            element._tinypineFetchFired = true;
+
+            // Get the scope element (parent with t-data)
+            let scopeElement = element;
+            while (scopeElement && !scopeElement.hasAttribute('t-data')) {
+                scopeElement = scopeElement.parentElement;
+            }
+
+            // Make fetch request
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    // If data is an array, replace users array directly
+                    if (Array.isArray(data)) {
+                        // Find the array key in state
+                        Object.keys(state).forEach(key => {
+                            if (Array.isArray(state[key]) && state[key].length === 0) {
+                                // Clear and populate array
+                                state[key].splice(0);
+                                data.forEach(item => {
+                                    state[key].push(item);
+                                });
+                                // Trigger update manually with correct scope element
+                                if (scopeElement) {
+                                    updateDirectives(scopeElement, state);
+                                }
+                            }
+                        });
+                    } else {
+                        // Update state with fetched data
+                        Object.keys(data).forEach(key => {
+                            if (state.hasOwnProperty(key)) {
+                                if (Array.isArray(state[key]) && Array.isArray(data[key])) {
+                                    // For arrays, replace all items
+                                    state[key].splice(0);
+                                    data[key].forEach(item => {
+                                        state[key].push(item);
+                                    });
+                                } else {
+                                    state[key] = data[key];
+                                }
+                            }
+                        });
+                        // Trigger update manually with correct scope element
+                        if (scopeElement) {
+                            updateDirectives(scopeElement, state);
+                        }
+                    }
+                    if (debugMode) {
+                        console.log('[TinyPine][Fetch]', url, '→', data);
+                    }
+                })
+                .catch(err => {
+                    console.error('[TinyPine][Fetch]', url, '→', err);
+                });
+        }
+    },
+
+    /**
+     * t-await: Wait for promise and show content
+     */
+    't-await': function(element, expression, state, contextObj) {
+        if (!element._tinypineAwaitHandler) {
+            element._tinypineAwaitHandler = true;
+            const promise = evaluateExpression(expression, state, contextObj);
+
+            if (promise && typeof promise.then === 'function') {
+                // Start loading
+                element._tinypineLoading = true;
+                if (element.querySelector('[t-loading]')) {
+                    element.querySelector('[t-loading]').style.display = '';
+                }
+                if (element.querySelector('[t-error]')) {
+                    element.querySelector('[t-error]').style.display = 'none';
+                }
+
+                promise
+                    .then(data => {
+                        element._tinypineAwaitData = data;
+                        element._tinypineLoading = false;
+                        element._tinypineError = false;
+                        if (element.querySelector('[t-loading]')) {
+                            element.querySelector('[t-loading]').style.display = 'none';
+                        }
+                        if (debugMode) {
+                            console.log('[TinyPine][Await]', expression, '→', data);
+                        }
+                    })
+                    .catch(err => {
+                        element._tinypineLoading = false;
+                        element._tinypineError = err;
+                        if (element.querySelector('[t-loading]')) {
+                            element.querySelector('[t-loading]').style.display = 'none';
+                        }
+                        if (element.querySelector('[t-error]')) {
+                            element.querySelector('[t-error]').style.display = '';
+                        }
+                        console.error('[TinyPine][Await]', expression, '→', err);
+                    });
+            }
+        }
+    },
+
+    /**
+     * t-loading: Show while await is loading
+     */
+    't-loading': function(element, expression, state, contextObj) {
+        const text = evaluateExpression(expression, state, contextObj);
+        element.textContent = text;
+        element.style.display = 'none'; // Hidden by default
+    },
+
+    /**
+     * t-error: Show when await fails
+     */
+    't-error': function(element, expression, state, contextObj) {
+        const text = evaluateExpression(expression, state, contextObj);
+        element.textContent = text;
+        element.style.display = 'none'; // Hidden by default
+    },
+
+    /**
+     * t-route: Show element only when route matches
+     */
+    't-route': function(element, expression, state, contextObj) {
+        let routeName = evaluateExpression(expression, state, contextObj);
+
+        // Remove quotes if present
+        if (typeof routeName === 'string') {
+            if ((routeName.startsWith('"') && routeName.endsWith('"')) || (routeName.startsWith("'") && routeName.endsWith("'"))) {
+                routeName = routeName.slice(1, -1);
+            }
+        }
+
+        // Store route element for global listener
+        if (!window.TinyPine.routeElements) {
+            window.TinyPine.routeElements = [];
+        }
+        window.TinyPine.routeElements.push({ element, routeName });
+
+        // Initial check
+        const currentRoute = window.location.hash.replace('#/', '') || 'home';
+        if (routeName === currentRoute) {
+            element.style.display = '';
+        } else {
+            element.style.display = 'none';
         }
     },
 
@@ -616,6 +777,12 @@ const directiveHandlers = {
 function init(root = document.body) {
     const scopeElements = root.querySelectorAll('[t-data]');
     scopeElements.forEach(element => initializeScope(element));
+
+    // Process t-route elements (they work outside t-data scope)
+    const routeElements = root.querySelectorAll('[t-route]');
+    routeElements.forEach(element => {
+        applyDirective(element, 't-route', element.getAttribute('t-route'), null, null);
+    });
 }
 
 /**
@@ -832,8 +999,8 @@ function applyDirective(element, directive, value, state, context) {
     // Normal directive (t-text, t-show, vs.)
     const handler = directiveHandlers[directive];
     if (handler) {
-        // Context'i handler'a geç
-        if (context && (directiveHandlers['t-text'] === handler || directiveHandlers['t-model'] === handler)) {
+        // Context'i handler'a geç (t-route için de gerekli)
+        if (context) {
             handler(element, value, state, context);
         } else {
             handler(element, value, state);
@@ -1023,15 +1190,25 @@ function renderForLoop(element, state, contextObj) {
  * Handle t-for directive during initialization
  */
 function handleForDirective(element, expression, state, contextObj) {
-    // Parse t-for syntax: "(item, index) in items"
-    const match = expression.match(/\((.*?)\)\s+in\s+(.*)/);
-    if (!match) {
-        console.warn('[TinyPine] Invalid t-for syntax:', expression);
-        return;
-    }
+    // Parse t-for syntax: "(item, index) in items" or "item in items"
+    let match = expression.match(/\((.*?)\)\s+in\s+(.*)/);
+    let itemVar = '';
+    let listName = '';
 
-    const itemVar = match[1].trim();
-    const listName = match[2].trim();
+    if (match) {
+        // "(item, index) in items" format
+        itemVar = match[1].trim();
+        listName = match[2].trim();
+    } else {
+        // "item in items" format
+        match = expression.match(/(.*?)\s+in\s+(.*)/);
+        if (!match) {
+            console.warn('[TinyPine] Invalid t-for syntax:', expression);
+            return;
+        }
+        itemVar = match[1].trim();
+        listName = match[2].trim();
+    }
 
     // Get array from state
     const items = evaluateExpression(listName, state, contextObj);
@@ -1200,6 +1377,104 @@ if (typeof window !== 'undefined') {
         active: 'blur-enter-active',
         leave: 'blur-leave-active'
     });
+
+    // Cache System
+    window.TinyPine.cacheInstance = window.TinyPine.cacheInstance || (function() {
+        const cache = new Map();
+
+        return {
+            get: function(key) {
+                return cache.get(key);
+            },
+            set: function(key, value) {
+                cache.set(key, value);
+            },
+            clear: function() {
+                cache.clear();
+            }
+        };
+    })();
+
+    window.TinyPine.cache = function() {
+        return window.TinyPine.cacheInstance;
+    };
+
+    // Router System - Initialize routeElements array FIRST
+    if (!window.TinyPine.routeElements) {
+        window.TinyPine.routeElements = [];
+    }
+
+    if (!window.TinyPine.routerListenerAdded) {
+        window.TinyPine.routerListenerAdded = true;
+        window.TinyPine.routerConfigs = [];
+
+        // Global hashchange listener
+        window.addEventListener('hashchange', function() {
+            const currentRoute = window.TinyPine.router.getCurrent();
+
+            // Update all t-route elements
+            if (window.TinyPine.routeElements) {
+                window.TinyPine.routeElements.forEach(item => {
+                    if (item.routeName === currentRoute) {
+                        item.element.style.display = '';
+                    } else {
+                        item.element.style.display = 'none';
+                    }
+                });
+            }
+
+            // Call onChange callbacks
+            window.TinyPine.routerConfigs.forEach(config => {
+                if (config.onChange) {
+                    config.onChange(currentRoute);
+                }
+                if (debugMode) {
+                    console.log('[TinyPine][Router] Route changed →', currentRoute);
+                }
+            });
+        });
+    }
+
+    window.TinyPine.router = function(config) {
+        config = config || {};
+        const defaultRoute = config.default || 'home';
+        const onChange = config.onChange || function() {};
+
+        // Store config
+        const routerConfig = { default: defaultRoute, onChange };
+        window.TinyPine.routerConfigs.push(routerConfig);
+
+        // Navigate to route
+        window.TinyPine.router.navigate = function(route) {
+            window.location.hash = '/' + route;
+        };
+
+        // Get current route
+        window.TinyPine.router.getCurrent = function() {
+            const hash = window.location.hash.replace('#/', '');
+            return hash || defaultRoute;
+        };
+
+        // Initialize route
+        if (window.location.hash) {
+            const currentRoute = window.TinyPine.router.getCurrent();
+            if (onChange) {
+                onChange(currentRoute);
+            }
+        } else {
+            window.location.hash = '/' + defaultRoute;
+            if (onChange) {
+                onChange(defaultRoute);
+            }
+        }
+
+        return window.TinyPine;
+    };
+
+    window.TinyPine.routerInitialized = true;
+    if (debugMode) {
+        console.log('[TinyPine][Router] Initialized');
+    }
 }
 
 // Apply transition classes to element

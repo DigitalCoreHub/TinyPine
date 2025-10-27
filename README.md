@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.6.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.7.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-15KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -42,7 +42,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@0.7.0/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -189,6 +189,63 @@ TinyPine.use({
 <button t-click="methods.close.outside">Close on outside click</button>
 ```
 
+### Async Data Fetching (v0.7.0)
+
+Fetch data from APIs and handle loading/error states:
+
+```html
+<!-- Fetch and auto-update -->
+<div t-data="{ posts: [] }" t-fetch="'/api/posts'">
+  <ul>
+    <li t-for="post in posts">
+      <h3 t-text="post.title"></h3>
+    </li>
+  </ul>
+</div>
+
+<!-- Await with loading and error states -->
+<div t-data="{ user: null }">
+  <div t-await="fetch('/api/user').then(r=>r.json())">
+    <div t-loading="'Loading user...'">⏳ Loading...</div>
+    <div t-error="'Failed to load user.'">❌ Error!</div>
+    <p t-text="user.name"></p>
+  </div>
+</div>
+```
+
+### Hash Router (v0.7.0)
+
+Build SPAs with hash-based routing:
+
+```html
+<nav>
+  <a href="#/home">Home</a>
+  <a href="#/about">About</a>
+</nav>
+
+<div t-route="'home'">🏠 Home Page</div>
+<div t-route="'about'">ℹ️ About Page</div>
+
+<script>
+TinyPine.router({
+  default: 'home',
+  onChange(route) {
+    console.log('Route changed →', route);
+  }
+});
+</script>
+```
+
+### Cache System (v0.7.0)
+
+Cache API responses to avoid redundant requests:
+
+```javascript
+const cache = TinyPine.cache();
+cache.set('key', 'value');
+const data = cache.get('key');
+```
+
 ---
 
 ## 📦 Installation
@@ -196,7 +253,7 @@ TinyPine.use({
 ### CDN (Recommended)
 
 ```html
-<script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.7.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 

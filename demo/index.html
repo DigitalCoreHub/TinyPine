@@ -550,6 +550,54 @@
 
   </div>
 
+  <!-- v0.7.0: Async & Router -->
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-top: 30px;">
+    <h2>🚀 v0.7.0: Async & Router</h2>
+    <p>TinyPine now includes async data fetching and hash-based routing.</p>
+
+    <!-- Async Fetch Demo -->
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3>📡 t-fetch: Fetch Data from API</h3>
+      <div t-data="{ users: [] }" t-fetch="'https://jsonplaceholder.typicode.com/users'">
+        <p>Fetched <strong style="color: #48bb78; font-size: 1.2em;" t-text="users.length"></strong> users</p>
+        <div style="max-height: 200px; overflow-y: auto;">
+          <ul style="list-style: none; padding: 0;">
+            <li t-for="user in users" style="padding: 10px; margin: 5px 0; background: rgba(255,255,255,0.1); border-radius: 5px;">
+              <strong t-text="user.name"></strong> - <span t-text="user.email"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Router Demo -->
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3>🛣️ Hash Router (t-route)</h3>
+      <nav style="display: flex; gap: 10px; margin: 20px 0;">
+        <a href="#/home" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">Home</a>
+        <a href="#/about" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">About</a>
+        <a href="#/contact" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">Contact</a>
+      </nav>
+
+      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
+        <div t-route="'home'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+          <h4>🏠 Home Page</h4>
+          <p>Welcome to the home page! This demonstrates hash-based routing.</p>
+        </div>
+
+        <div t-route="'about'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+          <h4>ℹ️ About Page</h4>
+          <p>TinyPine's router automatically shows/hides content based on the current route.</p>
+        </div>
+
+        <div t-route="'contact'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+          <h4>📧 Contact Page</h4>
+          <p>Click the navigation links to see the router in action!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TinyPine Core -->
   <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
@@ -569,8 +617,19 @@
 
     console.log('[Demo] Watcher registered for auth.loggedIn');
 
+    // Enable debug mode
+    TinyPine.debug = true;
+
     // Initialize TinyPine
     TinyPine.init();
+
+    // Initialize router for v0.7.0 demo
+    TinyPine.router({
+      default: 'home',
+      onChange(route) {
+        console.log('[TinyPine][Router] Route changed →', route);
+      }
+    });
   </script>
 
 </body>
