@@ -1,6 +1,6 @@
 {
   "name": "tinypine",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Minimal, comfortable & intuitive reactive micro-framework",
   "main": "src/core.js",
   "type": "module",

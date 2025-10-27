@@ -69,7 +69,7 @@ function reactive(data, callback) {
  * - Sadece state property'lerine erişim var
  * - Global scope'a erişim yok (security)
  */
-function evaluateExpression(expression, state, contextObj) {
+function evaluateExpression(expression, state, contextObj, depTracker) {
     try {
         const context = {};
 
@@ -225,6 +225,62 @@ const directiveHandlers = {
         if (context && refName) {
             context.refs[refName] = element;
             debugLog(`Registered ref: ${refName}`, element);
+        }
+    },
+
+    /**
+     * t-init: Element mount olduğunda çalışır
+     */
+    't-init': function(element, expression, state, contextObj) {
+        if (!element._tinypineInitFired) {
+            try {
+                evaluateExpression(expression, state, contextObj);
+                element._tinypineInitFired = true;
+                debugLog('[t-init]', { element });
+            } catch (e) {
+                console.error('[TinyPine] t-init error:', e);
+            }
+        }
+    },
+
+    /**
+     * t-effect: Reactive effect - re-runs when dependencies change
+     */
+    't-effect': function(element, expression, state, contextObj) {
+        if (!element._tinypineEffectHandler) {
+            // Track dependencies
+            const deps = new Set();
+
+            // First run with dependency tracking
+            try {
+                evaluateExpression(expression, state, contextObj, deps);
+                debugLog('[t-effect] Initial run', { element, deps: Array.from(deps) });
+            } catch (e) {
+                console.error('[TinyPine] t-effect error:', e);
+            }
+
+            // Store effect info
+            element._tinypineEffectHandler = {
+                expression,
+                deps: Array.from(deps),
+                lastValues: new Map()
+            };
+        }
+    },
+
+    /**
+     * t-destroy: Element DOM'dan kaldırıldığında çalışır
+     */
+    't-destroy': function(element, expression, state, contextObj) {
+        if (!element._tinypineDestroyHandler) {
+            element._tinypineDestroyHandler = () => {
+                try {
+                    evaluateExpression(expression, state, contextObj);
+                    debugLog('[t-destroy]', { element });
+                } catch (e) {
+                    console.error('[TinyPine] t-destroy error:', e);
+                }
+            };
         }
     },
 
@@ -1040,4 +1096,22 @@ if (typeof window !== 'undefined') {
             if (val) console.log('🔍 TinyPine debug enabled');
         }
     });
+
+    // Plugin System
+    window.TinyPine.use = function(plugin) {
+        if (typeof plugin.init === 'function') {
+            plugin.init(window.TinyPine);
+            if (debugMode) {
+                console.log('[TinyPine][Plugin]', plugin.name || 'Unknown', 'initialized');
+            }
+        }
+        return window.TinyPine;
+    };
+
+    window.TinyPine.directive = function(name, handler) {
+        directiveHandlers['t-' + name] = handler;
+        if (debugMode) {
+            console.log('[TinyPine] Custom directive registered: t-' + name);
+        }
+    };
 }

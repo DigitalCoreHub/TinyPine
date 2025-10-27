@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.4.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.5.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-10KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -18,7 +18,7 @@
 
 **CDN:**
 ```html
-<script src="https://unpkg.com/tinypine@0.4.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.5.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -53,7 +53,7 @@ npm install tinypine
 
 ## Features
 
-✅ **13KB** minified · No build tools · No virtual DOM
+✅ **14KB** minified · No build tools · No virtual DOM
 ✅ **Proxy-based reactivity** · Instant updates
 ✅ **Directive-based** · Clean `t-*` syntax
 ✅ **Scoped contexts** · `$parent`, `$root`, `$refs`, `$el`
@@ -63,6 +63,8 @@ npm install tinypine
 ✅ **Global store** · `TinyPine.store()` and `$store` access
 ✅ **Watcher API** · `TinyPine.watch()` for reactive changes
 ✅ **SSR hydration** · Auto-load from `window.__TINYPINE_STATE__`
+✅ **Lifecycle hooks** · `t-init`, `t-effect`, `t-destroy`
+✅ **Plugin API** · `TinyPine.use()`, `TinyPine.directive()`
 ✅ **Zero dependencies** · Works anywhere
 
 ---
@@ -313,6 +315,42 @@ window.__TINYPINE_STATE__ = {
 
 ---
 
+## Lifecycle & Plugins
+
+### Lifecycle Hooks
+
+```html
+<div t-data="{ count: 0 }"
+     t-init="console.log('Mounted!')"
+     t-effect="console.log('Count:', count)"
+     t-destroy="console.log('Destroyed!')">
+  <button t-click="count++">+1</button>
+  <p t-text="count"></p>
+</div>
+```
+
+### Plugin API
+
+```js
+// Create a custom plugin
+TinyPine.use({
+  name: 'LoggerPlugin',
+  init(TinyPine) {
+    console.log('LoggerPlugin loaded!');
+    TinyPine.directive('log', (el, value) => {
+      console.log('[t-log]', value);
+    });
+  }
+});
+```
+
+```html
+<!-- Use custom directive -->
+<div t-log="'Hello TinyPine!'"></div>
+```
+
+---
+
 ## How It Works
 
 1. **Initialize** - Scan DOM for `t-data`
@@ -331,7 +369,8 @@ window.__TINYPINE_STATE__ = {
 - ✅ **v0.2.0** - Scoped contexts, methods
 - ✅ **v0.3.0** - t-for, event modifiers
 - ✅ **v0.4.0** - Global store, watcher API, SSR hydration
-- 🚧 **v0.5.0** - Plugin API, extensions, build tools
+- ✅ **v0.5.0** - Lifecycle hooks, plugin API, reactive effects
+- 🚧 **v0.6.0** - Transitions, animations, build tools
 
 ---
 
