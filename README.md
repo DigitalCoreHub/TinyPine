@@ -357,21 +357,25 @@ window.TinyPine.debug = true;
 
 ## 🗺️ Roadmap
 
-### v0.1.0 ✅ (Current)
+### v0.1.0 ✅
 - Core reactivity engine
 - Basic directive set (t-data, t-text, t-show, t-bind, t-class, t-click, t-model)
 - DOM initialization
 - Zero build setup
 
-### v0.2.0 (Planned)
-- Scoped contexts
-- Debug mode improvements
-- Performance optimizations
+### v0.2.0 ✅ (Current)
+- Scoped contexts ($parent, $root, $refs, $el)
+- Methods object support
+- Debug mode
+- t-ref directive
+- Nested scope isolation
+- Context-aware directive evaluation
 
 ### v0.3.0 (Planned)
 - Plugin API
 - Directive extension system
 - Build tool integration (optional)
+- Reactive arrays (t-repeat improvements)
 
 ## 📝 License
 
