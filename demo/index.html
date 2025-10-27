@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinyPine.js Demo</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center p-5">
+  <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-8 md:p-12">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <h1 class="text-5xl font-bold text-gray-800 mb-3">🌲 TinyPine.js</h1>
+      <p class="text-gray-600 text-lg">Minimal reactive micro-framework - v0.1.0</p>
+    </div>
+
+    <!-- Main Counter Demo -->
+    <div t-data="{ count: 0, name: '', showImage: true, linkUrl: 'https://github.com/DigitalCoreHub/TinyPine', linkText: 'GitHub' }" class="space-y-6">
+
+      <!-- Counter Display -->
+      <div class="text-center">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Interactive Counter</h2>
+        <div class="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-8" t-text="count"></div>
+
+        <!-- Buttons -->
+        <div class="flex gap-4 justify-center flex-wrap">
+          <button t-click="count--" class="px-8 py-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
+            − Decrement
+          </button>
+          <button t-click="count++" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
+            + Increment
+          </button>
+          <button t-click="count = 0" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- t-show Directive -->
+      <div class="mt-8 p-6 bg-teal-50 border-l-4 border-teal-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-show Directive</h3>
+        <p class="text-gray-600 mb-3">Message only shows when count > 5:</p>
+        <div class="p-4 bg-white rounded-lg text-gray-800 font-semibold shadow-sm" t-show="count > 5">
+          🎉 Wow! Count is greater than 5!
+        </div>
+      </div>
+
+      <!-- Two-way Data Binding (t-model) -->
+      <div class="mt-8 border-t-2 border-gray-200 pt-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Two-way Binding (t-model)</h3>
+        <div class="space-y-4">
+          <label class="block text-gray-700 font-medium">Enter your name:</label>
+          <input type="text"
+                 t-model="name"
+                 placeholder="Type your name..."
+                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
+
+          <div class="p-4 bg-purple-50 rounded-xl min-h-[50px] flex items-center justify-center text-purple-600 font-semibold shadow-sm" t-show="name">
+            <span t-text="'Hello, ' + name + '! 👋'"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- t-bind Directive -->
+      <div class="mt-8 p-6 bg-orange-50 border-l-4 border-orange-400 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-bind Directive</h3>
+        <p class="text-gray-600 mb-3">Dynamic link attributes:</p>
+        <a t-bind:href="linkUrl"
+           t-bind:target="'_blank'"
+           class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 no-underline"
+           t-text="linkText"
+           t-class:ring-4="count > 0"
+           t-class:ring-purple-400="count > 0">
+        </a>
+        <p class="mt-3 text-gray-600 text-sm">Click visits: <span t-text="linkUrl" class="font-mono text-xs bg-gray-100 px-2 py-1 rounded"></span></p>
+      </div>
+
+      <!-- t-class Directive -->
+      <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-class Directive</h3>
+        <p class="text-gray-600 mb-4">Dynamic class toggling:</p>
+        <div class="flex gap-4 flex-wrap">
+          <span class="px-6 py-3 rounded-xl font-semibold inline-block shadow-sm"
+                class="status-indicator"
+                t-class:bg-green-500="count > 0"
+                t-class:text-white="count > 0"
+                t-class:bg-red-500="count < 0"
+                t-class:bg-gray-300="count === 0"
+                t-text="count > 0 ? 'Positive' : count < 0 ? 'Negative' : 'Zero'">
+          </span>
+          <span class="px-6 py-3 rounded-xl bg-gray-200 text-gray-800 font-semibold inline-block shadow-sm"
+                t-class:bg-yellow-400="count > 5"
+                t-class:text-gray-900="count > 5"
+                t-text="count > 5 ? '🚀 High!' : 'Normal'">
+          </span>
+        </div>
+      </div>
+
+      <!-- Expression Evaluation -->
+      <div class="mt-8 p-6 bg-indigo-50 border-l-4 border-indigo-500 rounded-xl">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Expression Evaluation (t-text)</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-4 bg-white rounded-lg shadow-sm">
+            <strong class="text-gray-700">Count * 2:</strong>
+            <span t-text="count * 2" class="ml-2 text-purple-600 font-bold text-lg"></span>
+          </div>
+          <div class="p-4 bg-white rounded-lg shadow-sm">
+            <strong class="text-gray-700">Count % 3:</strong>
+            <span t-text="count % 3" class="ml-2 text-purple-600 font-bold text-lg"></span>
+          </div>
+          <div class="p-4 bg-white rounded-lg shadow-sm">
+            <strong class="text-gray-700">Is even:</strong>
+            <span t-text="count % 2 === 0" class="ml-2 text-purple-600 font-bold text-lg"></span>
+          </div>
+          <div class="p-4 bg-white rounded-lg shadow-sm">
+            <strong class="text-gray-700">Abs value:</strong>
+            <span t-text="Math.abs(count)" class="ml-2 text-purple-600 font-bold text-lg"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="mt-12 pt-8 border-t-2 border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Features</h2>
+      <ul class="space-y-3">
+        <li class="flex items-center text-gray-600">
+          <span class="text-purple-500 font-bold mr-3">✓</span>
+          Reactive state management with Proxy
+        </li>
+        <li class="flex items-center text-gray-600">
+          <span class="text-purple-500 font-bold mr-3">✓</span>
+          Zero build tools required
+        </li>
+        <li class="flex items-center text-gray-600">
+          <span class="text-purple-500 font-bold mr-3">✓</span>
+          Directive-based template syntax
+        </li>
+        <li class="flex items-center text-gray-600">
+          <span class="text-purple-500 font-bold mr-3">✓</span>
+          Two-way data binding
+        </li>
+        <li class="flex items-center text-gray-600">
+          <span class="text-purple-500 font-bold mr-3">✓</span>
+          Minimal runtime footprint
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Load TinyPine from source -->
+  <script type="module">
+    import '/src/core.js';
+    TinyPine.init();
+  </script>
+</body>
+</html>
