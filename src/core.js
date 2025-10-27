@@ -86,6 +86,11 @@ function evaluateExpression(expression, state, contextObj, depTracker) {
             }
         }
 
+        // $lang
+        if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine._lang !== undefined) {
+            context.$lang = window.TinyPine._lang;
+        }
+
         // Context obj varsa, ondan başla ($parent, $root, $refs, $el)
         if (contextObj) {
             if (contextObj.root) context.$root = contextObj.root.data;
@@ -123,6 +128,28 @@ const directiveHandlers = {
      */
     't-text': function(element, value, state, contextObj) {
         element.textContent = evaluateExpression(value, state, contextObj);
+    },
+
+    /**
+     * t-text.lang: Translate text based on current language
+     */
+    't-text.lang': function(element, translationKey, state, contextObj) {
+        const key = evaluateExpression(translationKey, state, contextObj);
+        const i18n = window.TinyPine?.i18nInstance;
+        const currentLang = i18n?.currentLang || 'en';
+        const translations = i18n?.translations?.[currentLang];
+
+        if (translations && translations[key]) {
+            element.textContent = translations[key];
+            if (debugMode) {
+                console.log('[TinyPine][i18n] Translated:', key, '→', translations[key]);
+            }
+        } else {
+            element.textContent = key; // Fallback to key
+            if (debugMode) {
+                console.warn('[TinyPine][i18n] Missing translation:', key, 'in', currentLang);
+            }
+        }
     },
 
     /**
@@ -615,6 +642,15 @@ const directiveHandlers = {
                                     store[storeKey] = newValue;
                                 }
                             }
+                        } else if (prop === '$lang') {
+                            // Special handling for $lang assignment
+                            const newLang = value.replace(/['"]/g, ''); // Remove quotes
+                            if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.$lang !== undefined) {
+                                // Direct assignment to trigger setter
+                                window.TinyPine.$lang = newLang;
+                            }
+                            // Return early to avoid processing other directives
+                            return;
                         } else {
                             // Regular state assignment - evaluate with proper context
                             try {
@@ -694,6 +730,11 @@ const directiveHandlers = {
                                 });
                             } catch (e) {}
                         }
+                    }
+
+                    // Add $lang to context
+                    if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine._lang !== undefined) {
+                        context.$lang = window.TinyPine._lang;
                     }
 
                     // Eğer son karakter () ile bitmiyorsa, method çağrısı için ekle
@@ -1512,6 +1553,98 @@ if (typeof window !== 'undefined') {
     if (debugMode) {
         console.log('[TinyPine][Router] Initialized');
     }
+
+    // i18n System
+    window.TinyPine.i18nInstance = window.TinyPine.i18nInstance || {
+        translations: {},
+        currentLang: 'en',
+        defaultLang: 'en',
+        cache: false,
+        onChange: null
+    };
+
+    // Initialize i18n
+    window.TinyPine.i18n = function(langs, options) {
+        options = options || {};
+        window.TinyPine.i18nInstance.translations = langs;
+        window.TinyPine.i18nInstance.defaultLang = options.default || 'en';
+        window.TinyPine.i18nInstance.cache = options.cache || false;
+        window.TinyPine.i18nInstance.onChange = options.onChange;
+
+        // Set initial language
+        const savedLang = options.cache && localStorage.getItem('tinypine_lang');
+        const initialLang = savedLang || window.TinyPine.i18nInstance.defaultLang;
+        window.TinyPine.i18nInstance.currentLang = initialLang;
+
+        // Create reactive $lang
+        window.TinyPine._lang = initialLang;
+        Object.defineProperty(window.TinyPine, '$lang', {
+            get: function() {
+                return window.TinyPine._lang;
+            },
+            set: function(newLang) {
+                window.TinyPine._lang = newLang;
+                window.TinyPine.i18nInstance.currentLang = newLang;
+
+                if (window.TinyPine.i18nInstance.cache) {
+                    localStorage.setItem('tinypine_lang', newLang);
+                }
+
+                if (window.TinyPine.i18nInstance.onChange) {
+                    window.TinyPine.i18nInstance.onChange(newLang);
+                }
+
+                // Update all t-text.lang elements manually
+                document.querySelectorAll('*[t-text\\.lang]').forEach(el => {
+                    let key = el.getAttribute('t-text.lang');
+                    // Remove surrounding quotes if present
+                    if (key && (key.startsWith("'") || key.startsWith('"'))) {
+                        key = key.slice(1, -1);
+                    }
+                    const i18n = window.TinyPine?.i18nInstance;
+                    const currentLang = newLang;
+                    const translations = i18n?.translations?.[currentLang];
+
+                    if (translations && translations[key]) {
+                        el.textContent = translations[key];
+                    } else {
+                        el.textContent = key || '';
+                    }
+                });
+
+                if (debugMode) {
+                    console.log('[TinyPine][i18n] Language changed →', newLang);
+                }
+            },
+            configurable: true
+        });
+
+        if (debugMode) {
+            console.log('[TinyPine][i18n] Initialized with', Object.keys(langs).length, 'languages');
+        }
+
+        return window.TinyPine;
+    };
+
+    // Load locale from JSON
+    window.TinyPine.loadLocale = function(lang, url) {
+        return fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (!window.TinyPine.i18nInstance.translations[lang]) {
+                    window.TinyPine.i18nInstance.translations[lang] = {};
+                }
+                Object.assign(window.TinyPine.i18nInstance.translations[lang], data);
+
+                if (debugMode) {
+                    console.log('[TinyPine][i18n] Loaded locale:', lang, 'from', url);
+                }
+            })
+            .catch(err => {
+                console.error('[TinyPine][i18n] Failed to load locale:', lang, 'from', url, err);
+            });
+    };
+
 }
 
 // Apply transition classes to element

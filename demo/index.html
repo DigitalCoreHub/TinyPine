@@ -626,6 +626,33 @@ cache.get('key'); // returns 'value'</pre>
     </div>
   </div>
 
+  <!-- v0.8.0: i18n & Localization -->
+  <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; margin-top: 30px;">
+    <h2>🌍 v0.8.0: i18n & Localization</h2>
+    <p>TinyPine now includes reactive internationalization with multi-language support.</p>
+
+    <!-- i18n Demo -->
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+      <h3>🌐 Reactive Translations (t-text.lang)</h3>
+      <div t-data="{ }">
+        <p style="font-size: 1.5em; margin: 20px 0;">
+          <span t-text.lang="'greeting'"></span> 🌍
+        </p>
+        <p style="margin: 20px 0;">
+          <span t-text.lang="'welcome'"></span>
+        </p>
+        <p style="margin: 20px 0;">
+          <span t-text.lang="'description'"></span>
+        </p>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+          <button t-click="$lang = 'en'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇺🇸 English</button>
+          <button t-click="$lang = 'tr'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇹🇷 Türkçe</button>
+          <button t-click="$lang = 'es'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇪🇸 Español</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TinyPine Core -->
   <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
@@ -644,6 +671,31 @@ cache.get('key'); // returns 'value'</pre>
     });
 
     console.log('[Demo] Watcher registered for auth.loggedIn');
+
+    // Initialize i18n with multiple languages
+    TinyPine.i18n({
+      en: {
+        greeting: 'Hello World!',
+        welcome: 'Welcome to TinyPine!',
+        description: 'This is a reactive micro-framework for building amazing UIs.'
+      },
+      tr: {
+        greeting: 'Merhaba Dünya!',
+        welcome: 'TinyPine\'e hoş geldiniz!',
+        description: 'Bu, harika arayüzler oluşturmak için reaktif bir mikro-framework\'dir.'
+      },
+      es: {
+        greeting: '¡Hola Mundo!',
+        welcome: '¡Bienvenido a TinyPine!',
+        description: 'Este es un micro-framework reactivo para crear interfaces increíbles.'
+      }
+    }, {
+      default: 'en',
+      cache: true,
+      onChange: function(lang) {
+        console.log('[i18n] Language changed to:', lang);
+      }
+    });
 
     // Enable debug mode
     TinyPine.debug = true;

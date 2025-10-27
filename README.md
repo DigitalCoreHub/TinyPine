@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.7.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.8.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-15KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -42,7 +42,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@0.7.0/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@0.8.0/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -246,6 +246,34 @@ cache.set('key', 'value');
 const data = cache.get('key');
 ```
 
+### Internationalization (v0.8.0)
+
+Add multi-language support with reactive translations:
+
+```html
+<script>
+// Setup translations
+TinyPine.i18n({
+  en: { greeting: 'Hello World!', welcome: 'Welcome!' },
+  tr: { greeting: 'Merhaba Dünya!', welcome: 'Hoş geldiniz!' }
+}, { default: 'en', cache: true });
+</script>
+
+<div t-data>
+  <h1 t-text.lang="'greeting'"></h1>
+  <button t-click="$lang = 'tr'">🇹🇷 Türkçe</button>
+  <button t-click="$lang = 'en'">🇺🇸 English</button>
+</div>
+```
+
+**Dynamic Locale Loading:**
+
+```javascript
+// Load from JSON files
+TinyPine.loadLocale('tr', '/lang/tr.json');
+TinyPine.loadLocale('en', '/lang/en.json');
+```
+
 ---
 
 ## 📦 Installation
@@ -253,7 +281,7 @@ const data = cache.get('key');
 ### CDN (Recommended)
 
 ```html
-<script src="https://unpkg.com/tinypine@0.7.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.8.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -333,7 +361,8 @@ Works everywhere JavaScript Proxies are supported.
 - ✅ **v0.4.0** - Global store, watchers, SSR
 - ✅ **v0.5.0** - Lifecycle hooks, plugins
 - ✅ **v0.6.0** - Smooth transitions
-- 🚧 **v0.7.0** - Async fetch, router
+- ✅ **v0.7.0** - Async fetch, router
+- ✅ **v0.8.0** - Internationalization (i18n)
 
 ---
 
