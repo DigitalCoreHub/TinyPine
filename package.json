@@ -1,6 +1,6 @@
 {
   "name": "tinypine",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Minimal, comfortable & intuitive reactive micro-framework",
   "main": "src/core.js",
   "type": "module",
@@ -29,6 +29,8 @@
     "src/",
     "dist/",
     "README.md"
-  ]
+  ],
+  "devDependencies": {
+    "terser": "^5.44.0"
+  }
 }
-

@@ -20,16 +20,37 @@
  * - Performanslı ve native çözüm
  */
 function reactive(data, callback) {
-    return new Proxy(data, {
+    const proxy = new Proxy(data, {
         set(target, key, value) {
+            const oldValue = target[key];
             target[key] = value;
+
+            // Special handling for arrays
+            if (Array.isArray(value)) {
+                // Make array reactive too
+                const arrayMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+                arrayMethods.forEach(method => {
+                    const original = Array.prototype[method];
+                    value[method] = function(...args) {
+                        const result = original.apply(this, args);
+                        if (callback) callback(key, value);
+                        return result;
+                    };
+                });
+            }
+
             if (callback) callback(key, value);
             return true;
         },
         get(target, key) {
-            return target[key];
+            const value = target[key];
+            return value;
         }
     });
+
+    // Store reference to target for later access
+    proxy._tinypineTarget = data;
+    return proxy;
 }
 
 /**
@@ -140,27 +161,91 @@ const directiveHandlers = {
     },
 
     /**
-     * t-click: Click event'lerini handle eder ve state günceller
-     * Örnek: <button t-click="count++">Increment</button>
+     * t-for: Reactive list rendering
+     * Örnek: <li t-for="(item, index) in items">
      *
      * NASIL ÇALIŞIR:
-     * 1. count++, count--, count = value gibi expression'ları parse eder
-     * 2. State'i doğrudan günceller
-     * 3. Tüm directive'leri yeniden işler
-     *
-     * NEDEN:
-     * - ++ ve -- operatörlerini doğrudan state'e yazamayız (primitive değerler)
-     * - Bu yüzden parse edip manuel güncelliyoruz
+     * 1. "t-for='(item, index) in items'" syntax'ını parse eder
+     * 2. Items array'ini state'ten alır
+     * 3. Her item için template'i clone eder
+     * 4. Array değişince diff ile günceller
+     */
+    't-for': function(element, expression, state, contextObj) {
+        // Parse t-for syntax: "(item, index) in items"
+        const match = expression.match(/\((.*?)\)\s+in\s+(.*)/);
+        if (!match) {
+            console.warn('[TinyPine] Invalid t-for syntax:', expression);
+            return;
+        }
+
+        const itemVar = match[1].trim();
+        const listName = match[2].trim();
+
+        // Get array from state
+        const items = evaluateExpression(listName, state, contextObj);
+
+        if (!Array.isArray(items)) {
+            console.warn('[TinyPine] t-for target must be an array:', listName);
+            return;
+        }
+
+        // Store loop info on element
+        const template = element.innerHTML;
+
+        element._tinypineFor = {
+            itemVar,
+            listName,
+            items: [...items], // Snapshot
+            template: template,
+            key: element.getAttribute('t-key') || null // Optional key attribute
+        };
+
+        // Render initial items
+        renderForLoop(element, state, contextObj);
+    },
+
+    /**
+     * t-ref: Register DOM elements for access via $refs
      */
     't-ref': function(element, value, state, context) {
-    const refName = value.trim();
-    if (context && refName) {
-      context.refs[refName] = element;
-      debugLog(`Registered ref: ${refName}`, element);
-    }
-  },
+        const refName = value.trim();
+        if (context && refName) {
+            context.refs[refName] = element;
+            debugLog(`Registered ref: ${refName}`, element);
+        }
+    },
 
   't-click': function(element, expression, state) {
+
+        // Parse modifiers from expression FIRST to check for .once
+        const knownModifiers = ['prevent', 'stop', 'once', 'outside'];
+        const modifiers = [];
+        let cleanExpression = expression;
+
+        // Extract modifiers (sondan başa doğru)
+        while (true) {
+            const modifierPattern = /\.(\w+)$/;
+            if (!modifierPattern.test(cleanExpression)) break;
+
+            const match = cleanExpression.match(modifierPattern);
+            const modifier = match[1];
+
+            // Eğer bilinen bir modifier ise
+            if (knownModifiers.includes(modifier)) {
+                modifiers.unshift(modifier);
+                cleanExpression = cleanExpression.replace(modifierPattern, '');
+            } else {
+                // Modifier değil, method ismi, durdur
+                break;
+            }
+        }
+
+
+        // Eğer .once varsa ve zaten çalıştırılmışsa, yeni handler ekleme
+        if (modifiers.includes('once') && element._tinypineOnceFired) {
+            return;
+        }
+
         // Önceki handler varsa temizle (memory leak önleme)
         if (element._tinypineClickHandler) {
             element.removeEventListener('click', element._tinypineClickHandler);
@@ -169,22 +254,41 @@ const directiveHandlers = {
 
         const handler = function(event) {
             try {
+                // Apply modifiers BEFORE processing expression
+                if (modifiers.includes('prevent')) {
+                    event.preventDefault();
+                }
+                if (modifiers.includes('stop')) {
+                    event.stopPropagation();
+                }
+
+                // Handle .once modifier
+                if (modifiers.includes('once')) {
+                    element.removeEventListener('click', handler);
+                    delete element._tinypineClickHandler;
+                    element._tinypineOnceFired = true;
+                }
+
                 const scopeElement = element.closest('[t-data]');
                 if (!scopeElement || !scopeElement._tinypineState) return;
 
-                const state = scopeElement._tinypineState;
-                const contextObj = scopeElement._tinypineContext;
+                    // Check if we're in a t-for item - use scoped state
+                    const forItem = element.closest('[t-for]');
+                    const loopState = forItem && element._tinypineScopedState ? element._tinypineScopedState : null;
+                    // IMPORTANT: Always use the live state from scopeElement
+                    const state = scopeElement._tinypineState;
+                    const contextObj = scopeElement._tinypineContext;
 
                 // Özel expression'ları parse et ve çalıştır
-                if (expression.includes('++')) {
-                    const prop = expression.replace('++', '').trim();
+                if (cleanExpression.includes('++')) {
+                    const prop = cleanExpression.replace('++', '').trim();
                     state[prop] = (state[prop] || 0) + 1;
-                } else if (expression.includes('--')) {
-                    const prop = expression.replace('--', '').trim();
+                } else if (cleanExpression.includes('--')) {
+                    const prop = cleanExpression.replace('--', '').trim();
                     state[prop] = (state[prop] || 0) - 1;
-                } else if (expression.includes('=')) {
+                } else if (cleanExpression.includes('=')) {
                     // Atama işlemlerini handle et (count = 0 gibi)
-                    const parts = expression.split('=');
+                    const parts = cleanExpression.split('=');
                     const prop = parts[0].trim();
                     const value = parts.slice(1).join('=').trim();
                     try {
@@ -206,15 +310,32 @@ const directiveHandlers = {
                         }
                     });
 
-                    // Methods'u ekle (context'ten) - her method'u this bind ederek ekle
+                    // Methods'u ekle (context'ten) - closure ile doğru state'i kullan
                     if (contextObj && contextObj.methods) {
                         const boundMethods = {};
                         Object.keys(contextObj.methods).forEach(key => {
                             const method = contextObj.methods[key];
-                            // this'i state'e bind et
-                            boundMethods[key] = method.bind(state);
+                            // IMPORTANT: Read FRESH state on every call
+                            boundMethods[key] = function(...args) {
+                                // CRITICAL: Read fresh state from scopeElement
+                                const currentState = scopeElement._tinypineState;
+                                // Get the actual target behind the Proxy
+                                const actualState = currentState._tinypineTarget || currentState;
+                                // Use actual state instead of Proxy for apply
+                                return method.apply(actualState, args);
+                            };
                         });
                         context.methods = boundMethods;
+                    }
+
+                    // If we're in a loop, add loop variables to context
+                    if (loopState) {
+                        // Add all loop variables
+                        Object.keys(loopState).forEach(key => {
+                            if (!context[key]) {
+                                context[key] = loopState[key];
+                            }
+                        });
                     }
 
                     // $parent, $root, $refs, $el'i ekle
@@ -225,7 +346,13 @@ const directiveHandlers = {
                         context.$el = contextObj.el;
                     }
 
-                    const func = new Function(...Object.keys(context), 'event', `"use strict"; return (${expression})`);
+                    // Eğer son karakter () ile bitmiyorsa, method çağrısı için ekle
+                    let finalExpression = cleanExpression;
+                    if (finalExpression && !finalExpression.endsWith('()') && !finalExpression.includes('(')) {
+                        finalExpression = finalExpression + '()';
+                    }
+
+                    const func = new Function(...Object.keys(context), 'event', `"use strict"; return (${finalExpression})`);
                     func(...Object.values(context), event);
                 }
 
@@ -237,7 +364,23 @@ const directiveHandlers = {
         };
 
         element._tinypineClickHandler = handler;
-        element.addEventListener('click', handler);
+
+        // Handle .outside modifier
+        if (modifiers.includes('outside')) {
+            document.addEventListener('click', function outsideClick(event) {
+                if (!element.contains(event.target)) {
+                    handler(event);
+                    // Optionally remove listener after first outside click
+                    if (modifiers.includes('once')) {
+                        document.removeEventListener('click', outsideClick);
+                        delete element._tinypineOutsideHandler;
+                    }
+                }
+            });
+            element._tinypineOutsideHandler = true;
+        } else {
+            element.addEventListener('click', handler);
+        }
     },
 
     /**
@@ -257,7 +400,7 @@ const directiveHandlers = {
         const propertyName = expression.trim();
 
         // State'ten input'a: initial ve update binding
-        if (state.hasOwnProperty(propertyName)) {
+        if (Object.prototype.hasOwnProperty.call(state, propertyName) || propertyName in state) {
             const value = evaluateExpression(expression, state);
             if (element.value !== value && element.value !== String(value)) {
                 element.value = value;
@@ -268,11 +411,13 @@ const directiveHandlers = {
         if (!element._tinypineModelHandler) {
             const handler = function(event) {
                 try {
-                    if (state.hasOwnProperty(propertyName)) {
-                        state[propertyName] = event.target.value;
-                        const scopeElement = element.closest('[t-data]');
-                        if (scopeElement && scopeElement._tinypineState) {
-                            updateDirectives(scopeElement, state);
+                    const scopeElement = element.closest('[t-data]');
+                    if (scopeElement && scopeElement._tinypineState) {
+                        // CRITICAL: Use FRESH state from scopeElement
+                        const currentState = scopeElement._tinypineState;
+                        if (currentState.hasOwnProperty(propertyName)) {
+                            currentState[propertyName] = event.target.value;
+                            updateDirectives(scopeElement, currentState);
                         }
                     }
                 } catch (error) {
@@ -317,6 +462,11 @@ function init(root = document.body) {
  * - setTimeout(0) ile ertelenir ve batching yapılır
  */
 function processChildDirectives(element, state, context) {
+    // Check if this element has t-for - if so, don't process children yet (renderForLoop will handle it)
+    if (element._tinypineFor) {
+        return; // Skip - renderForLoop will handle children
+    }
+
     const children = element.children;
     for (let i = 0; i < children.length; i++) {
         const el = children[i];
@@ -366,6 +516,25 @@ function initializeScope(element) {
                     updateDirectives(element, state);
                     updatePending = false;
                 }, 0);
+            }
+        });
+
+        // Make arrays reactive - wrap all array methods
+        Object.keys(state).forEach(key => {
+            const value = state[key];
+            if (Array.isArray(value)) {
+                const arrayMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+                arrayMethods.forEach(method => {
+                    if (!value['_' + method + '_wrapped']) {
+                        const original = Array.prototype[method];
+                        value[method] = function(...args) {
+                            const result = original.apply(this, args);
+                            updateDirectives(element, state);
+                            return result;
+                        };
+                        value['_' + method + '_wrapped'] = true;
+                    }
+                });
             }
         });
 
@@ -483,6 +652,12 @@ function applyDirective(element, directive, value, state, context) {
         return;
     }
 
+    // t-for directive
+    if (directive === 't-for') {
+        handleForDirective(element, value, state, context);
+        return;
+    }
+
     // Normal directive (t-text, t-show, vs.)
     const handler = directiveHandlers[directive];
     if (handler) {
@@ -515,6 +690,17 @@ function updateDirectives(scopeElement, state) {
 
     // Sadece bu scope'un kendi elementlerini güncelle (child scope'ları dahil etme)
     function updateRecursive(element) {
+        // Check if this element has t-for directive - SKIP IT
+        if (element._tinypineFor) {
+            // t-for elements handle their own updates via array mutation wrappers
+            return;
+        }
+
+        // Skip t-model inputs to prevent value reset
+        if (element.hasAttribute('t-model')) {
+            return;
+        }
+
         // Bu element'in kendi directive'lerini güncelle
         processDirectives(element, state, context);
 
@@ -523,8 +709,13 @@ function updateDirectives(scopeElement, state) {
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
 
-            // Eğer child kendi scope'una sahipse, skip et (çünkü kendi update'ini yapacak)
+            // Eğer child kendi scope'una sahipse, skip et
             if (child.hasAttribute('t-data')) {
+                continue;
+            }
+
+            // Skip t-for elements
+            if (child._tinypineFor) {
                 continue;
             }
 
@@ -533,19 +724,183 @@ function updateDirectives(scopeElement, state) {
         }
     }
 
-    // Scope element'in direct child'ları ile başla
-    const children = scopeElement.children;
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
+    // Start with scope element itself for root-level updates
+    updateRecursive(scopeElement);
+}
 
-        // Eğer child kendi scope'una sahipse, skip et
-        if (child.hasAttribute('t-data')) {
-            continue;
+/**
+ * t-for loop rendering
+ * Renders items with proper scoping for reactive loops
+ */
+function renderForLoop(element, state, contextObj) {
+    const forInfo = element._tinypineFor;
+    if (!forInfo) return;
+
+    // Get current items from state
+    const items = evaluateExpression(forInfo.listName, state, contextObj);
+
+    if (!Array.isArray(items)) {
+        console.warn('[TinyPine] t-for target is not an array:', forInfo.listName);
+        return;
+    }
+
+    // Check if already rendering (prevent recursion)
+    if (element._tinypineRendering) {
+        return;
+    }
+    element._tinypineRendering = true;
+
+    // Parse item variable name
+    const itemVars = forInfo.itemVar.split(',').map(v => v.trim());
+    const itemVar = itemVars[0];
+    const indexVar = itemVars[1] || 'index';
+
+    // Clear and render
+    element.innerHTML = '';
+
+    // Get fresh template each time (don't trust forInfo.template)
+    const originalTemplate = forInfo.template;
+
+    // Early return if no items
+    if (items.length === 0) {
+        element._tinypineRendering = false;
+        return;
+    }
+
+    // Render each item
+    items.forEach((item, index) => {
+
+        // Parse template into a real element
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = originalTemplate;
+
+        // Clone the content
+        const liEl = element.cloneNode(false); // Clone without children
+        liEl.removeAttribute('t-for'); // Remove t-for directive
+
+        // Append template content
+        Array.from(tempDiv.childNodes).forEach(node => {
+            liEl.appendChild(node.cloneNode(true));
+        });
+
+
+        // Create a simple object with item, index, and parent state access
+        const scopedState = Object.create(null);
+        scopedState[itemVar] = item;
+        scopedState[indexVar] = index;
+
+        // Add all parent state properties as direct values
+        try {
+            Object.keys(state).forEach(key => {
+                try {
+                    scopedState[key] = state[key];
+                } catch (e) {}
+            });
+        } catch (e) {}
+
+        // Store on element for click handlers
+        liEl._tinypineScopedState = scopedState;
+
+        // Remove ALL t-for attributes from template to prevent recursion
+        function removeTFor(el) {
+            if (el.hasAttribute('t-for')) {
+                el.removeAttribute('t-for');
+            }
+            Array.from(el.children).forEach(child => {
+                removeTFor(child);
+            });
         }
 
-        // Normal element, güncelle
-        updateRecursive(child);
+        removeTFor(liEl);
+
+        // Process directives and store scoped state on ALL elements
+        function processAndStoreState(el) {
+            // Store scoped state on this element
+            el._tinypineScopedState = scopedState;
+
+            // Process its attributes
+            Array.from(el.attributes).forEach(attr => {
+                if (attr.name.startsWith('t-') && directiveHandlers[attr.name]) {
+                    try {
+                        directiveHandlers[attr.name](el, attr.value, scopedState, contextObj);
+                    } catch (e) {
+                        // Silent
+                    }
+                }
+            });
+
+            // Process children
+            Array.from(el.children).forEach(child => {
+                processAndStoreState(child);
+            });
+        }
+
+        processAndStoreState(liEl);
+
+
+        // Append to parent
+        element.appendChild(liEl);
+    });
+
+    debugLog(`t-for rendered ${items.length} items`, element);
+
+    // Reset flag
+    element._tinypineRendering = false;
+}
+
+/**
+ * Handle t-for directive during initialization
+ */
+function handleForDirective(element, expression, state, contextObj) {
+    // Parse t-for syntax: "(item, index) in items"
+    const match = expression.match(/\((.*?)\)\s+in\s+(.*)/);
+    if (!match) {
+        console.warn('[TinyPine] Invalid t-for syntax:', expression);
+        return;
     }
+
+    const itemVar = match[1].trim();
+    const listName = match[2].trim();
+
+    // Get array from state
+    const items = evaluateExpression(listName, state, contextObj);
+
+    if (!Array.isArray(items)) {
+        console.warn('[TinyPine] t-for target must be an array:', listName);
+        return;
+    }
+
+    // Store loop info on element
+    // IMPORTANT: Save original template ONLY if not already saved
+    if (!element._tinypineFor) {
+        const originalTemplate = element.innerHTML;
+        element._tinypineFor = {
+            itemVar,
+            listName,
+            template: originalTemplate
+        };
+    }
+
+    // Make array methods trigger re-render
+    ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'].forEach(method => {
+        if (!items['_' + method + '_for_wrapped']) {
+            const original = Array.prototype[method];
+            items[method] = function(...args) {
+                const result = original.apply(this, args);
+                // Queue re-render ONLY if not currently rendering
+                setTimeout(() => {
+                    if (!element._tinypineRendering) {
+                        renderForLoop(element, state, contextObj);
+                    }
+                }, 0);
+                return result;
+            };
+            items['_' + method + '_for_wrapped'] = true;
+        }
+    });
+
+    // Initial render
+    renderForLoop(element, state, contextObj);
 }
 
 // Context Store - Her element'in context'ini tutar

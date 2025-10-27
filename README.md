@@ -6,7 +6,7 @@
   **Minimal, comfortable & intuitive reactive micro-framework**
   *"HTML reactivity, zero build, zero stress."*
 
-  [![Version](https://img.shields.io/badge/version-v0.2.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.3.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
@@ -16,7 +16,7 @@
 
 TinyPine.js is a lightweight reactive framework that brings instant reactivity to HTML without build tools, virtual DOM, or complex setup. Write reactive HTML directly in the browser—no bundlers, no transpilation, no configuration.
 
-**v0.2.0** adds scoped reactivity with $parent, $root, $refs, method support, and debug mode.
+**v0.3.0** adds `t-for` list rendering, event modifiers (.prevent, .stop, .once, .outside), and enhanced directive processing.
 
 ## 🚀 Features
 
@@ -29,6 +29,8 @@ TinyPine.js is a lightweight reactive framework that brings instant reactivity t
 - 🌳 **Scoped Contexts** - Nested reactive scopes with $parent, $root
 - 🔍 **Debug Mode** - Built-in debugging utility
 - 🎪 **Methods Support** - Component-like methods in scope
+- 🔁 **List Rendering** - t-for directive for dynamic lists
+- 🎯 **Event Modifiers** - .prevent, .stop, .once, .outside
 
 ## 📦 Installation
 
@@ -47,7 +49,7 @@ Then in your HTML:
 
 ### CDN (Unpkg)
 ```html
-<script src="https://unpkg.com/tinypine@0.2.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.3.0/dist/tinypine.min.js"></script>
 ```
 
 ### Local Setup
@@ -196,12 +198,30 @@ Conditionally applies CSS classes.
 ```
 
 ### `t-click`
-Attaches click event handler.
+Attaches click event handler with optional event modifiers.
 
+**Basic usage:**
 ```html
 <button t-click="count++">Increment</button>
 <button t-click="count--">Decrement</button>
 <button t-click="count = 0">Reset</button>
+```
+
+**With event modifiers (v0.3.0):**
+```html
+<!-- Prevent default behavior -->
+<a href="#" t-click="doSomething.prevent">Link</a>
+
+<!-- Stop event propagation -->
+<div t-click="parentHandler">
+  <button t-click="childHandler.stop">Button</button>
+</div>
+
+<!-- Execute only once -->
+<button t-click="setup.once">Initialize</button>
+
+<!-- Click outside to close -->
+<div t-click="methods.close.outside">Close me by clicking outside</div>
 ```
 
 ### `t-model`
@@ -211,6 +231,42 @@ Two-way data binding for form inputs.
 <input type="text" t-model="name">
 <input type="number" t-model="age">
 <textarea t-model="description"></textarea>
+```
+
+### `t-for` (v0.3.0)
+Iterates over an array to render list items.
+
+```html
+<div t-data="{ items: ['Apple', 'Banana', 'Cherry'] }">
+  <ul>
+    <li t-for="item in items">
+      <span t-text="item"></span>
+    </li>
+  </ul>
+</div>
+```
+
+**With index:**
+```html
+<div t-data="{ items: ['A', 'B', 'C'] }">
+  <ul>
+    <li t-for="(item, index) in items">
+      <span t-text="index"></span>: <span t-text="item"></span>
+    </li>
+  </ul>
+</div>
+```
+
+**With removal:**
+```html
+<div t-data="{ items: ['Apple', 'Banana'], methods: { remove(index) { this.items.splice(index, 1); } } }">
+  <ul>
+    <li t-for="(item, index) in items">
+      <span t-text="item"></span>
+      <button t-click="methods.remove(index)">Remove</button>
+    </li>
+  </ul>
+</div>
 ```
 
 ### `t-ref`
@@ -371,11 +427,16 @@ window.TinyPine.debug = true;
 - Nested scope isolation
 - Context-aware directive evaluation
 
-### v0.3.0 (Planned)
+### v0.3.0 ✅ (Current)
+- `t-for` directive for list rendering
+- Event modifiers (.prevent, .stop, .once, .outside)
+- Enhanced directive processing
+
+### v0.4.0 (Planned)
 - Plugin API
 - Directive extension system
 - Build tool integration (optional)
-- Reactive arrays (t-repeat improvements)
+- Advanced array reactivity
 
 ## 📝 License
 

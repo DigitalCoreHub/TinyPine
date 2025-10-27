@@ -3,235 +3,376 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TinyPine.js Demo</title>
+  <title>TinyPine.js - Documentation & Examples</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
+    .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; font-family: 'Fira Code', monospace; overflow-x: auto; }
+    .section-divider { border-top: 2px solid #cbd5e1; }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center p-5">
-  <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-8 md:p-12">
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
 
-    <!-- Header -->
-    <div class="text-center mb-10">
-      <h1 class="text-5xl font-bold text-gray-800 mb-3">🌲 TinyPine.js</h1>
-      <p class="text-gray-600 text-lg">Minimal reactive micro-framework - v0.1.0</p>
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-2">
+          <span class="text-3xl">🌲</span>
+          <span class="text-2xl font-bold text-gray-800">TinyPine.js</span>
+          <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded-full">v0.3.0</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 hover:text-purple-600 transition">GitHub</a>
+          <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Documentation</a>
+        </div>
+      </div>
     </div>
+  </nav>
 
-    <!-- Main Counter Demo -->
-    <div t-data="{ count: 0, name: '', showImage: true, linkUrl: 'https://github.com/DigitalCoreHub/TinyPine', linkText: 'GitHub' }" class="space-y-6">
-
-      <!-- Counter Display -->
-      <div class="text-center">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Interactive Counter</h2>
-        <div class="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-8" t-text="count"></div>
-
-        <!-- Buttons -->
-        <div class="flex gap-4 justify-center flex-wrap">
-          <button t-click="count--" class="px-8 py-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
-            − Decrement
-          </button>
-          <button t-click="count++" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
-            + Increment
-          </button>
-          <button t-click="count = 0" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0">
-            Reset
-          </button>
-        </div>
-      </div>
-
-      <!-- t-show Directive -->
-      <div class="mt-8 p-6 bg-teal-50 border-l-4 border-teal-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-show Directive</h3>
-        <p class="text-gray-600 mb-3">Message only shows when count > 5:</p>
-        <div class="p-4 bg-white rounded-lg text-gray-800 font-semibold shadow-sm" t-show="count > 5">
-          🎉 Wow! Count is greater than 5!
-        </div>
-      </div>
-
-      <!-- Two-way Data Binding (t-model) -->
-      <div class="mt-8 border-t-2 border-gray-200 pt-8">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Two-way Binding (t-model)</h3>
-        <div class="space-y-4">
-          <label class="block text-gray-700 font-medium">Enter your name:</label>
-          <input type="text"
-                 t-model="name"
-                 placeholder="Type your name..."
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
-
-          <div class="p-4 bg-purple-50 rounded-xl min-h-[50px] flex items-center justify-center text-purple-600 font-semibold shadow-sm" t-show="name">
-            <span t-text="'Hello, ' + name + '! 👋'"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- t-bind Directive -->
-      <div class="mt-8 p-6 bg-orange-50 border-l-4 border-orange-400 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-bind Directive</h3>
-        <p class="text-gray-600 mb-3">Dynamic link attributes:</p>
-        <a t-bind:href="linkUrl"
-           t-bind:target="'_blank'"
-           class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 no-underline"
-           t-text="linkText"
-           t-class:ring-4="count > 0"
-           t-class:ring-purple-400="count > 0">
-        </a>
-        <p class="mt-3 text-gray-600 text-sm">Click visits: <span t-text="linkUrl" class="font-mono text-xs bg-gray-100 px-2 py-1 rounded"></span></p>
-      </div>
-
-      <!-- t-class Directive -->
-      <div class="mt-8 p-6 bg-gray-50 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">t-class Directive</h3>
-        <p class="text-gray-600 mb-4">Dynamic class toggling:</p>
-        <div class="flex gap-4 flex-wrap">
-          <span class="px-6 py-3 rounded-xl font-semibold inline-block shadow-sm"
-                class="status-indicator"
-                t-class:bg-green-500="count > 0"
-                t-class:text-white="count > 0"
-                t-class:bg-red-500="count < 0"
-                t-class:bg-gray-300="count === 0"
-                t-text="count > 0 ? 'Positive' : count < 0 ? 'Negative' : 'Zero'">
-          </span>
-          <span class="px-6 py-3 rounded-xl bg-gray-200 text-gray-800 font-semibold inline-block shadow-sm"
-                t-class:bg-yellow-400="count > 5"
-                t-class:text-gray-900="count > 5"
-                t-text="count > 5 ? '🚀 High!' : 'Normal'">
-          </span>
-        </div>
-      </div>
-
-      <!-- Expression Evaluation -->
-      <div class="mt-8 p-6 bg-indigo-50 border-l-4 border-indigo-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Expression Evaluation (t-text)</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="p-4 bg-white rounded-lg shadow-sm">
-            <strong class="text-gray-700">Count * 2:</strong>
-            <span t-text="count * 2" class="ml-2 text-purple-600 font-bold text-lg"></span>
-          </div>
-          <div class="p-4 bg-white rounded-lg shadow-sm">
-            <strong class="text-gray-700">Count % 3:</strong>
-            <span t-text="count % 3" class="ml-2 text-purple-600 font-bold text-lg"></span>
-          </div>
-          <div class="p-4 bg-white rounded-lg shadow-sm">
-            <strong class="text-gray-700">Is even:</strong>
-            <span t-text="count % 2 === 0" class="ml-2 text-purple-600 font-bold text-lg"></span>
-          </div>
-          <div class="p-4 bg-white rounded-lg shadow-sm">
-            <strong class="text-gray-700">Abs value:</strong>
-            <span t-text="Math.abs(count)" class="ml-2 text-purple-600 font-bold text-lg"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- v0.2.0: Nested Scope & $parent Demo -->
-      <div class="mt-8 p-6 bg-gradient-to-r from-teal-50 to-blue-50 border-l-4 border-teal-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: Nested Scopes & $parent</h3>
-        <p class="text-gray-600 mb-4">Parent scope'dan child scope'a data erişimi</p>
-
-        <div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++ } } }" class="space-y-4">
-          <div class="p-4 bg-white rounded-lg shadow-sm">
-            <p class="font-semibold text-gray-700 mb-2">Parent Scope:</p>
-            <span class="text-2xl font-bold text-teal-600" t-text="parentCount"></span>
-            <button t-click="methods.inc()" class="ml-4 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
-              + Parent
-            </button>
-          </div>
-
-          <div t-data="{ childCount: 0, methods: { inc() { this.childCount++ } } }" class="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-            <p class="font-semibold text-gray-700 mb-2">Child Scope:</p>
-            <div class="space-y-2">
-              <p>Child count: <span class="text-xl font-bold text-blue-600" t-text="childCount"></span></p>
-              <p class="text-sm text-gray-600">Parent count: <span class="font-bold" t-text="$parent?.parentCount ?? 'N/A'"></span></p>
-              <p class="text-xs text-gray-500" t-text="'Has $parent: ' + ($parent ? 'Yes' : 'No')"></p>
-            </div>
-            <button t-click="methods.inc()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-              + Child
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- $el and $root Demo -->
-      <div class="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: $el & $root Accessors</h3>
-        <p class="text-gray-600 mb-4">Access current element and root scope</p>
-
-        <div t-data="{ rootMsg: 'Root Message', methods: { getInfo() { console.log('$el:', this.$el); console.log('$root:', this.$root); alert('Check console!'); } } }">
-          <div t-data="{ childMsg: 'Child Message', methods: { getInfo() { console.log('$el:', this.$el); console.log('$root:', this.$root); console.log('$parent:', this.$parent); alert('Check console!'); } } }" class="p-4 bg-white rounded-lg border-2 border-yellow-200">
-            <p class="text-sm text-gray-600 mb-2">This is a nested child scope</p>
-            <p class="text-xs text-gray-500">$el tagName: <span t-text="$el ? $el.tagName : 'N/A'"></span></p>
-            <p class="text-xs text-gray-500">$root message: <span t-text="$root?.rootMsg ?? 'N/A'"></span></p>
-            <button t-click="methods.getInfo()"
-                    class="mt-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
-              🔍 Log $el, $root & $parent
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- t-ref Demo -->
-      <div class="mt-8 p-6 bg-indigo-50 border-l-4 border-indigo-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: t-ref Directive</h3>
-        <p class="text-gray-600 mb-4">DOM element'lerine referans erişimi</p>
-
-        <div t-data="{ message: 'Hello from refs!', methods: { focusInput() { if (this.$refs.myInput) this.$refs.myInput.focus(); } } }">
-          <input t-ref="myInput" type="text" t-model="message" placeholder="Type here..."
-                 class="px-4 py-2 border border-gray-300 rounded-lg w-full max-w-md">
-          <button t-click="methods.focusInput()"
-                  class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-            📍 Focus Input via $refs
-          </button>
-          <p class="mt-2 text-sm text-gray-600">$refs.myInput: <span t-text="$refs.myInput ? '✓ Found' : '✗ Not found'"></span></p>
-        </div>
-      </div>
-
-      <!-- Debug Mode Demo -->
-      <div class="mt-8 p-6 bg-purple-50 border-l-4 border-purple-500 rounded-xl">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">v0.2.0: Debug Mode</h3>
-        <p class="text-gray-600 mb-4">Browser console'da debug loglarını görmek için:</p>
-        <button onclick="TinyPine.debug = true; alert('Debug mode enabled! Check console.')"
-                class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 font-semibold">
-          🔍 Enable Debug Mode
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+        TinyPine.js
+      </h1>
+      <p class="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
+        Minimal, comfortable & intuitive reactive micro-framework
+      </p>
+      <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+        Write reactive HTML directly in the browser—no bundlers, no transpilation, no configuration.
+      </p>
+      <div class="mt-8 flex justify-center space-x-4">
+        <button class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition shadow-lg">
+          Get Started
         </button>
-        <p class="mt-3 text-sm text-gray-500">State değişikliklerini console'da izleyin</p>
+        <button class="bg-white text-purple-600 border-2 border-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition">
+          View on GitHub
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+    <!-- Core Concepts -->
+    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-lg mr-3">1</span>
+        Core Concepts
+      </h2>
+
+      <div class="code-block mb-6">
+        <div class="text-green-400">// Basic Setup</div>
+        <div><span class="text-purple-400">&lt;div</span> <span class="text-blue-400">t-data</span>=<span class="text-yellow-300">"{ count: 0 }"</span><span class="text-purple-400">&gt;</span></div>
+        <div class="pl-4">  <span class="text-purple-400">&lt;span</span> <span class="text-blue-400">t-text</span>=<span class="text-yellow-300">"count"</span><span class="text-purple-400">&gt;&lt;/span&gt;</span></div>
+        <div class="pl-4">  <span class="text-purple-400">&lt;button</span> <span class="text-blue-400">t-click</span>=<span class="text-yellow-300">"count++"</span><span class="text-purple-400">&gt;</span>+<span class="text-purple-400">&lt;/button&gt;</span></div>
+        <div><span class="text-purple-400">&lt;/div&gt;</span></div>
       </div>
 
-    </div>
+      <div t-data="{ count: 0, name: '', showImage: true, linkUrl: 'https://github.com/DigitalCoreHub/TinyPine', linkText: 'Visit GitHub' }" class="space-y-6">
 
-    <!-- Features -->
-    <div class="mt-12 pt-8 border-t-2 border-gray-200">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Features</h2>
-      <ul class="space-y-3">
-        <li class="flex items-center text-gray-600">
-          <span class="text-purple-500 font-bold mr-3">✓</span>
-          Reactive state management with Proxy
-        </li>
-        <li class="flex items-center text-gray-600">
-          <span class="text-purple-500 font-bold mr-3">✓</span>
-          Zero build tools required
-        </li>
-        <li class="flex items-center text-gray-600">
-          <span class="text-purple-500 font-bold mr-3">✓</span>
-          Directive-based template syntax
-        </li>
-        <li class="flex items-center text-gray-600">
-          <span class="text-purple-500 font-bold mr-3">✓</span>
-          Two-way data binding
-        </li>
-        <li class="flex items-center text-gray-600">
-          <span class="text-purple-500 font-bold mr-3">✓</span>
-          Minimal runtime footprint
-        </li>
-      </ul>
-    </div>
+        <!-- Live Counter Demo -->
+        <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-8 border-2 border-purple-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">💡 Live Counter Example</h3>
+          <div class="text-center">
+            <div class="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-6" t-text="count"></div>
+            <div class="flex gap-4 justify-center flex-wrap">
+              <button t-click="count--" class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                − Decrement
+              </button>
+              <button t-click="count++" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                + Increment
+              </button>
+              <button t-click="count = 0" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conditional Display -->
+        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border-2 border-teal-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">📊 Conditional Display (t-show)</h3>
+          <p class="text-gray-600 mb-3">Message only appears when count > 5</p>
+          <div class="p-4 bg-white rounded-lg text-center font-semibold shadow-sm border-2 border-teal-300" t-show="count > 5">
+            🎉 Wow! Count is greater than 5!
+          </div>
+        </div>
+
+        <!-- Two-way Binding -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔗 Two-way Binding (t-model)</h3>
+          <div class="space-y-3">
+            <label class="block text-gray-700 font-medium">Enter your name:</label>
+            <input type="text"
+                   t-model="name"
+                   placeholder="Type your name..."
+                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
+            <div class="p-4 bg-white rounded-xl min-h-[50px] flex items-center justify-center text-purple-600 font-semibold shadow-sm" t-show="name">
+              <span t-text="'Hello, ' + name + '! 👋'"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- v0.2.0 Features -->
+    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg mr-3">2</span>
+        v0.2.0: Scoped Contexts & Methods
+      </h2>
+
+      <div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++; } } }" class="space-y-6">
+
+        <!-- Nested Scopes -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border-2 border-indigo-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌳 Nested Scopes with $parent</h3>
+          <div class="bg-white rounded-lg p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-medium text-gray-700">Parent Counter:</span>
+              <span class="text-2xl font-bold text-indigo-600" t-text="parentCount"></span>
+            </div>
+            <div t-data="{ childCount: 0, methods: { inc() { this.childCount++; } } }" class="bg-indigo-50 rounded-lg p-4 border-2 border-indigo-100">
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-medium text-gray-700">Child Counter:</span>
+                <span class="text-2xl font-bold text-purple-600" t-text="childCount"></span>
+              </div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-medium text-gray-700">Parent via $parent:</span>
+                <span class="text-xl font-bold text-blue-600" t-text="$parent?.parentCount ?? 'N/A'"></span>
+              </div>
+              <button t-click="methods.inc()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
+                Increment Child
+              </button>
+            </div>
+            <button t-click="methods.inc()" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
+              Increment Parent
+            </button>
+          </div>
+        </div>
+
+        <!-- t-ref Demo -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">📍 t-ref Directive</h3>
+          <div class="space-y-4" t-data="{ name: '', methods: {
+            focusInput() {
+              const scopeEl = this.$el?.closest('[t-data]');
+              if (scopeEl?._tinypineContext?.refs?.myInput) {
+                scopeEl._tinypineContext.refs.myInput.focus();
+              }
+            }
+          } }">
+            <input t-ref="myInput" type="text" t-model="name" placeholder="Type here..."
+                   class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition">
+            <button t-click="methods.focusInput()"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+              📍 Focus Input via $refs
+            </button>
+            <p class="text-sm text-gray-600">$refs.myInput: <span t-text="$refs?.myInput ? '✓ Found' : '✗ Not found'" class="font-semibold"></span></p>
+          </div>
+        </div>
+
+        <!-- $el & $root Accessors -->
+        <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🎯 $el & $root Accessors</h3>
+          <div t-data="{ methods: { getInfo() {
+            console.log('$el:', this.$el);
+            console.log('$root:', this.$root);
+            console.log('$parent:', this.$parent);
+          } } }" class="space-y-4">
+            <button t-click="methods.getInfo()"
+                    class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition font-semibold">
+              Log Context to Console
+            </button>
+            <p class="text-sm text-gray-600">Open browser console to see the output</p>
+          </div>
+        </div>
+
+        <!-- Debug Mode -->
+        <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔍 Debug Mode</h3>
+          <div class="bg-white rounded-lg p-4 space-y-2">
+            <button t-click="TinyPine.debug = true" class="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-semibold">
+              Enable Debug Mode
+            </button>
+            <p class="text-sm text-gray-600">Open console to see reactive changes</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- v0.3.0 Features -->
+    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-lg mr-3">3</span>
+        v0.3.0: List Rendering & Event Modifiers
+      </h2>
+
+      <!-- t-for Directive -->
+      <div class="mb-12 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 border-2 border-green-200">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">🔄 t-for Directive</h3>
+        <p class="text-gray-600 mb-6">Render lists dynamically with reactive array mutations</p>
+
+        <div t-data="{ items: ['Apple', 'Banana', 'Cherry'], newItem: '', methods: {
+          add() { if (this.newItem.trim()) { this.items.push(this.newItem); this.newItem = ''; } },
+          remove(index) { this.items.splice(index, 1); }
+        } }" class="space-y-6">
+
+          <div class="flex gap-2">
+            <input type="text" t-model="newItem" placeholder="Add item..."
+                   class="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
+            <button t-click="methods.add()"
+                    class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+              ➕ Add
+            </button>
+          </div>
+
+          <ul class="space-y-2">
+            <li t-for="(item, index) in items"
+                class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <span class="text-gray-700 font-medium" t-text="item"></span>
+              <div class="flex items-center gap-4">
+                <span class="text-xs text-gray-500">Index: <span t-text="index"></span></span>
+                <button t-click="methods.remove(index)"
+                        class="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">
+                  🗑️ Remove
+                </button>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- Event Modifiers -->
+      <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-8 border-2 border-orange-200">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">🎯 Event Modifiers</h3>
+
+        <div t-data="{ clicked: 0, methods: {
+          clickme() { this.clicked++; alert('Button clicked!'); }
+        } }" class="space-y-6">
+
+          <!-- .prevent -->
+          <div class="bg-white rounded-lg p-4 border-2 border-orange-200">
+            <h4 class="font-semibold mb-2">1️⃣ .prevent - Prevents default behavior</h4>
+            <a href="https://github.com" t-click="methods.clickme.prevent"
+               class="text-blue-600 underline hover:text-blue-800">
+              🔗 Click this link (page won't navigate)
+            </a>
+            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
+          </div>
+
+          <!-- .once -->
+          <div class="bg-white rounded-lg p-4 border-2 border-orange-200">
+            <h4 class="font-semibold mb-2">2️⃣ .once - Executes only once</h4>
+            <button t-click="methods.clickme.once"
+                    class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+              ⚡ Click me (only once!)
+            </button>
+            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
+          </div>
+
+          <!-- .stop -->
+          <div t-click="methods.clickme" class="bg-white rounded-lg p-4 border-2 border-orange-200">
+            <h4 class="font-semibold mb-2">3️⃣ .stop - Stops event propagation</h4>
+            <p class="text-xs text-gray-500 mb-2">Parent div has t-click="methods.clickme" (alerts on every click)</p>
+            <div class="space-x-3">
+              <button t-click="methods.clickme"
+                      class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                🔘 Normal Button (2 alerts)
+              </button>
+              <button t-click="methods.clickme.stop"
+                      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                🛑 .stop Button (1 alert)
+              </button>
+            </div>
+            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- API Reference -->
+    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8">📚 API Reference</h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="border-2 border-gray-200 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Core Directives</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-data</code> - Define reactive state</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-text</code> - Update text content</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-show</code> - Toggle visibility</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-bind</code> - Bind attributes</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-class</code> - Dynamic classes</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-model</code> - Two-way binding</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-click</code> - Click handlers</li>
+          </ul>
+        </div>
+
+        <div class="border-2 border-gray-200 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Advanced Directives</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-for</code> - List rendering</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">t-ref</code> - DOM references</li>
+          </ul>
+        </div>
+
+        <div class="border-2 border-gray-200 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Context Accessors</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><code class="bg-gray-100 px-2 py-1 rounded">$parent</code> - Access parent scope</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">$root</code> - Access root scope</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">$refs</code> - Access DOM references</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">$el</code> - Current element</li>
+          </ul>
+        </div>
+
+        <div class="border-2 border-gray-200 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Event Modifiers</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><code class="bg-gray-100 px-2 py-1 rounded">.prevent</code> - preventDefault()</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">.stop</code> - stopPropagation()</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">.once</code> - Execute once</li>
+            <li><code class="bg-gray-100 px-2 py-1 rounded">.outside</code> - Detect outside clicks</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-lg p-8 text-white text-center">
+      <h3 class="text-2xl font-bold mb-4">Ready to build with TinyPine?</h3>
+      <p class="text-purple-100 mb-6">Start building reactive UIs with zero configuration</p>
+      <div class="flex justify-center space-x-4">
+        <a href="https://github.com/DigitalCoreHub/TinyPine" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+          View on GitHub
+        </a>
+        <a href="#" class="px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition">
+          Documentation
+        </a>
+      </div>
+      <p class="mt-8 text-purple-200 text-sm">
+        Built with ❤️ by the TinyPine team
+      </p>
+    </footer>
+
   </div>
 
-  <!-- Load TinyPine from source -->
-  <script type="module">
-    import '/src/core.js';
+  <!-- TinyPine Core -->
+  <script src="/src/core.js"></script>
+  <script>
+    // Initialize TinyPine
     TinyPine.init();
   </script>
+
 </body>
 </html>
