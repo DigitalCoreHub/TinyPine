@@ -8,218 +8,85 @@
   Zero build · Zero config · Just write HTML
 
   [![Version](https://img.shields.io/badge/version-v0.6.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
-  [![Size](https://img.shields.io/badge/size-10KB-blue.svg)](https://unpkg.com/tinypine)
+  [![Size](https://img.shields.io/badge/size-15KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
 ---
 
-## Quick Start
+## 🌟 Why TinyPine?
 
-**CDN:**
-```html
-<script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
-<script>TinyPine.init();</script>
-```
+TinyPine is the **simplest** way to build reactive interfaces. No build tools, no transpilation, no configuration. Just add a script tag and start coding.
 
-**NPM:**
-```bash
-npm install tinypine
-```
-
-```html
-<script type="module">
-  import core from './node_modules/tinypine/src/core.js';
-</script>
-```
-
-## Example
-
-```html
-<div t-data="{ count: 0, name: 'World' }">
-  <h1 t-text="'Hello ' + name"></h1>
-  <p>Count: <span t-text="count"></span></p>
-
-  <button t-click="count++">Increment</button>
-  <input t-model="name" placeholder="Your name">
-
-  <p t-show="count > 5">Great job!</p>
-</div>
-```
-
-[📖 View Full Documentation](#documentation)
+**Perfect for:**
+- 🎨 **Quick prototypes** - Get started in seconds
+- 📱 **Interactive UIs** - Smooth, reactive interfaces
+- 🚀 **Lightweight apps** - Only 15KB minified
+- 🎓 **Learning** - Understand reactivity from the ground up
 
 ---
 
-## Features
+## ⚡ Quick Start
 
-✅ **15KB** minified · No build tools · No virtual DOM
-✅ **Proxy-based reactivity** · Instant updates
-✅ **Directive-based** · Clean `t-*` syntax
-✅ **Scoped contexts** · `$parent`, `$root`, `$refs`, `$el`
-✅ **List rendering** · `t-for` directive
-✅ **Event modifiers** · `.prevent`, `.stop`, `.once`, `.outside`
-✅ **Methods support** · Component-like functions
-✅ **Global store** · `TinyPine.store()` and `$store` access
-✅ **Watcher API** · `TinyPine.watch()` for reactive changes
-✅ **SSR hydration** · Auto-load from `window.__TINYPINE_STATE__`
-✅ **Lifecycle hooks** · `t-init`, `t-effect`, `t-destroy`
-✅ **Plugin API** · `TinyPine.use()`, `TinyPine.directive()`
-✅ **Transitions** · `t-transition`, `t-motion` for animations
-✅ **Zero dependencies** · Works anywhere
-
----
-
-## Documentation
-
-### Directives
-
-#### `t-data`
-Create a reactive scope.
+Add one script tag and you're ready:
 
 ```html
-<div t-data="{ count: 0, name: 'John' }">
-  <!-- content -->
-</div>
-```
-
-**With methods:**
-```html
-<div t-data="{ count: 0, methods: { inc() { this.count++; } } }">
-  <button t-click="methods.inc()">Add</button>
-</div>
-```
-
-**Nested scopes:**
-```html
-<div t-data="{ parent: 'data' }">
-  <div t-data="{ child: 'data' }">
-    <span t-text="$parent.parent"></span>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My App</title>
+</head>
+<body>
+  <div t-data="{ message: 'Hello TinyPine!' }">
+    <h1 t-text="message"></h1>
+    <button t-click="message = 'Clicked!'">Click me</button>
   </div>
-</div>
+
+  <script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
+  <script>TinyPine.init();</script>
+</body>
+</html>
 ```
 
-#### `t-text`
-Update text content.
-
-```html
-<span t-text="count"></span>
-<span t-text="'Hello ' + name"></span>
-```
-
-#### `t-show`
-Toggle visibility.
-
-```html
-<p t-show="isVisible">Visible content</p>
-<p t-show="count > 10">Conditional content</p>
-```
-
-#### `t-click`
-Click handlers with event modifiers.
-
-```html
-<button t-click="count++">Increment</button>
-<button t-click="methods.save.prevent">Save (no page refresh)</button>
-<button t-click="methods.init.once">Initialize once</button>
-```
-
-**Event modifiers:**
-- `.prevent` - `event.preventDefault()`
-- `.stop` - `event.stopPropagation()`
-- `.once` - Execute only once
-- `.outside` - Detect clicks outside element
-
-#### `t-model`
-Two-way data binding.
-
-```html
-<input type="text" t-model="name">
-<input type="number" t-model="age">
-<textarea t-model="description"></textarea>
-```
-
-#### `t-for` *(v0.3.0)*
-List rendering.
-
-```html
-<ul>
-  <li t-for="item in items">
-    <span t-text="item"></span>
-  </li>
-</ul>
-```
-
-**With index:**
-```html
-<li t-for="(item, index) in items">
-  <span t-text="index"></span>: <span t-text="item"></span>
-</li>
-```
-
-**With removal:**
-```html
-<div t-data="{ items: ['A', 'B'], methods: { remove(i) { this.items.splice(i, 1); } } }">
-  <li t-for="(item, index) in items">
-    <span t-text="item"></span>
-    <button t-click="methods.remove(index)">Remove</button>
-  </li>
-</div>
-```
-
-#### `t-bind`
-Dynamic attributes.
-
-```html
-<img t-bind:src="imageUrl" t-bind:alt="title">
-<a t-bind:href="url" t-bind:target="target">Link</a>
-```
-
-#### `t-class`
-Conditional CSS classes.
-
-```html
-<div t-class:active="isActive">Toggle active class</div>
-<div t-class="className">Dynamic class</div>
-```
-
-#### `t-ref`
-Register DOM references.
-
-```html
-<div t-data="{ methods: { focus() { this.$refs.input.focus(); } } }">
-  <input t-ref="input">
-  <button t-click="methods.focus()">Focus</button>
-</div>
-```
-
-### Context Accessors
-
-- **`$parent`** - Parent scope data
-- **`$root`** - Root scope data
-- **`$refs`** - Registered DOM elements
-- **`$el`** - Current element
-
-```html
-<div t-data="{ root: 'data' }">
-  <div t-data="{ child: 'data' }">
-    <span t-text="$root.root"></span>
-    <span t-text="$parent.child"></span>
-  </div>
-</div>
-```
-
-### Debug Mode
-
-```javascript
-TinyPine.debug = true;
-```
+**That's it!** No build step. No webpack. No npm install. Just pure, reactive HTML.
 
 ---
 
-## Examples
+## 📚 All Directives
 
-### Counter
+### Core Directives
+
+| Directive | Description | Example |
+|-----------|-------------|---------|
+| `t-data` | Create reactive scope | `<div t-data="{ count: 0 }">` |
+| `t-text` | Update text content | `<span t-text="message"></span>` |
+| `t-show` | Toggle visibility *(with smooth transitions)* | `<p t-show="isVisible">Hello</p>` |
+| `t-click` | Click handlers | `<button t-click="count++">+</button>` |
+| `t-model` | Two-way binding | `<input t-model="name">` |
+
+### List & Events
+
+| Directive | Description | Example |
+|-----------|-------------|---------|
+| `t-for` | List rendering | `<li t-for="item in items">` |
+| `.prevent/.stop` | Event modifiers | `<button t-click="save.prevent">` |
+| `t-init` | Lifecycle hook | `<div t-init="console.log('Mounted!')">` |
+
+### Bindings & Refs
+
+| Directive | Description | Example |
+|-----------|-------------|---------|
+| `t-bind` | Dynamic attributes | `<img t-bind:src="url">` |
+| `t-class` | Conditional classes | `<div t-class:active="isActive">` |
+| `t-ref` | DOM references | `<input t-ref="input">` |
+| `t-transition` | CSS transitions | `<div t-transition="fade">` |
+
+---
+
+## 🎯 Examples
+
+### Counter App
+
 ```html
 <div t-data="{ count: 0 }">
   <button t-click="count--">-</button>
@@ -229,194 +96,197 @@ TinyPine.debug = true;
 ```
 
 ### Todo List
+
 ```html
-<div t-data="{ items: [], newItem: '', methods: {
-  add() { if(this.newItem) { this.items.push(this.newItem); this.newItem = ''; } },
-  remove(index) { this.items.splice(index, 1); }
-} }">
-  <input t-model="newItem" placeholder="Add item">
+<div t-data="{
+  todos: [],
+  newTodo: '',
+  methods: {
+    add() { if(this.newTodo) this.todos.push(this.newTodo); this.newTodo = ''; },
+    remove(i) { this.todos.splice(i, 1); }
+  }
+}">
+  <input t-model="newTodo" placeholder="Add todo">
   <button t-click="methods.add()">Add</button>
+
   <ul>
-    <li t-for="(item, index) in items">
-      <span t-text="item"></span>
-      <button t-click="methods.remove(index)">Remove</button>
+    <li t-for="(todo, i) in todos">
+      <span t-text="todo"></span>
+      <button t-click="methods.remove(i)">Remove</button>
     </li>
   </ul>
 </div>
 ```
 
-### Form Validation
+### Login Form
+
 ```html
-<div t-data="{ email: '', isValid: false }">
-  <input t-model="email" type="email" placeholder="Email">
-  <span t-show="!isValid && email">Invalid</span>
-  <button t-click="isValid = true">Submit</button>
+<div t-data="{ email: '', password: '', loggedIn: false, methods: { login() { this.loggedIn = true; } } }">
+  <div t-show="!loggedIn">
+    <input t-model="email" placeholder="Email">
+    <input t-model="password" type="password" placeholder="Password">
+    <button t-click="methods.login()">Login</button>
+  </div>
+
+  <div t-show="loggedIn">
+    <p t-text="'Welcome, ' + email"></p>
+  </div>
 </div>
 ```
 
 ---
 
-## Global Store & Watchers
+## 🔧 Advanced Features
 
-### Creating Stores
+### Global Store
+
+Create shared state across components:
 
 ```javascript
-// Create a global store
+// Create stores
 TinyPine.store('auth', { user: 'Guest', loggedIn: false });
 TinyPine.store('ui', { theme: 'light' });
-```
 
-### Accessing Stores
-
-```html
+// Use in any component
 <div t-data="{}">
-  <!-- Access store properties -->
   <span t-text="$store.auth.user"></span>
-
-  <!-- Update store -->
-  <button t-click="methods.toggle()">Login</button>
+  <button t-click="$store.auth.loggedIn = true">Login</button>
 </div>
-
-<script>
-  // In methods
-  methods: {
-    toggle() {
-      this.$store.auth.loggedIn = !this.$store.auth.loggedIn;
-    }
-  }
-</script>
 ```
-
-### Watcher API
-
-```javascript
-// Watch a store property
-const unwatch = TinyPine.watch('auth.loggedIn', (newVal, oldVal, path) => {
-  console.log(`${path} changed:`, { old: oldVal, new: newVal });
-});
-
-// Later, unwatch
-unwatch();
-```
-
-### SSR Hydration
-
-```html
-<!-- Server renders -->
-<script>
-window.__TINYPINE_STATE__ = {
-  auth: { user: 'John', loggedIn: true },
-  ui: { theme: 'dark' }
-};
-</script>
-
-<script src="tinypine.min.js"></script>
-<!-- TinyPine automatically hydrates from __TINYPINE_STATE__ -->
-```
-
----
-
-## Lifecycle & Plugins
 
 ### Lifecycle Hooks
 
 ```html
 <div t-data="{ count: 0 }"
      t-init="console.log('Mounted!')"
-     t-effect="console.log('Count:', count)"
-     t-destroy="console.log('Destroyed!')">
-  <button t-click="count++">+1</button>
-  <p t-text="count"></p>
+     t-destroy="console.log('Unmounted!')">
+  <!-- content -->
 </div>
 ```
 
-### Plugin API
+### Custom Plugins
 
-```js
-// Create a custom plugin
+```javascript
 TinyPine.use({
-  name: 'LoggerPlugin',
+  name: 'Toast',
   init(TinyPine) {
-    console.log('LoggerPlugin loaded!');
-    TinyPine.directive('log', (el, value) => {
-      console.log('[t-log]', value);
+    TinyPine.directive('toast', (el, message) => {
+      alert(message);
     });
   }
 });
 ```
 
 ```html
-<!-- Use custom directive -->
-<div t-log="'Hello TinyPine!'"></div>
+<button t-click="methods.show()">Show Toast</button>
+```
+
+### Event Modifiers
+
+```html
+<button t-click="save.prevent">Prevent default</button>
+<button t-click="methods.init.once">Run once</button>
+<button t-click="methods.close.outside">Close on outside click</button>
 ```
 
 ---
 
-## Transitions & Animations
+## 📦 Installation
 
-### t-transition
+### CDN (Recommended)
 
 ```html
-<div t-data="{ open: true }">
-  <button t-click="open = !open">Toggle</button>
-  <div t-show="open" t-transition="fade">
-    Fading content
-  </div>
+<script src="https://unpkg.com/tinypine@0.6.0/dist/tinypine.min.js"></script>
+<script>TinyPine.init();</script>
+```
+
+### NPM
+
+```bash
+npm install tinypine
+```
+
+### Download
+
+[Download from GitHub Releases](https://github.com/DigitalCoreHub/TinyPine/releases)
+
+---
+
+## 🎨 Styling
+
+TinyPine works with any CSS framework or custom styles:
+
+```html
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+<div t-data="{ count: 0 }" class="p-8">
+  <button t-click="count++" class="px-4 py-2 bg-blue-500 text-white rounded">Count: <span t-text="count"></span></button>
 </div>
 ```
 
-### t-motion
+---
 
-```html
-<div t-data="{ x: 0 }">
-  <button t-click="x += 100">Move</button>
-  <div t-motion="'translateX(' + x + 'px)'">Ball</div>
-</div>
-```
+## 🐛 Debugging
 
-### Custom Transitions
+Enable debug mode to see all reactivity in action:
 
-```js
-TinyPine.transition('slide-scale', {
-  enter: 'slide-scale-enter',
-  active: 'slide-scale-active',
-  leave: 'slide-scale-leave'
-});
+```javascript
+TinyPine.debug = true;
+// Console will show: [TinyPine] count changed → 1
 ```
 
 ---
 
-## How It Works
+## ⚙️ API Reference
 
-1. **Initialize** - Scan DOM for `t-data`
-2. **Reactive State** - Create Proxy objects
-3. **Parse Directives** - Process `t-*` attributes
-4. **Watch Changes** - Update DOM automatically
-5. **Event Handlers** - Attach listeners
+### Core Methods
 
-**No virtual DOM** · **Direct DOM updates** · **13KB footprint**
+- `TinyPine.init(root?)` - Initialize TinyPine
+- `TinyPine.store(name, data)` - Create global store
+- `TinyPine.watch(path, callback)` - Watch changes
+- `TinyPine.use(plugin)` - Register plugin
+- `TinyPine.directive(name, handler)` - Custom directive
+- `TinyPine.transition(name, config)` - Register transition
+
+### Context Variables
+
+- `$parent` - Parent scope data
+- `$root` - Root scope data
+- `$refs` - DOM references
+- `$el` - Current element
+- `$store` - Global stores
 
 ---
 
-## Roadmap
+## 🌍 Browser Support
+
+✅ Chrome 49+
+✅ Firefox 18+
+✅ Safari 10+
+✅ Edge 49+
+
+Works everywhere JavaScript Proxies are supported.
+
+---
+
+## 📈 Roadmap
 
 - ✅ **v0.1.0** - Core directives
-- ✅ **v0.2.0** - Scoped contexts, methods
-- ✅ **v0.3.0** - t-for, event modifiers
-- ✅ **v0.4.0** - Global store, watcher API, SSR hydration
-- ✅ **v0.5.0** - Lifecycle hooks, plugin API, reactive effects
-- ✅ **v0.6.0** - Transitions, motion animations, visual effects
-- 🚧 **v0.7.0** - Async fetch, router, loading states
+- ✅ **v0.2.0** - Contexts, methods, refs
+- ✅ **v0.3.0** - t-for lists, event modifiers
+- ✅ **v0.4.0** - Global store, watchers, SSR
+- ✅ **v0.5.0** - Lifecycle hooks, plugins
+- ✅ **v0.6.0** - Smooth transitions
+- 🚧 **v0.7.0** - Async fetch, router
 
 ---
 
-## Browser Support
+## 🤝 Contributing
 
-✅ Chrome/Edge 49+ · Firefox 18+ · Safari 10+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## License
+## 📄 License
 
 MIT License - Use freely in your projects!
 
@@ -425,5 +295,7 @@ MIT License - Use freely in your projects!
 <div align="center">
   Made with ❤️ by TinyPine Team
 
-  [GitHub](https://github.com/DigitalCoreHub/TinyPine) · [Issues](https://github.com/DigitalCoreHub/TinyPine/issues)
+  [GitHub](https://github.com/DigitalCoreHub/TinyPine) ·
+  [Issues](https://github.com/DigitalCoreHub/TinyPine/issues) ·
+  [Documentation](https://github.com/DigitalCoreHub/TinyPine#readme)
 </div>
