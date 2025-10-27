@@ -206,6 +206,46 @@
       </div>
     </section>
 
+    <!-- v0.4.0: Global Store -->
+    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg mr-3">4</span>
+        v0.4.0: Global Store (TinyPine.store)
+      </h2>
+
+      <div t-data="{ methods: {
+        toggleAuth() { this.$store.auth.loggedIn = !this.$store.auth.loggedIn; },
+        toggleTheme() { this.$store.ui.theme = this.$store.ui.theme === 'light' ? 'dark' : 'light'; }
+      } }" class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200 mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">🌐 Global Store Demo</h3>
+        <p class="text-gray-600 mb-6">Access global state via <code class="bg-gray-100 px-2 py-1 rounded">$store</code> in any component</p>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-lg p-4 border-2 border-blue-100">
+            <h4 class="font-semibold mb-3">🔐 Auth Store</h4>
+            <div class="space-y-2">
+              <div><span class="text-sm text-gray-600">User:</span> <span class="font-semibold" t-text="$store.auth.user"></span></div>
+              <div><span class="text-sm text-gray-600">Logged In:</span> <span class="font-semibold" t-text="$store.auth.loggedIn ? '✓' : '✗'"></span></div>
+              <button t-click="methods.toggleAuth()"
+                      class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Toggle Login</button>
+              <input type="text" t-model="$store.auth.user" placeholder="Username"
+                     class="w-full px-3 py-2 border rounded-lg">
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-4 border-2 border-blue-100">
+            <h4 class="font-semibold mb-3">🎨 UI Store</h4>
+            <div class="space-y-2">
+              <div><span class="text-sm text-gray-600">Theme:</span> <span class="font-semibold" t-text="$store.ui.theme"></span></div>
+              <div><span class="text-sm text-gray-600">Language:</span> <span class="font-semibold" t-text="$store.ui.language"></span></div>
+              <button t-click="methods.toggleTheme()"
+                      class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Toggle Theme</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- v0.3.0 Features -->
     <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
       <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
@@ -368,8 +408,24 @@
   </div>
 
   <!-- TinyPine Core -->
+  <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
   <script>
+    console.log('[Demo] Creating stores...');
+
+    // Create global stores
+    TinyPine.store('auth', { user: 'Guest', loggedIn: false });
+    TinyPine.store('ui', { theme: 'light', language: 'en' });
+
+    console.log('[Demo] Stores created:', TinyPine.getAllStores());
+
+    // Test Watcher API
+    const unwatch = TinyPine.watch('auth.loggedIn', (newVal, oldVal, path) => {
+      console.log(`[Watcher] ${path} changed:`, { old: oldVal, new: newVal });
+    });
+
+    console.log('[Demo] Watcher registered for auth.loggedIn');
+
     // Initialize TinyPine
     TinyPine.init();
   </script>

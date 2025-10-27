@@ -73,6 +73,19 @@ function evaluateExpression(expression, state, contextObj) {
     try {
         const context = {};
 
+        // Inject global stores
+        context.$store = {};
+        if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getAllStores) {
+            try {
+                const stores = window.TinyPine.getAllStores();
+                Object.keys(stores).forEach(storeName => {
+                    context.$store[storeName] = stores[storeName];
+                });
+            } catch (e) {
+                console.warn('[TinyPine] Could not get stores:', e);
+            }
+        }
+
         // Context obj varsa, ondan başla ($parent, $root, $refs, $el)
         if (contextObj) {
             if (contextObj.root) context.$root = contextObj.root.data;
@@ -287,14 +300,31 @@ const directiveHandlers = {
                     const prop = cleanExpression.replace('--', '').trim();
                     state[prop] = (state[prop] || 0) - 1;
                 } else if (cleanExpression.includes('=')) {
-                    // Atama işlemlerini handle et (count = 0 gibi)
+                    // Atama işlemlerini handle et
                     const parts = cleanExpression.split('=');
                     const prop = parts[0].trim();
                     const value = parts.slice(1).join('=').trim();
+
                     try {
-                        state[prop] = eval(value);
+                        // Check if it's a $store assignment
+                        if (prop.startsWith('$store.')) {
+                            const storePath = prop.split('.');
+                            const storeName = storePath[1];
+                            const storeKey = storePath[2];
+                            if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getStore) {
+                                const store = window.TinyPine.getStore(storeName);
+                                if (store && storeKey) {
+                                    // Evaluate right side
+                                    const newValue = eval(value);
+                                    store[storeKey] = newValue;
+                                }
+                            }
+                        } else {
+                            // Regular state assignment
+                            state[prop] = eval(value);
+                        }
                     } catch (e) {
-                        console.warn('[TinyPine] Could not evaluate:', value);
+                        console.warn('[TinyPine] Could not evaluate:', value, e);
                     }
                 } else {
                     // Generic expression evaluation with methods
@@ -321,8 +351,20 @@ const directiveHandlers = {
                                 const currentState = scopeElement._tinypineState;
                                 // Get the actual target behind the Proxy
                                 const actualState = currentState._tinypineTarget || currentState;
-                                // Use actual state instead of Proxy for apply
-                                return method.apply(actualState, args);
+                                // Create method context with $store
+                                const methodContext = Object.assign({}, actualState);
+                                // Add $store to method context
+                                if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getAllStores) {
+                                    try {
+                                        const stores = window.TinyPine.getAllStores();
+                                        methodContext.$store = {};
+                                        Object.keys(stores).forEach(storeName => {
+                                            methodContext.$store[storeName] = stores[storeName];
+                                        });
+                                    } catch (e) {}
+                                }
+                                // Use methodContext instead of actualState for apply
+                                return method.apply(methodContext, args);
                             };
                         });
                         context.methods = boundMethods;
@@ -338,12 +380,22 @@ const directiveHandlers = {
                         });
                     }
 
-                    // $parent, $root, $refs, $el'i ekle
+                    // $parent, $root, $refs, $el, $store'u ekle
                     if (contextObj) {
                         if (contextObj.root) context.$root = contextObj.root.data;
                         if (contextObj.parent) context.$parent = contextObj.parent.data;
                         context.$refs = contextObj.refs || {};
                         context.$el = contextObj.el;
+                        // Add $store to context for methods
+                        if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getAllStores) {
+                            try {
+                                const stores = window.TinyPine.getAllStores();
+                                context.$store = {};
+                                Object.keys(stores).forEach(storeName => {
+                                    context.$store[storeName] = stores[storeName];
+                                });
+                            } catch (e) {}
+                        }
                     }
 
                     // Eğer son karakter () ile bitmiyorsa, method çağrısı için ekle
@@ -396,15 +448,13 @@ const directiveHandlers = {
      * - True two-way binding için her iki yön de handle edilmeli
      * - Vue/Angular gibi modern framework'lere benzer çalışır
      */
-    't-model': function(element, expression, state) {
+    't-model': function(element, expression, state, contextObj) {
         const propertyName = expression.trim();
 
-        // State'ten input'a: initial ve update binding
-        if (Object.prototype.hasOwnProperty.call(state, propertyName) || propertyName in state) {
-            const value = evaluateExpression(expression, state);
-            if (element.value !== value && element.value !== String(value)) {
-                element.value = value;
-            }
+        // Evaluate expression to get initial value (supports $store.auth.user syntax)
+        const value = evaluateExpression(expression, state, contextObj);
+        if (element.value !== value && element.value !== String(value)) {
+            element.value = value || '';
         }
 
         // Input'tan state'e: input event handler
@@ -413,11 +463,25 @@ const directiveHandlers = {
                 try {
                     const scopeElement = element.closest('[t-data]');
                     if (scopeElement && scopeElement._tinypineState) {
-                        // CRITICAL: Use FRESH state from scopeElement
-                        const currentState = scopeElement._tinypineState;
-                        if (currentState.hasOwnProperty(propertyName)) {
-                            currentState[propertyName] = event.target.value;
-                            updateDirectives(scopeElement, currentState);
+                        // Check if it's a $store path
+                        if (propertyName.startsWith('$store.')) {
+                            const parts = propertyName.split('.');
+                            const storeName = parts[1];
+                            const key = parts[2];
+                            if (typeof window !== 'undefined' && window.TinyPine && window.TinyPine.getStore) {
+                                const store = window.TinyPine.getStore(storeName);
+                                if (store && key) {
+                                    store[key] = event.target.value;
+                                    updateDirectives(scopeElement, state);
+                                }
+                            }
+                        } else {
+                            // Local state update
+                            const currentState = scopeElement._tinypineState;
+                            if (currentState && (currentState.hasOwnProperty(propertyName) || propertyName in currentState)) {
+                                currentState[propertyName] = event.target.value;
+                                updateDirectives(scopeElement, currentState);
+                            }
                         }
                     }
                 } catch (error) {
@@ -662,7 +726,7 @@ function applyDirective(element, directive, value, state, context) {
     const handler = directiveHandlers[directive];
     if (handler) {
         // Context'i handler'a geç
-        if (context && directiveHandlers['t-text'] === handler) {
+        if (context && (directiveHandlers['t-text'] === handler || directiveHandlers['t-model'] === handler)) {
             handler(element, value, state, context);
         } else {
             handler(element, value, state);
@@ -957,17 +1021,23 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Global API (Browser)
 if (typeof window !== 'undefined') {
-    window.TinyPine = {
-        init,
-        reactive,
-        evaluateExpression,
-        initializeScope,
-        enableDebug,
-        disableDebug: () => debugMode = false,
-        get debug() { return debugMode; },
-        set debug(val) {
+    // TinyPine already defined by store.js? Keep it and extend
+    if (!window.TinyPine) {
+        window.TinyPine = {};
+    }
+
+    // Add core functions
+    window.TinyPine.init = init;
+    window.TinyPine.reactive = reactive;
+    window.TinyPine.evaluateExpression = evaluateExpression;
+    window.TinyPine.initializeScope = initializeScope;
+    window.TinyPine.enableDebug = enableDebug;
+    window.TinyPine.disableDebug = () => debugMode = false;
+    Object.defineProperty(window.TinyPine, 'debug', {
+        get: () => debugMode,
+        set: (val) => {
             debugMode = val;
             if (val) console.log('🔍 TinyPine debug enabled');
         }
-    };
+    });
 }

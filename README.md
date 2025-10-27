@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v0.3.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v0.4.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-10KB-blue.svg)](https://unpkg.com/tinypine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
@@ -18,7 +18,7 @@
 
 **CDN:**
 ```html
-<script src="https://unpkg.com/tinypine@0.3.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@0.4.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -53,13 +53,16 @@ npm install tinypine
 
 ## Features
 
-✅ **10KB** minified · No build tools · No virtual DOM
+✅ **13KB** minified · No build tools · No virtual DOM
 ✅ **Proxy-based reactivity** · Instant updates
 ✅ **Directive-based** · Clean `t-*` syntax
 ✅ **Scoped contexts** · `$parent`, `$root`, `$refs`, `$el`
 ✅ **List rendering** · `t-for` directive
 ✅ **Event modifiers** · `.prevent`, `.stop`, `.once`, `.outside`
 ✅ **Methods support** · Component-like functions
+✅ **Global store** · `TinyPine.store()` and `$store` access
+✅ **Watcher API** · `TinyPine.watch()` for reactive changes
+✅ **SSR hydration** · Auto-load from `window.__TINYPINE_STATE__`
 ✅ **Zero dependencies** · Works anywhere
 
 ---
@@ -250,6 +253,66 @@ TinyPine.debug = true;
 
 ---
 
+## Global Store & Watchers
+
+### Creating Stores
+
+```javascript
+// Create a global store
+TinyPine.store('auth', { user: 'Guest', loggedIn: false });
+TinyPine.store('ui', { theme: 'light' });
+```
+
+### Accessing Stores
+
+```html
+<div t-data="{}">
+  <!-- Access store properties -->
+  <span t-text="$store.auth.user"></span>
+
+  <!-- Update store -->
+  <button t-click="methods.toggle()">Login</button>
+</div>
+
+<script>
+  // In methods
+  methods: {
+    toggle() {
+      this.$store.auth.loggedIn = !this.$store.auth.loggedIn;
+    }
+  }
+</script>
+```
+
+### Watcher API
+
+```javascript
+// Watch a store property
+const unwatch = TinyPine.watch('auth.loggedIn', (newVal, oldVal, path) => {
+  console.log(`${path} changed:`, { old: oldVal, new: newVal });
+});
+
+// Later, unwatch
+unwatch();
+```
+
+### SSR Hydration
+
+```html
+<!-- Server renders -->
+<script>
+window.__TINYPINE_STATE__ = {
+  auth: { user: 'John', loggedIn: true },
+  ui: { theme: 'dark' }
+};
+</script>
+
+<script src="tinypine.min.js"></script>
+<!-- TinyPine automatically hydrates from __TINYPINE_STATE__ -->
+```
+
+---
+
 ## How It Works
 
 1. **Initialize** - Scan DOM for `t-data`
@@ -258,7 +321,7 @@ TinyPine.debug = true;
 4. **Watch Changes** - Update DOM automatically
 5. **Event Handlers** - Attach listeners
 
-**No virtual DOM** · **Direct DOM updates** · **10KB footprint**
+**No virtual DOM** · **Direct DOM updates** · **13KB footprint**
 
 ---
 
@@ -267,7 +330,8 @@ TinyPine.debug = true;
 - ✅ **v0.1.0** - Core directives
 - ✅ **v0.2.0** - Scoped contexts, methods
 - ✅ **v0.3.0** - t-for, event modifiers
-- 🚧 **v0.4.0** - Plugin API, extensions
+- ✅ **v0.4.0** - Global store, watcher API, SSR hydration
+- 🚧 **v0.5.0** - Plugin API, extensions, build tools
 
 ---
 

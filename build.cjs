@@ -7,8 +7,12 @@ const fs = require('fs');
 const path = require('path');
 const { minify } = require('terser');
 
-// Read source file
+// Read source files
+const storeSource = fs.readFileSync('src/store.js', 'utf8');
 const coreSource = fs.readFileSync('src/core.js', 'utf8');
+
+// Combine sources
+const combinedSource = storeSource + '\n\n' + coreSource;
 
 // Create dist directory if it doesn't exist
 if (!fs.existsSync('dist')) {
@@ -17,7 +21,7 @@ if (!fs.existsSync('dist')) {
 
 // Minify with Terser
 async function build() {
-    const result = await minify(coreSource, {
+    const result = await minify(combinedSource, {
         compress: {
             drop_console: false,
             passes: 3
