@@ -1,15 +1,18 @@
 {
   "name": "tinypine",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Minimal, comfortable & intuitive reactive micro-framework",
   "main": "src/core.js",
+  "types": "types/tinypine.d.ts",
   "type": "module",
   "scripts": {
     "dev": "npx serve -p 8000",
     "serve": "npx serve -p 8000",
     "demo": "npx serve -p 8000 -o demo/index.html",
     "build": "node build.cjs",
-    "minify": "npm run build"
+    "minify": "npm run build",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "keywords": [
     "reactive",
@@ -28,9 +31,11 @@
   "files": [
     "src/",
     "dist/",
+    "types/",
     "README.md"
   ],
   "devDependencies": {
-    "terser": "^5.44.0"
+    "terser": "^5.44.0",
+    "vitest": "^1.2.0"
   }
 }
