@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -45,7 +45,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@1.0.0/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@1.1.0/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -55,7 +55,37 @@ Add one script tag and you're ready:
 
 ---
 
-## ✨ v1.0.0 Features
+## 🚀 CLI (NEW in v1.1.0)
+
+Create TinyPine projects in seconds with the official CLI:
+
+```bash
+# Create a new project
+npx tinypine-cli new myapp
+
+# Start development server
+cd myapp && npx tinypine-cli serve
+
+# Add features
+npx tinypine-cli add router
+npx tinypine-cli add i18n
+npx tinypine-cli add ui
+
+# Build for production
+npx tinypine-cli build
+```
+
+**Features:**
+- 🌲 **Multiple templates** - Vanilla, Tailwind, SPA, SSR, UI Ready
+- 🔧 **Modular setup** - Add features as you need them
+- ⚡ **Vite integration** - Lightning-fast dev server
+- 📦 **Zero configuration** - Works out of the box
+
+[Learn more about TinyPine CLI →](packages/cli/README.md)
+
+---
+
+## ✨ v1.1.0 Features
 
 - 🎯 **29 Passing Tests** - Comprehensive test coverage
 - 📘 **TypeScript Support** - Full type definitions included
