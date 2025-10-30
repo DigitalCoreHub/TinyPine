@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v1.1.1-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -45,7 +45,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@1.1.0/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@1.1.1/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -82,6 +82,18 @@ npx tinypine-cli build
 - 📦 **Zero configuration** - Works out of the box
 
 [Learn more about TinyPine CLI →](packages/cli/README.md)
+
+---
+
+## 🌱 Sprout.js Hazırlığı (v1.1.1)
+
+TinyPine v1.1.1, eğitim ve sandbox ortamlarına uyum için hazırlıklar içerir:
+- Lite mode: ağır modülleri devre dışı bırakan hafif çalışma modu
+- Safe mode: directive çalıştırmalarını güvenli hale getirir
+- Silent debug: TinyPine loglarını sessize alma
+- Lifecycle ve global event bus: `onMount()` ve `directive:*` olayları
+
+Bu özellikler, yakında yayınlanacak Sprout.js ile kusursuz entegrasyon içindir.
 
 ---
 
