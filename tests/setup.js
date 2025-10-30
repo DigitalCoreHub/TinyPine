@@ -8,6 +8,8 @@ if (typeof global !== 'undefined') {
   global.document = {
     body: {
       innerHTML: '',
+      querySelectorAll: () => [],
+      querySelector: () => null,
       appendChild: () => {},
       removeChild: () => {},
     },
@@ -19,4 +21,13 @@ if (typeof global !== 'undefined') {
       appendChild: () => {},
     },
   };
+  global.addEventListener = () => {};
+  global.location = { hash: '' };
+
+  // Load TinyPine global (ESM side-effects populate window.TinyPine)
+  try {
+    await import('../src/index.js');
+  } catch (_) {
+    // ignore if ESM not supported in test env
+  }
 }

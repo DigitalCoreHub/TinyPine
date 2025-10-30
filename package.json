@@ -1,6 +1,6 @@
 {
   "name": "tinypine",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Minimal, comfortable & intuitive reactive micro-framework",
   "main": "src/core.js",
   "types": "types/tinypine.d.ts",
@@ -12,8 +12,8 @@
     "build": "node build.cjs",
     "build:rollup": "rollup -c",
     "minify": "npm run build",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "reactive",

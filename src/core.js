@@ -749,6 +749,11 @@ const directiveHandlers = {
 
                 // Directive'leri güncelle
                 updateDirectives(scopeElement, state);
+
+                // Emit directive event for visual feedback tools
+                if (typeof window !== 'undefined' && window.TinyPine && typeof window.TinyPine.emit === 'function') {
+                    try { window.TinyPine.emit('directive:click', element, { state, context: contextObj, event }); } catch (_) {}
+                }
             } catch (error) {
                 console.warn('[TinyPine] Error in t-click:', error);
             }
@@ -1070,18 +1075,34 @@ function applyDirective(element, directive, value, state, context) {
     // Normal directive (t-text, t-show, vs.)
     const handler = directiveHandlers[directive];
     if (handler) {
-        // t-await, t-loading, t-error need state + scope element
-        if (directive === 't-await' || directive === 't-loading' || directive === 't-error') {
-            const scopeElement = element.closest('[t-data]');
-            if (scopeElement && scopeElement._tinypineState) {
-                handler(element, value, scopeElement._tinypineState, context);
-            } else {
+        const runHandler = () => {
+            // t-await, t-loading, t-error need state + scope element
+            if (directive === 't-await' || directive === 't-loading' || directive === 't-error') {
+                const scopeElement = element.closest('[t-data]');
+                if (scopeElement && scopeElement._tinypineState) {
+                    handler(element, value, scopeElement._tinypineState, context);
+                } else {
+                    handler(element, value, state, context);
+                }
+            } else if (context) {
                 handler(element, value, state, context);
+            } else {
+                handler(element, value, state);
             }
-        } else if (context) {
-            handler(element, value, state, context);
+        };
+
+        // Safe mode: wrap directive execution
+        const safe = typeof window !== 'undefined' && window.TinyPine && window.TinyPine._safeMode;
+        if (safe) {
+            try { runHandler(); } catch (_) { /* swallow in safe mode */ }
         } else {
-            handler(element, value, state);
+            runHandler();
+        }
+
+        // Emit directive event (generic)
+        if (typeof window !== 'undefined' && window.TinyPine && typeof window.TinyPine.emit === 'function') {
+            const name = 'directive:' + (directive.startsWith('t-') ? directive.slice(2) : directive).split(':')[0];
+            try { window.TinyPine.emit(name, element, { state, context, value }); } catch (_) {}
         }
     } else {
         console.warn(`[TinyPine] Unknown directive: ${directive}`);
@@ -1395,6 +1416,73 @@ if (typeof window !== 'undefined') {
     window.TinyPine.initializeScope = initializeScope;
     window.TinyPine.enableDebug = enableDebug;
     window.TinyPine.disableDebug = () => debugMode = false;
+
+    // Mode and Safe options
+    window.TinyPine._mode = 'default';
+    Object.defineProperty(window.TinyPine, 'mode', {
+        get: () => window.TinyPine._mode,
+        set: (val) => { window.TinyPine._mode = (val === 'lite') ? 'lite' : 'default'; }
+    });
+
+    // Event bus
+    const _events = new Map();
+    window.TinyPine.on = function(eventName, cb) {
+        if (!_events.has(eventName)) _events.set(eventName, new Set());
+        _events.get(eventName).add(cb);
+        return () => _events.get(eventName)?.delete(cb);
+    };
+    window.TinyPine.off = function(eventName, cb) {
+        _events.get(eventName)?.delete(cb);
+    };
+    window.TinyPine.emit = function(eventName, ...args) {
+        const set = _events.get(eventName);
+        if (!set) return;
+        set.forEach(fn => { try { fn(...args); } catch (_) {} });
+    };
+
+    // onMount
+    const _mountCallbacks = [];
+    window.TinyPine.onMount = function(cb) { if (typeof cb === 'function') _mountCallbacks.push(cb); };
+
+    // start(selectorOrRoot, { safe })
+    window.TinyPine.start = function(selectorOrRoot, opts = {}) {
+        window.TinyPine._safeMode = !!opts.safe;
+
+        // Lite mode: disable heavy modules by no-op overrides
+        if (window.TinyPine._mode === 'lite') {
+            window.TinyPine.devtools = function(){};
+            window.TinyPine.store = function(){};
+            window.TinyPine.getStore = function(){ return undefined; };
+            window.TinyPine.getAllStores = function(){ return {}; };
+            window.TinyPine.watch = function(){ return () => {}; };
+            window.TinyPine.router = function(){ return window.TinyPine; };
+            window.TinyPine.i18n = function(){ return window.TinyPine; };
+        }
+
+        const root = (typeof selectorOrRoot === 'string')
+            ? document.querySelector(selectorOrRoot) || document.body
+            : (selectorOrRoot || document.body);
+        init(root);
+        // Mount callbacks
+        _mountCallbacks.splice(0).forEach(cb => { try { cb(); } catch(_){} });
+        // Emit mounted
+        window.TinyPine.emit('mounted');
+    };
+
+    // Debug silent flag to suppress TinyPine logs
+    // Separate debug options to avoid clobbering existing boolean accessor
+    window.TinyPine.debugOptions = window.TinyPine.debugOptions || { silent: false };
+    (function setupConsoleFilter(){
+        const orig = { log: console.log, warn: console.warn, error: console.error };
+        const filter = (type) => function(...args) {
+            const silent = !!(window.TinyPine && window.TinyPine.debugOptions && window.TinyPine.debugOptions.silent);
+            if (silent && typeof args[0] === 'string' && args[0].includes('[TinyPine]')) return;
+            return orig[type].apply(console, args);
+        };
+        console.log = filter('log');
+        console.warn = filter('warn');
+        console.error = filter('error');
+    })();
     Object.defineProperty(window.TinyPine, 'debug', {
         get: () => debugMode,
         set: (val) => {
@@ -1514,6 +1602,7 @@ if (typeof window !== 'undefined') {
     }
 
     window.TinyPine.router = function(config) {
+        if (window.TinyPine._mode === 'lite') { return window.TinyPine; }
         config = config || {};
         const defaultRoute = config.default || 'home';
         const onChange = config.onChange || function() {};

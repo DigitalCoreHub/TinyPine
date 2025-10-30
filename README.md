@@ -85,15 +85,15 @@ npx tinypine-cli build
 
 ---
 
-## 🌱 Sprout.js Hazırlığı (v1.1.1)
+## 🌱 Sprout.js Readiness (v1.1.1)
 
-TinyPine v1.1.1, eğitim ve sandbox ortamlarına uyum için hazırlıklar içerir:
-- Lite mode: ağır modülleri devre dışı bırakan hafif çalışma modu
-- Safe mode: directive çalıştırmalarını güvenli hale getirir
-- Silent debug: TinyPine loglarını sessize alma
-- Lifecycle ve global event bus: `onMount()` ve `directive:*` olayları
+TinyPine v1.1.1 introduces preparation for educational and sandbox environments:
+- Lite mode: a lightweight runtime that disables heavy modules
+- Safe mode: runs directive executions in safe wrappers (no hard crashes)
+- Silent debug: suppresses `[TinyPine]` console logs when needed
+- Lifecycle and global event bus: `onMount()` and `directive:*` hooks
 
-Bu özellikler, yakında yayınlanacak Sprout.js ile kusursuz entegrasyon içindir.
+These features prepare TinyPine for seamless integration with the upcoming Sprout.js project.
 
 ---
 
