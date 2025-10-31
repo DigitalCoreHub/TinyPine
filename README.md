@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v1.1.3-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -43,7 +43,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@1.1.3/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -147,6 +147,46 @@ TinyPine.onUnmount((el, ctx) => {
 ```
 
 Emits `component:mounted` and `component:unmounted` via the global event bus.
+
+---
+
+## 🎨 TinyPine UI (NEW in v1.2.0)
+
+Ready-to-use Tailwind CSS components:
+
+```html
+<script src="https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@1.2.0/dist/tinypine.ui.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/tinypine@1.2.0/dist/tinypine.ui.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div t-data="{ open: false }">
+  <tp-button color="primary" size="md" icon="check">Save</tp-button>
+  <tp-button color="success" size="lg">Add</tp-button>
+  <tp-button color="danger" size="sm" t-click="open = true">Delete</tp-button>
+
+  <tp-modal t-show="open" title="Confirm">
+    <p>Are you sure?</p>
+    <tp-button color="outline" t-click="open = false">Cancel</tp-button>
+  </tp-modal>
+
+  <tp-card title="User Info">
+    <p>Content goes here</p>
+  </tp-card>
+</div>
+
+<script>TinyPine.init();</script>
+```
+
+**Components:**
+- `tp-button` - color, size, type, icon props
+- `tp-modal` - title prop, auto backdrop/close
+- `tp-card` - title prop, Tailwind styling
+
+**Theme Support:**
+```js
+TinyPine.theme = 'dark'; // or 'light'
+```
 
 ---
 

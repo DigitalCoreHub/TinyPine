@@ -602,6 +602,96 @@
       </div>
     </section>
 
+    <!-- v1.2.0: TinyPine UI Components -->
+    <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+        <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-lg mr-3">UI</span>
+        v1.2.0: TinyPine UI Components
+      </h2>
+
+      <div class="space-y-6">
+        <!-- Button Component Demo -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6 border-2 border-indigo-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔘 tp-button Component</h3>
+
+          <div t-data="{ theme: 'light' }" class="space-y-4">
+            <div class="flex flex-wrap gap-3">
+              <tp-button color="primary" size="md">Primary</tp-button>
+              <tp-button color="success" size="md">Success</tp-button>
+              <tp-button color="danger" size="md">Danger</tp-button>
+              <tp-button color="outline" size="md">Outline</tp-button>
+              <tp-button color="ghost" size="md">Ghost</tp-button>
+            </div>
+
+            <div class="flex flex-wrap gap-3 items-center">
+              <tp-button color="primary" size="sm">Small</tp-button>
+              <tp-button color="primary" size="md">Medium</tp-button>
+              <tp-button color="primary" size="lg">Large</tp-button>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+              <tp-button color="primary" size="md" icon="check">Save</tp-button>
+              <tp-button color="success" size="md" icon="plus">Add</tp-button>
+              <tp-button color="danger" size="md" icon="close">Delete</tp-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Component Demo -->
+        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-6 border-2 border-blue-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🪟 tp-modal Component</h3>
+
+          <div t-data="{ openModal: false }" class="space-y-4">
+            <tp-button color="primary" size="md" t-click="openModal = true">Open Modal</tp-button>
+
+            <tp-modal t-show="openModal" title="TinyPine Modal Demo">
+              <p class="text-gray-700 mb-4">
+                This is a modal component built with TinyPine UI. It automatically handles backdrop clicks and close button.
+              </p>
+              <div class="flex gap-3">
+                <tp-button color="primary" size="md" t-click="openModal = false">Close</tp-button>
+                <tp-button color="outline" size="md" t-click="openModal = false">Cancel</tp-button>
+              </div>
+            </tp-modal>
+          </div>
+        </div>
+
+        <!-- Card Component Demo -->
+        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-6 border-2 border-emerald-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">📦 tp-card Component</h3>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <tp-card title="Card Title">
+              <p class="text-gray-700">
+                This is a card component with a title prop. Content goes here.
+              </p>
+            </tp-card>
+
+            <tp-card>
+              <p class="text-gray-700">
+                This card has no title. Just pure content.
+              </p>
+            </tp-card>
+          </div>
+        </div>
+
+        <!-- Theme Toggle Demo -->
+        <div class="bg-gradient-to-br from-gray-50 to-slate-50 rounded-lg p-6 border-2 border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌓 Theme Support</h3>
+
+          <div t-data="{ currentTheme: 'light', methods: { setTheme(theme) { TinyPine.theme = theme; this.currentTheme = theme; } } }" class="space-y-4">
+            <div class="flex gap-3">
+              <tp-button color="outline" size="md" t-click="methods.setTheme('light')">Light Mode</tp-button>
+              <tp-button color="outline" size="md" t-click="methods.setTheme('dark')">Dark Mode</tp-button>
+            </div>
+            <p class="text-sm text-gray-600">
+              Current theme: <span t-text="currentTheme" class="font-semibold"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <!-- v0.7.0: Async & Router -->
@@ -711,6 +801,8 @@ cache.get('key'); // returns 'value'</pre>
   <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
   <script src="/src/devtools.js"></script>
+  <script src="/src/ui.js"></script>
+  <link rel="stylesheet" href="/src/tinypine.ui.css">
   <script>
     // Create global stores
     TinyPine.store('auth', { user: 'Guest', loggedIn: false });

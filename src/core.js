@@ -1613,6 +1613,73 @@ if (typeof window !== 'undefined') {
         window.TinyPine.emit('mounted');
     };
 
+    // Component Registration System (for UI components)
+    window.TinyPine._components = window.TinyPine._components || new Map();
+    window.TinyPine.component = function(name, config) {
+        if (!name || typeof name !== 'string') {
+            console.warn('[TinyPine] Component name must be a string');
+            return;
+        }
+
+        config = config || {};
+        window.TinyPine._components.set(name, config);
+
+        // Register as custom element if CustomElements API is available
+        if (typeof customElements !== 'undefined' && !customElements.get(name)) {
+            class TinyPineComponent extends HTMLElement {
+                connectedCallback() {
+                    const ctx = this;
+                    // Call mounted hook
+                    if (typeof config.mounted === 'function') {
+                        try {
+                            config.mounted(this, ctx);
+                        } catch (e) {
+                            console.warn('[TinyPine] Component mounted error:', e);
+                        }
+                    }
+                    // Emit component:mounted
+                    if (window.TinyPine.emit) {
+                        window.TinyPine.emit('component:mounted', this, ctx);
+                    }
+                }
+
+                disconnectedCallback() {
+                    if (typeof config.unmounted === 'function') {
+                        try {
+                            config.unmounted(this, this);
+                        } catch (e) {
+                            console.warn('[TinyPine] Component unmounted error:', e);
+                        }
+                    }
+                    // Emit component:unmounted
+                    if (window.TinyPine.emit) {
+                        window.TinyPine.emit('component:unmounted', this, this);
+                    }
+                }
+            }
+            customElements.define(name, TinyPineComponent);
+        }
+
+        if (debugMode) {
+            console.log('[TinyPine] Component registered:', name);
+        }
+
+        return window.TinyPine;
+    };
+
+    // Theme support (light/dark)
+    window.TinyPine._theme = 'light';
+    Object.defineProperty(window.TinyPine, 'theme', {
+        get: () => window.TinyPine._theme,
+        set: (val) => {
+            window.TinyPine._theme = (val === 'dark') ? 'dark' : 'light';
+            document.documentElement.classList.toggle('dark', val === 'dark');
+            if (window.TinyPine.emit) {
+                window.TinyPine.emit('theme:changed', window.TinyPine._theme);
+            }
+        }
+    });
+
     // Debug silent flag to suppress TinyPine logs
     // Separate debug options to avoid clobbering existing boolean accessor
     window.TinyPine.debugOptions = window.TinyPine.debugOptions || { silent: false };

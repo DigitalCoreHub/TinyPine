@@ -3,6 +3,8 @@ node_modules/
 
 # Build outputs
 dist/tinypine.min.js
+dist/tinypine.ui.min.js
+dist/tinypine.ui.css
 *.min.js
 *.min.css
 

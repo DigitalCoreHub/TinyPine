@@ -1,0 +1,66 @@
+/**
+ * TinyPine UI - Base Styles
+ * Tailwind-compatible utility classes for TinyPine UI components
+ */
+
+/* Base component styles (if Tailwind is not loaded) */
+.tp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.tp-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+
+.tp-modal-content {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-width: 28rem;
+  width: 100%;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.tp-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .dark .tp-modal-content,
+  .dark .tp-card {
+    background-color: #1f2937;
+    color: white;
+    border-color: #374151;
+  }
+}
+
+/* Icon styles */
+.tp-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
