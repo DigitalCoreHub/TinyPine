@@ -8,28 +8,34 @@
   Zero build · Zero config · Just write HTML
 
   [![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
-  [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
+  [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.2.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 </div>
 
 ---
 
-## Overview (at a glance)
+## 📋 Table of Contents
 
-TinyPine is a minimal, intuitive reactive micro‑framework. Add one script tag or scaffold with the official CLI.
-
-Quick links:
-- Quick Start (CDN & npm)
-- CLI usage (new project, serve, build)
-- What’s New: v1.1.2 lifecycle; v1.1.1 education-ready modes
-- Demo page under `demo/index.html`
+- [Quick Start](#-quick-start)
+- [CLI Tool](#-cli-tool-v110)
+- [What's New](#-whats-new)
+  - [TinyPine UI (v1.2.0)](#-tinypine-ui-v120)
+  - [Component Lifecycle (v1.1.2+)](#-component-lifecycle-v112)
+  - [Sprout.js Readiness (v1.1.1)](#-sproutjs-readiness-v111)
+- [Core Features](#-core-features)
+- [Directives](#-directives)
+- [Examples](#-examples)
+- [Advanced Features](#-advanced-features)
+- [Installation](#-installation)
+- [API Reference](#-api-reference)
+- [Contributing](#-contributing)
 
 ---
 
 ## ⚡ Quick Start
 
-Add one script tag and you're ready:
+### CDN (Easiest)
 
 ```html
 <!DOCTYPE html>
@@ -49,7 +55,7 @@ Add one script tag and you're ready:
 </html>
 ```
 
-npm install:
+### NPM
 
 ```bash
 npm install tinypine
@@ -62,9 +68,9 @@ TinyPine.init();
 
 ---
 
-## 🚀 CLI
+## 🚀 CLI Tool (v1.1.0)
 
-Create TinyPine projects in seconds with the official CLI:
+Create TinyPine projects in seconds:
 
 ```bash
 # Create a new project
@@ -73,7 +79,7 @@ npx tinypine-cli new myapp
 # Start development server
 cd myapp && npx tinypine-cli serve
 
-# Add features
+# Add features (router, i18n, ui)
 npx tinypine-cli add router
 npx tinypine-cli add i18n
 npx tinypine-cli add ui
@@ -82,75 +88,18 @@ npx tinypine-cli add ui
 npx tinypine-cli build
 ```
 
-Key features:
-- Templates: Vanilla, Tailwind, SPA, SSR, UI Ready
-- Modular add-ons: router, i18n, ui, devtools
-- Vite dev/build integration
+**Features:**
+- 🎨 Templates: Vanilla, Tailwind, SPA, SSR, UI Ready
+- 🔌 Modular add-ons: router, i18n, ui, devtools
+- ⚡ Vite dev/build integration
 
-[Learn more about TinyPine CLI →](packages/cli/README.md)
-
----
-
-## 🌱 Sprout.js Readiness (v1.1.1)
-
-TinyPine v1.1.1 introduces preparation for educational and sandbox environments:
-- Lite mode: a lightweight runtime that disables heavy modules
-- Safe mode: runs directive executions in safe wrappers (no hard crashes)
-- Silent debug: suppresses `[TinyPine]` console logs when needed
-- Lifecycle and global event bus: `onMount()` and `directive:*` hooks
-
-These features prepare TinyPine for seamless integration with the upcoming Sprout.js project.
+[Learn more →](packages/cli/README.md)
 
 ---
 
-## 🔄 Component Lifecycle (v1.1.2+)
+## ✨ What's New
 
-### Mount Lifecycle
-
-Run code after a component is rendered:
-
-```html
-<div t-data="{ count: 0, mounted(el, ctx) { el.classList.add('mounted'); } }">
-  <span t-text="'Count: ' + count"></span>
-  <button t-click="count++">+1</button>
-</div>
-```
-
-Global mount listener:
-
-```js
-TinyPine.onMount((el, ctx) => {
-  console.log('🌱 Mounted:', el);
-});
-```
-
-### Unmount Lifecycle (NEW in v1.1.3)
-
-Run cleanup when a component is removed:
-
-```html
-<div t-data="{
-  count: 0,
-  beforeUnmount(el, ctx) { console.log('About to remove...'); },
-  unmounted(el, ctx) { console.log('Removed!'); }
-}">
-  <span t-text="'Count: ' + count"></span>
-</div>
-```
-
-Global unmount listener:
-
-```js
-TinyPine.onUnmount((el, ctx) => {
-  console.log('🧹 Cleaned up:', el);
-});
-```
-
-Emits `component:mounted` and `component:unmounted` via the global event bus.
-
----
-
-## 🎨 TinyPine UI (NEW in v1.2.0)
+### 🎨 TinyPine UI (v1.2.0)
 
 Ready-to-use Tailwind CSS components:
 
@@ -162,14 +111,10 @@ Ready-to-use Tailwind CSS components:
 
 <div t-data="{ open: false }">
   <tp-button color="primary" size="md" icon="check">Save</tp-button>
-  <tp-button color="success" size="lg">Add</tp-button>
-  <tp-button color="danger" size="sm" t-click="open = true">Delete</tp-button>
-
   <tp-modal t-show="open" title="Confirm">
     <p>Are you sure?</p>
     <tp-button color="outline" t-click="open = false">Cancel</tp-button>
   </tp-modal>
-
   <tp-card title="User Info">
     <p>Content goes here</p>
   </tp-card>
@@ -178,10 +123,10 @@ Ready-to-use Tailwind CSS components:
 <script>TinyPine.init();</script>
 ```
 
-**Components:**
-- `tp-button` - color, size, type, icon props
-- `tp-modal` - title prop, auto backdrop/close
-- `tp-card` - title prop, Tailwind styling
+**Available Components:**
+- `tp-button` - Button with color, size, type, icon props
+- `tp-modal` - Modal with title prop, auto backdrop/close
+- `tp-card` - Card with title prop, Tailwind styling
 
 **Theme Support:**
 ```js
@@ -192,9 +137,95 @@ TinyPine.theme = 'dark'; // or 'light'
 
 ---
 
-## ✨ v1.1.0 Features
+### 🔄 Component Lifecycle (v1.1.2+)
 
-- 🎯 **29 Passing Tests** - Comprehensive test coverage
+#### Mount Lifecycle
+
+Run code after a component is rendered:
+
+```html
+<div t-data="{
+  count: 0,
+  mounted(el, ctx) {
+    el.classList.add('mounted');
+    console.log('Component mounted!');
+  }
+}">
+  <span t-text="'Count: ' + count"></span>
+  <button t-click="count++">+1</button>
+</div>
+```
+
+**Global mount listener:**
+```js
+TinyPine.onMount((el, ctx) => {
+  console.log('🌱 Mounted:', el);
+});
+```
+
+#### Unmount Lifecycle (v1.1.3)
+
+Run cleanup when a component is removed:
+
+```html
+<div t-data="{
+  count: 0,
+  beforeUnmount(el, ctx) {
+    console.log('About to remove...');
+  },
+  unmounted(el, ctx) {
+    console.log('Removed!');
+  }
+}">
+  <span t-text="'Count: ' + count"></span>
+</div>
+```
+
+**Global unmount listener:**
+```js
+TinyPine.onUnmount((el, ctx) => {
+  console.log('🧹 Cleaned up:', el);
+});
+```
+
+Emits `component:mounted` and `component:unmounted` events via the global event bus.
+
+---
+
+### 🌱 Sprout.js Readiness (v1.1.1)
+
+TinyPine v1.1.1 introduces features for educational and sandbox environments:
+
+**Lite Mode:**
+```js
+TinyPine.start('#app', { mode: 'lite' });
+// Disables: devtools, store, router, i18n
+```
+
+**Safe Mode:**
+```js
+TinyPine.start('#app', { safe: true });
+// Wraps all directive executions in try/catch
+```
+
+**Silent Debug:**
+```js
+TinyPine.debugOptions.silent = true;
+// Suppresses [TinyPine] console logs
+```
+
+**Global Event Bus:**
+```js
+TinyPine.on('directive:click', (el, ctx) => {
+  console.log('Click detected');
+});
+```
+
+---
+
+## 🎯 Core Features
+
+- ✅ **29 Passing Tests** - Comprehensive test coverage
 - 📘 **TypeScript Support** - Full type definitions included
 - 🛠️ **DevTools Integration** - Live debugging & inspection
 - 🌍 **i18n Ready** - Built-in internationalization
@@ -207,7 +238,7 @@ TinyPine.theme = 'dark'; // or 'light'
 
 ---
 
-## 📚 All Directives
+## 📚 Directives
 
 ### Core Directives
 
@@ -215,11 +246,11 @@ TinyPine.theme = 'dark'; // or 'light'
 |-----------|-------------|---------|
 | `t-data` | Create reactive scope | `<div t-data="{ count: 0 }">` |
 | `t-text` | Update text content | `<span t-text="message"></span>` |
-| `t-show` | Toggle visibility *(with smooth transitions)* | `<p t-show="isVisible">Hello</p>` |
+| `t-show` | Toggle visibility (with transitions) | `<p t-show="isVisible">Hello</p>` |
 | `t-click` | Click handlers | `<button t-click="count++">+</button>` |
 | `t-model` | Two-way binding | `<input t-model="name">` |
 
-### List & Events
+### List Rendering & Events
 
 | Directive | Description | Example |
 |-----------|-------------|---------|
@@ -227,7 +258,7 @@ TinyPine.theme = 'dark'; // or 'light'
 | `.prevent/.stop` | Event modifiers | `<button t-click="save.prevent">` |
 | `t-init` | Lifecycle hook | `<div t-init="console.log('Mounted!')">` |
 
-### Bindings & Refs
+### Advanced Bindings
 
 | Directive | Description | Example |
 |-----------|-------------|---------|
@@ -257,8 +288,13 @@ TinyPine.theme = 'dark'; // or 'light'
   todos: [],
   newTodo: '',
   methods: {
-    add() { if(this.newTodo) this.todos.push(this.newTodo); this.newTodo = ''; },
-    remove(i) { this.todos.splice(i, 1); }
+    add() {
+      if(this.newTodo) this.todos.push(this.newTodo);
+      this.newTodo = '';
+    },
+    remove(i) {
+      this.todos.splice(i, 1);
+    }
   }
 }">
   <input t-model="newTodo" placeholder="Add todo">
@@ -276,7 +312,16 @@ TinyPine.theme = 'dark'; // or 'light'
 ### Login Form
 
 ```html
-<div t-data="{ email: '', password: '', loggedIn: false, methods: { login() { this.loggedIn = true; } } }">
+<div t-data="{
+  email: '',
+  password: '',
+  loggedIn: false,
+  methods: {
+    login() {
+      this.loggedIn = true;
+    }
+  }
+}">
   <div t-show="!loggedIn">
     <input t-model="email" placeholder="Email">
     <input t-model="password" type="password" placeholder="Password">
@@ -309,16 +354,6 @@ TinyPine.store('ui', { theme: 'light' });
 </div>
 ```
 
-### Lifecycle Hooks
-
-```html
-<div t-data="{ count: 0 }"
-     t-init="console.log('Mounted!')"
-     t-destroy="console.log('Unmounted!')">
-  <!-- content -->
-</div>
-```
-
 ### Custom Plugins
 
 ```javascript
@@ -332,19 +367,7 @@ TinyPine.use({
 });
 ```
 
-```html
-<button t-click="methods.show()">Show Toast</button>
-```
-
-### Event Modifiers
-
-```html
-<button t-click="save.prevent">Prevent default</button>
-<button t-click="methods.init.once">Run once</button>
-<button t-click="methods.close.outside">Close on outside click</button>
-```
-
-### Async Data Fetching (v0.7.0)
+### Async Data Fetching
 
 Fetch data from APIs and handle loading/error states:
 
@@ -359,16 +382,16 @@ Fetch data from APIs and handle loading/error states:
 </div>
 
 <!-- Await with loading and error states -->
-<div t-data="{ user: null }">
+<div t-data="{ user: {} }">
   <div t-await="fetch('/api/user').then(r=>r.json())">
     <div t-loading="'Loading user...'">⏳ Loading...</div>
     <div t-error="'Failed to load user.'">❌ Error!</div>
-    <p t-text="user.name"></p>
+    <p t-text="user?.name || ''"></p>
   </div>
 </div>
 ```
 
-### Hash Router (v0.7.0)
+### Hash Router
 
 Build SPAs with hash-based routing:
 
@@ -391,19 +414,9 @@ TinyPine.router({
 </script>
 ```
 
-### Cache System (v0.7.0)
+### Internationalization (i18n)
 
-Cache API responses to avoid redundant requests:
-
-```javascript
-const cache = TinyPine.cache();
-cache.set('key', 'value');
-const data = cache.get('key');
-```
-
-### Internationalization (v0.8.0)
-
-Add multi-language support with reactive translations:
+Add multi-language support:
 
 ```html
 <script>
@@ -422,21 +435,27 @@ TinyPine.i18n({
 ```
 
 **Dynamic Locale Loading:**
-
 ```javascript
-// Load from JSON files
 TinyPine.loadLocale('tr', '/lang/tr.json');
 TinyPine.loadLocale('en', '/lang/en.json');
+```
+
+### Event Modifiers
+
+```html
+<button t-click="save.prevent">Prevent default</button>
+<button t-click="methods.init.once">Run once</button>
+<button t-click="methods.close.outside">Close on outside click</button>
 ```
 
 ---
 
 ## 📦 Installation
 
-### CDN (Recommended)
+### CDN
 
 ```html
-<script src="https://unpkg.com/tinypine@1.0.0/dist/tinypine.min.js"></script>
+<script src="https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"></script>
 <script>TinyPine.init();</script>
 ```
 
@@ -455,11 +474,7 @@ import TinyPine from 'tinypine';
 ### Testing
 
 ```bash
-# Run tests
 npm test
-
-# Run tests with coverage
-npm run test:run
 ```
 
 **Test Coverage:**
@@ -470,34 +485,6 @@ npm run test:run
 - ✅ Context management
 - ✅ Edge cases and performance
 
-### Download
-
-[Download from GitHub Releases](https://github.com/DigitalCoreHub/TinyPine/releases)
-
----
-
-## 🎨 Styling
-
-TinyPine works with any CSS framework or custom styles:
-
-```html
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-<div t-data="{ count: 0 }" class="p-8">
-  <button t-click="count++" class="px-4 py-2 bg-blue-500 text-white rounded">Count: <span t-text="count"></span></button>
-</div>
-```
-
----
-
-## 🐛 Debugging
-
-Enable debug mode to see all reactivity in action:
-
-```javascript
-TinyPine.debug = true;
-// Console will show: [TinyPine] count changed → 1
-```
-
 ---
 
 ## ⚙️ API Reference
@@ -505,11 +492,21 @@ TinyPine.debug = true;
 ### Core Methods
 
 - `TinyPine.init(root?)` - Initialize TinyPine
+- `TinyPine.start(selector, opts?)` - Start with options (lite/safe mode)
 - `TinyPine.store(name, data)` - Create global store
 - `TinyPine.watch(path, callback)` - Watch changes
 - `TinyPine.use(plugin)` - Register plugin
 - `TinyPine.directive(name, handler)` - Custom directive
+- `TinyPine.component(name, config)` - Register custom component
 - `TinyPine.transition(name, config)` - Register transition
+
+### Lifecycle & Events
+
+- `TinyPine.onMount(callback)` - Global mount listener
+- `TinyPine.onUnmount(callback)` - Global unmount listener
+- `TinyPine.on(event, callback)` - Event listener
+- `TinyPine.off(event, callback)` - Remove event listener
+- `TinyPine.emit(event, ...args)` - Emit event
 
 ### Context Variables
 
@@ -518,6 +515,53 @@ TinyPine.debug = true;
 - `$refs` - DOM references
 - `$el` - Current element
 - `$store` - Global stores
+- `$lang` - Current i18n language
+
+---
+
+## 🎨 Styling
+
+TinyPine works with any CSS framework:
+
+```html
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+<div t-data="{ count: 0 }" class="p-8">
+  <button t-click="count++" class="px-4 py-2 bg-blue-500 text-white rounded">
+    Count: <span t-text="count"></span>
+  </button>
+</div>
+```
+
+---
+
+## 🐛 Debugging
+
+Enable debug mode:
+
+```javascript
+TinyPine.debug = true;
+// Console will show: [TinyPine] count changed → 1
+
+// Silent mode (suppress logs)
+TinyPine.debugOptions.silent = true;
+```
+
+### DevTools
+
+Built-in developer tools panel:
+
+```html
+<script>
+TinyPine.debug = true;
+TinyPine.devtools({ position: 'bottom-right', theme: 'dark' });
+</script>
+```
+
+**Features:**
+- 📊 Live Store Inspector
+- 🎯 Context Viewer
+- ⏱️ Reactivity Timeline
+- 📈 Performance Monitor
 
 ---
 
@@ -532,43 +576,14 @@ Works everywhere JavaScript Proxies are supported.
 
 ---
 
-## 🔧 DevTools & Inspector
-
-TinyPine includes a built-in developer tools panel for real-time debugging:
-
-```html
-<script>
-TinyPine.debug = true;
-TinyPine.devtools({ position: 'bottom-right', theme: 'dark' });
-</script>
-```
-
-**Features:**
-- 📊 **Live Store Inspector** - View all global stores in real-time
-- 🎯 **Context Viewer** - Inspect component state and data
-- ⏱️ **Reactivity Timeline** - Track all state changes chronologically
-- 📈 **Performance Monitor** - Measure render and diff times
-
-**Debug Utilities:**
-```js
-TinyPine.debug.log('Custom event', { data: 'value' });
-TinyPine.debug.inspect($store.auth);
-```
-
----
-
 ## 📈 Roadmap
 
-- ✅ **v0.1.0** - Core directives
-- ✅ **v0.2.0** - Contexts, methods, refs
-- ✅ **v0.3.0** - t-for lists, event modifiers
-- ✅ **v0.4.0** - Global store, watchers, SSR
-- ✅ **v0.5.0** - Lifecycle hooks, plugins
-- ✅ **v0.6.0** - Smooth transitions
-- ✅ **v0.7.0** - Async fetch, router
-- ✅ **v0.8.0** - Internationalization (i18n)
-- ✅ **v0.9.0** - DevTools & Inspector
 - ✅ **v1.0.0** - Stable Release with TypeScript & Tests
+- ✅ **v1.1.0** - CLI Tool & Ecosystem Expansion
+- ✅ **v1.1.1** - Sprout.js Readiness (Lite/Safe Modes)
+- ✅ **v1.1.2** - Component Mount Lifecycle
+- ✅ **v1.1.3** - Component Unmount Lifecycle
+- ✅ **v1.2.0** - TinyPine UI Components
 
 ---
 
