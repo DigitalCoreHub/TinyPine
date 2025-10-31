@@ -29,6 +29,10 @@
     "type": "git",
     "url": "https://github.com/DigitalCoreHub/TinyPine.git"
   },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
   "files": [
     "src/",
     "dist/",
