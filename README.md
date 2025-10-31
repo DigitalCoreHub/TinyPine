@@ -15,17 +15,15 @@
 
 ---
 
-## 🌟 Why TinyPine?
+## Overview (at a glance)
 
-TinyPine is the **simplest** way to build reactive interfaces. No build tools, no transpilation, no configuration. Just add a script tag and start coding.
+TinyPine is a minimal, intuitive reactive micro‑framework. Add one script tag or scaffold with the official CLI.
 
-**Perfect for:**
-- 🎨 **Quick prototypes** - Get started in seconds
-- 📱 **Interactive UIs** - Smooth, reactive interfaces
-- 🚀 **Lightweight apps** - Only 30KB minified
-- 🎓 **Learning** - Understand reactivity from the ground up
-- ✅ **Fully tested** - 29 passing tests with Vitest
-- 🔧 **TypeScript ready** - Built-in type definitions
+Quick links:
+- Quick Start (CDN & npm)
+- CLI usage (new project, serve, build)
+- What’s New: v1.1.2 lifecycle; v1.1.1 education-ready modes
+- Demo page under `demo/index.html`
 
 ---
 
@@ -51,11 +49,20 @@ Add one script tag and you're ready:
 </html>
 ```
 
-**That's it!** No build step. No webpack. No npm install. Just pure, reactive HTML.
+npm install:
+
+```bash
+npm install tinypine
+```
+
+```js
+import TinyPine from 'tinypine';
+TinyPine.init();
+```
 
 ---
 
-## 🚀 CLI (NEW in v1.1.0)
+## 🚀 CLI
 
 Create TinyPine projects in seconds with the official CLI:
 
@@ -75,11 +82,10 @@ npx tinypine-cli add ui
 npx tinypine-cli build
 ```
 
-**Features:**
-- 🌲 **Multiple templates** - Vanilla, Tailwind, SPA, SSR, UI Ready
-- 🔧 **Modular setup** - Add features as you need them
-- ⚡ **Vite integration** - Lightning-fast dev server
-- 📦 **Zero configuration** - Works out of the box
+Key features:
+- Templates: Vanilla, Tailwind, SPA, SSR, UI Ready
+- Modular add-ons: router, i18n, ui, devtools
+- Vite dev/build integration
 
 [Learn more about TinyPine CLI →](packages/cli/README.md)
 
@@ -114,6 +120,26 @@ Global lifecycle subscription:
 TinyPine.onMount((el, ctx) => {
   console.log('🌱 Mounted:', el);
 });
+```
+
+Also emits `component:mounted` via the global event bus.
+
+---
+
+## 🔄 Component Lifecycle (NEW in v1.1.2)
+
+Run code after a component is rendered and bound:
+
+```html
+<div t-data="{ count: 0, mounted(el, ctx) { el.classList.add('mounted') } }">
+  <span t-text="'Count: ' + count"></span>
+  <button t-click="count++">+1</button>
+</div>
+<script>
+TinyPine.onMount((el, ctx) => {
+  console.log('🌱 Mounted:', el);
+});
+</script>
 ```
 
 Also emits `component:mounted` via the global event bus.
