@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v1.1.2-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v1.1.3-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -43,7 +43,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@1.1.2/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@1.1.3/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -103,18 +103,20 @@ These features prepare TinyPine for seamless integration with the upcoming Sprou
 
 ---
 
-## 🔄 Component Lifecycle (NEW in v1.1.2)
+## 🔄 Component Lifecycle (v1.1.2+)
 
-Run code after a component is rendered and bound:
+### Mount Lifecycle
+
+Run code after a component is rendered:
 
 ```html
 <div t-data="{ count: 0, mounted(el, ctx) { el.classList.add('mounted'); } }">
   <span t-text="'Count: ' + count"></span>
   <button t-click="count++">+1</button>
-  </div>
+</div>
 ```
 
-Global lifecycle subscription:
+Global mount listener:
 
 ```js
 TinyPine.onMount((el, ctx) => {
@@ -122,27 +124,29 @@ TinyPine.onMount((el, ctx) => {
 });
 ```
 
-Also emits `component:mounted` via the global event bus.
+### Unmount Lifecycle (NEW in v1.1.3)
 
----
-
-## 🔄 Component Lifecycle (NEW in v1.1.2)
-
-Run code after a component is rendered and bound:
+Run cleanup when a component is removed:
 
 ```html
-<div t-data="{ count: 0, mounted(el, ctx) { el.classList.add('mounted') } }">
+<div t-data="{
+  count: 0,
+  beforeUnmount(el, ctx) { console.log('About to remove...'); },
+  unmounted(el, ctx) { console.log('Removed!'); }
+}">
   <span t-text="'Count: ' + count"></span>
-  <button t-click="count++">+1</button>
 </div>
-<script>
-TinyPine.onMount((el, ctx) => {
-  console.log('🌱 Mounted:', el);
-});
-</script>
 ```
 
-Also emits `component:mounted` via the global event bus.
+Global unmount listener:
+
+```js
+TinyPine.onUnmount((el, ctx) => {
+  console.log('🧹 Cleaned up:', el);
+});
+```
+
+Emits `component:mounted` and `component:unmounted` via the global event bus.
 
 ---
 

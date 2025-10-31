@@ -859,6 +859,79 @@ function init(root = document.body) {
     routeElements.forEach(element => {
         applyDirective(element, 't-route', element.getAttribute('t-route'), null, null);
     });
+
+    // Setup MutationObserver for unmount tracking (only once)
+    if (typeof window !== 'undefined' && window.TinyPine && !window.TinyPine._unmountObserverInitialized) {
+        window.TinyPine._unmountObserverInitialized = true;
+
+        const observer = new MutationObserver(mutations => {
+            for (const mutation of mutations) {
+                mutation.removedNodes.forEach(node => {
+                    // Check if it's an element node and has context
+                    if (node.nodeType === 1 && window.TinyPine._contexts && window.TinyPine._contexts.has(node)) {
+                        const context = window.TinyPine._contexts.get(node);
+                        const element = node;
+
+                        try {
+                            // beforeUnmount hook
+                            if (typeof context.beforeUnmount === 'function') {
+                                context.beforeUnmount(element, context);
+                            }
+                        } catch (_) { /* safe mode */ }
+
+                        try {
+                            // unmounted hook
+                            if (typeof context.unmounted === 'function') {
+                                context.unmounted(element, context);
+                            }
+                        } catch (_) { /* safe mode */ }
+
+                        // Emit global event
+                        try {
+                            window.TinyPine.emit && window.TinyPine.emit('component:unmounted', element, context);
+                        } catch (_) {}
+
+                        // Global onUnmount callbacks
+                        if (Array.isArray(window.TinyPine._onUnmountCallbacks)) {
+                            window.TinyPine._onUnmountCallbacks.forEach(cb => {
+                                try { cb(element, context); } catch(_){}
+                            });
+                        }
+
+                        // Cleanup: remove from contexts map
+                        window.TinyPine._contexts.delete(node);
+                    }
+
+                    // Recursively check children
+                    if (node.nodeType === 1 && node.querySelectorAll) {
+                        const childScopes = node.querySelectorAll('[t-data]');
+                        childScopes.forEach(child => {
+                            if (window.TinyPine._contexts && window.TinyPine._contexts.has(child)) {
+                                const ctx = window.TinyPine._contexts.get(child);
+                                try {
+                                    if (typeof ctx.beforeUnmount === 'function') ctx.beforeUnmount(child, ctx);
+                                } catch (_) {}
+                                try {
+                                    if (typeof ctx.unmounted === 'function') ctx.unmounted(child, ctx);
+                                } catch (_) {}
+                                try {
+                                    window.TinyPine.emit && window.TinyPine.emit('component:unmounted', child, ctx);
+                                } catch (_) {}
+                                if (Array.isArray(window.TinyPine._onUnmountCallbacks)) {
+                                    window.TinyPine._onUnmountCallbacks.forEach(cb => { try { cb(child, ctx); } catch(_){} });
+                                }
+                                window.TinyPine._contexts.delete(child);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Observe the root element for removals
+        observer.observe(root, { childList: true, subtree: true });
+        window.TinyPine._unmountObserver = observer;
+    }
 }
 
 /**
@@ -915,14 +988,33 @@ function initializeScope(element) {
         const methods = dataObject.methods || {};
         delete dataObject.methods;
 
-        // Lifecycle: support mounted() declared directly or inside methods
+        // Lifecycle: support mounted(), beforeUnmount(), unmounted() hooks
         let mountedHook = null;
+        let beforeUnmountHook = null;
+        let unmountedHook = null;
+
         if (typeof dataObject.mounted === 'function') {
             mountedHook = dataObject.mounted;
             delete dataObject.mounted;
         } else if (typeof methods.mounted === 'function') {
             mountedHook = methods.mounted;
             delete methods.mounted;
+        }
+
+        if (typeof dataObject.beforeUnmount === 'function') {
+            beforeUnmountHook = dataObject.beforeUnmount;
+            delete dataObject.beforeUnmount;
+        } else if (typeof methods.beforeUnmount === 'function') {
+            beforeUnmountHook = methods.beforeUnmount;
+            delete methods.beforeUnmount;
+        }
+
+        if (typeof dataObject.unmounted === 'function') {
+            unmountedHook = dataObject.unmounted;
+            delete dataObject.unmounted;
+        } else if (typeof methods.unmounted === 'function') {
+            unmountedHook = methods.unmounted;
+            delete methods.unmounted;
         }
 
         // Parent context bul
@@ -970,7 +1062,9 @@ function initializeScope(element) {
             root: parentContext ? parentContext.root : null,
             refs: {},
             methods: methods,
-            mounted: mountedHook || null
+            mounted: mountedHook || null,
+            beforeUnmount: beforeUnmountHook || null,
+            unmounted: unmountedHook || null
         };
 
         // Root ayarla
@@ -980,6 +1074,14 @@ function initializeScope(element) {
 
         // Context'i kaydet
         registerContext(element, context);
+
+        // Register in global contexts map for unmount tracking
+        if (typeof window !== 'undefined' && window.TinyPine) {
+            if (!window.TinyPine._contexts) {
+                window.TinyPine._contexts = new Map();
+            }
+            window.TinyPine._contexts.set(element, context);
+        }
 
         // $parent, $root, $refs proxy'si oluştur
         const proxiedData = new Proxy(state, {
@@ -1482,6 +1584,11 @@ if (typeof window !== 'undefined') {
     // Global onMount callbacks (component-level)
     window.TinyPine._onMountCallbacks = window.TinyPine._onMountCallbacks || [];
     window.TinyPine.onMount = function(cb) { if (typeof cb === 'function') window.TinyPine._onMountCallbacks.push(cb); };
+
+    // onUnmount
+    // Global onUnmount callbacks (component-level)
+    window.TinyPine._onUnmountCallbacks = window.TinyPine._onUnmountCallbacks || [];
+    window.TinyPine.onUnmount = function(cb) { if (typeof cb === 'function') window.TinyPine._onUnmountCallbacks.push(cb); };
 
     // start(selectorOrRoot, { safe })
     window.TinyPine.start = function(selectorOrRoot, opts = {}) {
