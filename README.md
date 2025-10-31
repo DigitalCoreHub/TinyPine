@@ -7,7 +7,7 @@
 
   Zero build · Zero config · Just write HTML
 
-  [![Version](https://img.shields.io/badge/version-v1.1.1-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+  [![Version](https://img.shields.io/badge/version-v1.1.2-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![Size](https://img.shields.io/badge/size-30KB-blue.svg)](https://unpkg.com/tinypine@1.0.0)
   [![Tests](https://img.shields.io/badge/tests-29%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -45,7 +45,7 @@ Add one script tag and you're ready:
     <button t-click="message = 'Clicked!'">Click me</button>
   </div>
 
-  <script src="https://unpkg.com/tinypine@1.1.1/dist/tinypine.min.js"></script>
+  <script src="https://unpkg.com/tinypine@1.1.2/dist/tinypine.min.js"></script>
   <script>TinyPine.init();</script>
 </body>
 </html>
@@ -94,6 +94,29 @@ TinyPine v1.1.1 introduces preparation for educational and sandbox environments:
 - Lifecycle and global event bus: `onMount()` and `directive:*` hooks
 
 These features prepare TinyPine for seamless integration with the upcoming Sprout.js project.
+
+---
+
+## 🔄 Component Lifecycle (NEW in v1.1.2)
+
+Run code after a component is rendered and bound:
+
+```html
+<div t-data="{ count: 0, mounted(el, ctx) { el.classList.add('mounted'); } }">
+  <span t-text="'Count: ' + count"></span>
+  <button t-click="count++">+1</button>
+  </div>
+```
+
+Global lifecycle subscription:
+
+```js
+TinyPine.onMount((el, ctx) => {
+  console.log('🌱 Mounted:', el);
+});
+```
+
+Also emits `component:mounted` via the global event bus.
 
 ---
 

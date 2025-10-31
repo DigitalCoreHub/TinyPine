@@ -915,6 +915,16 @@ function initializeScope(element) {
         const methods = dataObject.methods || {};
         delete dataObject.methods;
 
+        // Lifecycle: support mounted() declared directly or inside methods
+        let mountedHook = null;
+        if (typeof dataObject.mounted === 'function') {
+            mountedHook = dataObject.mounted;
+            delete dataObject.mounted;
+        } else if (typeof methods.mounted === 'function') {
+            mountedHook = methods.mounted;
+            delete methods.mounted;
+        }
+
         // Parent context bul
         const parentContext = getParentContext(element);
 
@@ -959,7 +969,8 @@ function initializeScope(element) {
             parent: parentContext,
             root: parentContext ? parentContext.root : null,
             refs: {},
-            methods: methods
+            methods: methods,
+            mounted: mountedHook || null
         };
 
         // Root ayarla
@@ -1006,6 +1017,33 @@ function initializeScope(element) {
 
         // Child elementlerdeki directive'leri de işle - recursive yapı
         processChildDirectives(element, proxiedData, context);
+
+        // Component-level lifecycle: mounted()
+        if (!element._tinypineMountedFired) {
+            element._tinypineMountedFired = true;
+            const runMounted = () => {
+                try {
+                    if (typeof context.mounted === 'function') {
+                        context.mounted(element, context);
+                    }
+                } catch (_) { /* ignore in all modes */ }
+
+                // Emit global lifecycle event and callbacks
+                if (typeof window !== 'undefined' && window.TinyPine) {
+                    try { window.TinyPine.emit && window.TinyPine.emit('component:mounted', element, context); } catch (_) {}
+                    if (Array.isArray(window.TinyPine._onMountCallbacks)) {
+                        window.TinyPine._onMountCallbacks.forEach(cb => { try { cb(element, context); } catch(_){} });
+                    }
+                }
+            };
+
+            // Ensure directives are bound before calling mounted
+            if (typeof queueMicrotask === 'function') {
+                queueMicrotask(runMounted);
+            } else {
+                setTimeout(runMounted, 0);
+            }
+        }
     } catch (error) {
         console.warn('[TinyPine] Failed to parse t-data:', dataAttr, error);
     }
@@ -1441,8 +1479,9 @@ if (typeof window !== 'undefined') {
     };
 
     // onMount
-    const _mountCallbacks = [];
-    window.TinyPine.onMount = function(cb) { if (typeof cb === 'function') _mountCallbacks.push(cb); };
+    // Global onMount callbacks (component-level)
+    window.TinyPine._onMountCallbacks = window.TinyPine._onMountCallbacks || [];
+    window.TinyPine.onMount = function(cb) { if (typeof cb === 'function') window.TinyPine._onMountCallbacks.push(cb); };
 
     // start(selectorOrRoot, { safe })
     window.TinyPine.start = function(selectorOrRoot, opts = {}) {
@@ -1463,9 +1502,7 @@ if (typeof window !== 'undefined') {
             ? document.querySelector(selectorOrRoot) || document.body
             : (selectorOrRoot || document.body);
         init(root);
-        // Mount callbacks
-        _mountCallbacks.splice(0).forEach(cb => { try { cb(); } catch(_){} });
-        // Emit mounted
+        // Emit global app mounted (backward compat)
         window.TinyPine.emit('mounted');
     };
 

@@ -123,6 +123,15 @@
             </div>
           </div>
         </div>
+
+        <!-- Lifecycle: mounted(el, ctx) -->
+        <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-6 border-2 border-emerald-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌱 Lifecycle: mounted(el, ctx)</h3>
+          <div t-data="{ msg: 'Ready!', mounted(el, ctx) { el.querySelector('#mounted-msg').classList.add('text-emerald-600','font-bold'); console.log('[TinyPine] Mounted component', el); } }" class="space-y-3">
+            <p id="mounted-msg" class="text-gray-700">This text becomes green on mount.</p>
+            <p class="text-sm text-gray-500">Open console to see mount logs.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -573,14 +582,14 @@
     <!-- t-await + t-loading + t-error Demo -->
     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
       <h3>⏳ t-await: Async with Loading & Error States</h3>
-      <div t-data="{ user: null }">
+      <div t-data="{ user: {} }">
         <div t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())">
           <div t-loading="'⏳ Loading user data...'" style="padding: 20px; text-align: center;">Loading...</div>
           <div t-error="'❌ Failed to load user!'" style="padding: 20px; text-align: center; color: #ff6b6b;">Error!</div>
           <div style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 10px;">
-            <p><strong>Name:</strong> <span t-text="user.name"></span></p>
-            <p><strong>Email:</strong> <span t-text="user.email"></span></p>
-            <p><strong>Website:</strong> <span t-text="user.website"></span></p>
+            <p><strong>Name:</strong> <span t-text="user?.name || ''"></span></p>
+            <p><strong>Email:</strong> <span t-text="user?.email || ''"></span></p>
+            <p><strong>Website:</strong> <span t-text="user?.website || ''"></span></p>
           </div>
         </div>
       </div>
@@ -700,6 +709,11 @@ cache.get('key'); // returns 'value'</pre>
 
     // Enable debug mode
     TinyPine.debug = true;
+
+    // Global lifecycle listener
+    TinyPine.onMount((el, ctx) => {
+      console.log('🌱 onMount:', el);
+    });
 
     // Initialize TinyPine
     TinyPine.init();
