@@ -188,6 +188,8 @@ Ready-to-use Tailwind CSS components:
 TinyPine.theme = 'dark'; // or 'light'
 ```
 
+[📖 Complete UI Usage Guide →](USAGE-UI.md) | [📖 Türkçe Kılavuz →](USAGE-UI-TR.md)
+
 ---
 
 ## ✨ v1.1.0 Features
