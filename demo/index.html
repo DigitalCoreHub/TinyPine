@@ -3,869 +3,519 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TinyPine.js - Documentation & Examples</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>TinyPine.js - Your new, lightweight, reactive framework</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/tinypine.ui.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    .code-block { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; font-family: 'Fira Code', monospace; overflow-x: auto; }
-    .section-divider { border-top: 2px solid #cbd5e1; }
 
-    /* Transition Animations */
-    .fade-enter { opacity: 1 !important; transition: opacity 0.3s ease !important; }
-    .fade-leave-active { opacity: 0 !important; transition: opacity 0.3s ease !important; }
+    /* Code syntax highlighting */
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-block .tag { color: #c792ea; }
+    .code-block .attr { color: #82aaff; }
+    .code-block .string { color: #c3e88d; }
+    .code-block .comment { color: #546e7a; font-style: italic; }
 
-    /* Force transition on t-show elements */
-    [t-show] { transition: all 0.3s ease; }
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Transition animations */
+    [t-show] { transition: opacity 0.2s ease, transform 0.2s ease; }
+
+    /* Dark mode support */
+    .dark .code-block { background: #0f172a; }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
 
-  <!-- Navigation Bar -->
-  <nav class="bg-white shadow-lg sticky top-0 z-50">
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
+      <div class="flex justify-between items-center h-16">
         <div class="flex items-center space-x-2">
-          <span class="text-3xl">🌲</span>
-          <span class="text-2xl font-bold text-gray-800">TinyPine.js</span>
-          <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded-full">v0.3.0</span>
+          <span class="text-2xl">🌲</span>
+          <span class="text-xl font-bold">TinyPine.js</span>
         </div>
-        <div class="flex items-center space-x-4">
-          <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 hover:text-purple-600 transition">GitHub</a>
-          <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Documentation</a>
+        <div class="flex items-center space-x-6">
+          <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">GitHub</a>
+          <a href="https://www.npmjs.com/package/tinypine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">NPM</a>
+          <button onclick="document.documentElement.classList.toggle('dark')" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+            🌓
+          </button>
         </div>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center mb-16">
-      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-        TinyPine.js
+  <section class="pt-32 pb-20 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+        Your new, lightweight, JavaScript framework.
       </h1>
-      <p class="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
+      <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
         Minimal, comfortable & intuitive reactive micro-framework
       </p>
-      <p class="text-lg text-gray-500 max-w-2xl mx-auto">
-        Write reactive HTML directly in the browser—no bundlers, no transpilation, no configuration.
-      </p>
-      <div class="mt-8 flex justify-center space-x-4">
-        <button class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition shadow-lg">
-          Get Started
-        </button>
-        <button class="bg-white text-purple-600 border-2 border-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition">
-          View on GitHub
-        </button>
+      <div class="flex justify-center gap-4 mb-12">
+        <a href="#get-started" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Get started →</a>
+        <a href="https://github.com/DigitalCoreHub/TinyPine" class="px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg font-semibold transition">GitHub</a>
+      </div>
+
+      <!-- Hero Code Example -->
+      <div class="mt-16">
+        <div class="code-block text-left mb-4">
+          <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+        </div>
+        <div class="code-block text-left">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ open: false }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"open = true"</span><span class="tag">&gt;</span>Expand<span class="tag">&lt;/button&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-show</span>=<span class="string">"open"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Content...<br>
+          &nbsp;&nbsp;<span class="tag">&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-
-    <!-- Core Concepts -->
-    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-lg mr-3">1</span>
-        Core Concepts
-      </h2>
-
-      <div class="code-block mb-6">
-        <div class="text-green-400">// Basic Setup</div>
-        <div><span class="text-purple-400">&lt;div</span> <span class="text-blue-400">t-data</span>=<span class="text-yellow-300">"{ count: 0 }"</span><span class="text-purple-400">&gt;</span></div>
-        <div class="pl-4">  <span class="text-purple-400">&lt;span</span> <span class="text-blue-400">t-text</span>=<span class="text-yellow-300">"count"</span><span class="text-purple-400">&gt;&lt;/span&gt;</span></div>
-        <div class="pl-4">  <span class="text-purple-400">&lt;button</span> <span class="text-blue-400">t-click</span>=<span class="text-yellow-300">"count++"</span><span class="text-purple-400">&gt;</span>+<span class="text-purple-400">&lt;/button&gt;</span></div>
-        <div><span class="text-purple-400">&lt;/div&gt;</span></div>
-      </div>
-
-      <div t-data="{ count: 0, name: '', showImage: true, linkUrl: 'https://github.com/DigitalCoreHub/TinyPine', linkText: 'Visit GitHub' }" class="space-y-6">
-
-        <!-- Live Counter Demo -->
-        <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-8 border-2 border-purple-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">💡 Live Counter Example</h3>
-          <div class="text-center">
-            <div class="text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-6" t-text="count"></div>
-            <div class="flex gap-4 justify-center flex-wrap">
-              <button t-click="count--" class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
-                − Decrement
-              </button>
-              <button t-click="count++" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
-                + Increment
-              </button>
-              <button t-click="count = 0" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
-                Reset
-              </button>
-            </div>
-          </div>
+  <!-- Three Features -->
+  <section class="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+        <div>
+          <h3 class="text-2xl font-bold mb-4">Simple.</h3>
+          <p class="text-gray-600 dark:text-gray-400">Declarative syntax that feels natural. Just add attributes to your HTML.</p>
         </div>
-
-        <!-- Conditional Display -->
-        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border-2 border-teal-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-3">📊 Conditional Display (t-show)</h3>
-          <p class="text-gray-600 mb-3">Message only appears when count > 5</p>
-          <div class="p-4 bg-white rounded-lg text-center font-semibold shadow-sm border-2 border-teal-300" t-show="count > 5">
-            🎉 Wow! Count is greater than 5!
-          </div>
+        <div>
+          <h3 class="text-2xl font-bold mb-4">Lightweight.</h3>
+          <p class="text-gray-600 dark:text-gray-400">Only 30KB minified. No build step required. Drop it in and go.</p>
         </div>
-
-        <!-- Two-way Binding -->
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔗 Two-way Binding (t-model)</h3>
-          <div class="space-y-3">
-            <label class="block text-gray-700 font-medium">Enter your name:</label>
-            <input type="text"
-                   t-model="name"
-                   placeholder="Type your name..."
-                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
-            <div class="p-4 bg-white rounded-xl min-h-[50px] flex items-center justify-center text-purple-600 font-semibold shadow-sm" t-show="name">
-              <span t-text="'Hello, ' + name + '! 👋'"></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lifecycle: mounted(el, ctx) -->
-        <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-6 border-2 border-emerald-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌱 Lifecycle: mounted(el, ctx)</h3>
-          <div t-data="{ msg: 'Ready!', mounted(el, ctx) { el.querySelector('#mounted-msg').classList.add('text-emerald-600','font-bold'); } }" class="space-y-3">
-            <p id="mounted-msg" class="text-gray-700">This text becomes green on mount.</p>
-            <p class="text-sm text-gray-500">Open console to see mount logs.</p>
-          </div>
+        <div>
+          <h3 class="text-2xl font-bold mb-4">Powerful as hell.</h3>
+          <p class="text-gray-600 dark:text-gray-400">Everything you need: reactivity, routing, i18n, stores, and more.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- v0.2.0 Features -->
-    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg mr-3">2</span>
-        v0.2.0: Scoped Contexts & Methods
-      </h2>
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
 
-      <div t-data="{ parentCount: 0, methods: { inc() { this.parentCount++; } } }" class="space-y-6">
+    <p class="text-center text-lg text-gray-600 dark:text-gray-400 mb-16">
+      There is no better way to get a feel for what TinyPine is and what it can do, than by seeing it for yourself:
+    </p>
 
-        <!-- Nested Scopes -->
-        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border-2 border-indigo-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌳 Nested Scopes with $parent</h3>
-          <div class="bg-white rounded-lg p-6 space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="font-medium text-gray-700">Parent Counter:</span>
-              <span class="text-2xl font-bold text-indigo-600" t-text="parentCount"></span>
-            </div>
-            <div t-data="{ childCount: 0, methods: { inc() { this.childCount++; } } }" class="bg-indigo-50 rounded-lg p-4 border-2 border-indigo-100">
-              <div class="flex items-center justify-between mb-3">
-                <span class="font-medium text-gray-700">Child Counter:</span>
-                <span class="text-2xl font-bold text-purple-600" t-text="childCount"></span>
-              </div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="font-medium text-gray-700">Parent via $parent:</span>
-                <span class="text-xl font-bold text-blue-600" t-text="$parent?.parentCount ?? 'N/A'"></span>
-              </div>
-              <button t-click="methods.inc()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
-                Increment Child
-              </button>
-            </div>
-            <button t-click="methods.inc()" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
-              Increment Parent
-            </button>
-          </div>
-        </div>
-
-        <!-- t-ref Demo -->
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">📍 t-ref Directive</h3>
-          <div class="space-y-4" t-data="{ name: '', methods: {
-            focusInput() {
-              const scopeEl = this.$el?.closest('[t-data]');
-              if (scopeEl?._tinypineContext?.refs?.myInput) {
-                scopeEl._tinypineContext.refs.myInput.focus();
-              }
-            }
-          } }">
-            <input t-ref="myInput" type="text" t-model="name" placeholder="Type here..."
-                   class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition">
-            <button t-click="methods.focusInput()"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
-              📍 Focus Input via $refs
-            </button>
-            <p class="text-sm text-gray-600">$refs.myInput: <span t-text="$refs?.myInput ? '✓ Found' : '✗ Not found'" class="font-semibold"></span></p>
-          </div>
-        </div>
-
-        <!-- $el & $root Accessors -->
-        <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🎯 $el & $root Accessors</h3>
-          <div t-data="{ methods: { getInfo() {
-            // Context info available via this.$el, this.$root, this.$parent
-          } } }" class="space-y-4">
-            <button t-click="methods.getInfo()"
-                    class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition font-semibold">
-              Log Context to Console
-            </button>
-            <p class="text-sm text-gray-600">Open browser console to see the output</p>
-          </div>
-        </div>
-
-        <!-- Debug Mode -->
-        <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔍 Debug Mode</h3>
-          <div class="bg-white rounded-lg p-4 space-y-2">
-            <button t-click="TinyPine.debug = true" class="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-semibold">
-              Enable Debug Mode
-            </button>
-            <p class="text-sm text-gray-600">Open console to see reactive changes</p>
-          </div>
-        </div>
-
+    <!-- t-data -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-data</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Declare a new component and its data</span>
       </div>
-    </section>
-
-    <!-- v0.4.0: Global Store -->
-    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg mr-3">4</span>
-        v0.4.0: Global Store (TinyPine.store)
-      </h2>
-
-      <div t-data="{ methods: {
-        toggleAuth() { this.$store.auth.loggedIn = !this.$store.auth.loggedIn; },
-        toggleTheme() { this.$store.ui.theme = this.$store.ui.theme === 'light' ? 'dark' : 'light'; }
-      } }" class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200 mb-8">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">🌐 Global Store Demo</h3>
-        <p class="text-gray-600 mb-6">Access global state via <code class="bg-gray-100 px-2 py-1 rounded">$store</code> in any component</p>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="bg-white rounded-lg p-4 border-2 border-blue-100">
-            <h4 class="font-semibold mb-3">🔐 Auth Store</h4>
-            <div class="space-y-2">
-              <div><span class="text-sm text-gray-600">User:</span> <span class="font-semibold" t-text="$store.auth.user"></span></div>
-              <div><span class="text-sm text-gray-600">Logged In:</span> <span class="font-semibold" t-text="$store.auth.loggedIn ? '✓' : '✗'"></span></div>
-              <button t-click="methods.toggleAuth()"
-                      class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Toggle Login</button>
-              <input type="text" t-model="$store.auth.user" placeholder="Username"
-                     class="w-full px-3 py-2 border rounded-lg">
-            </div>
-          </div>
-
-          <div class="bg-white rounded-lg p-4 border-2 border-blue-100">
-            <h4 class="font-semibold mb-3">🎨 UI Store</h4>
-            <div class="space-y-2">
-              <div><span class="text-sm text-gray-600">Theme:</span> <span class="font-semibold" t-text="$store.ui.theme"></span></div>
-              <div><span class="text-sm text-gray-600">Language:</span> <span class="font-semibold" t-text="$store.ui.language"></span></div>
-              <button t-click="methods.toggleTheme()"
-                      class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Toggle Theme</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- v0.3.0 Features -->
-    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-lg mr-3">3</span>
-        v0.3.0: List Rendering & Event Modifiers
-      </h2>
-
-      <!-- t-for Directive -->
-      <div class="mb-12 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 border-2 border-green-200">
-        <h3 class="text-2xl font-semibold text-gray-800 mb-4">🔄 t-for Directive</h3>
-        <p class="text-gray-600 mb-6">Render lists dynamically with reactive array mutations</p>
-
-        <div t-data="{ items: ['Apple', 'Banana', 'Cherry'], newItem: '', methods: {
-          add() { if (this.newItem.trim()) { this.items.push(this.newItem); this.newItem = ''; } },
-          remove(index) { this.items.splice(index, 1); }
-        } }" class="space-y-6">
-
-          <div class="flex gap-2">
-            <input type="text" t-model="newItem" placeholder="Add item..."
-                   class="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
-            <button t-click="methods.add()"
-                    class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
-              ➕ Add
-            </button>
-          </div>
-
-          <ul class="space-y-2">
-            <li t-for="(item, index) in items"
-                class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-              <span class="text-gray-700 font-medium" t-text="item"></span>
-              <div class="flex items-center gap-4">
-                <span class="text-xs text-gray-500">Index: <span t-text="index"></span></span>
-                <button t-click="methods.remove(index)"
-                        class="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">
-                  🗑️ Remove
-                </button>
-              </div>
-            </li>
-          </ul>
-
-        </div>
-      </div>
-
-      <!-- Event Modifiers -->
-      <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-8 border-2 border-orange-200">
-        <h3 class="text-2xl font-semibold text-gray-800 mb-6">🎯 Event Modifiers</h3>
-
-        <div t-data="{ clicked: 0, methods: {
-          clickme() { this.clicked++; alert('Button clicked!'); }
-        } }" class="space-y-6">
-
-          <!-- .prevent -->
-          <div class="bg-white rounded-lg p-4 border-2 border-orange-200">
-            <h4 class="font-semibold mb-2">1️⃣ .prevent - Prevents default behavior</h4>
-            <a href="https://github.com" t-click="methods.clickme.prevent"
-               class="text-blue-600 underline hover:text-blue-800">
-              🔗 Click this link (page won't navigate)
-            </a>
-            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
-          </div>
-
-          <!-- .once -->
-          <div class="bg-white rounded-lg p-4 border-2 border-orange-200">
-            <h4 class="font-semibold mb-2">2️⃣ .once - Executes only once</h4>
-            <button t-click="methods.clickme.once"
-                    class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
-              ⚡ Click me (only once!)
-            </button>
-            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
-          </div>
-
-          <!-- .stop -->
-          <div t-click="methods.clickme" class="bg-white rounded-lg p-4 border-2 border-orange-200">
-            <h4 class="font-semibold mb-2">3️⃣ .stop - Stops event propagation</h4>
-            <p class="text-xs text-gray-500 mb-2">Parent div has t-click="methods.clickme" (alerts on every click)</p>
-            <div class="space-x-3">
-              <button t-click="methods.clickme"
-                      class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
-                🔘 Normal Button (2 alerts)
-              </button>
-              <button t-click="methods.clickme.stop"
-                      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                🛑 .stop Button (1 alert)
-              </button>
-            </div>
-            <p class="text-xs mt-2">Clicked: <span t-text="clicked"></span> times</p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- API Reference -->
-    <section class="mb-16 bg-white rounded-2xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8">📚 API Reference</h2>
-
       <div class="grid md:grid-cols-2 gap-6">
-
-        <div class="border-2 border-gray-200 rounded-xl p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">Core Directives</h3>
-          <ul class="space-y-2 text-gray-600">
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-data</code> - Define reactive state</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-text</code> - Update text content</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-show</code> - Toggle visibility</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-bind</code> - Bind attributes</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-class</code> - Dynamic classes</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-model</code> - Two-way binding</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-click</code> - Click handlers</li>
-          </ul>
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ count: 0 }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"count++"</span><span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"count"</span><span class="tag">&gt;&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
         </div>
-
-        <div class="border-2 border-gray-200 rounded-xl p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">Advanced Directives</h3>
-          <ul class="space-y-2 text-gray-600">
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-for</code> - List rendering</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">t-ref</code> - DOM references</li>
-          </ul>
-        </div>
-
-        <div class="border-2 border-gray-200 rounded-xl p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">Context Accessors</h3>
-          <ul class="space-y-2 text-gray-600">
-            <li><code class="bg-gray-100 px-2 py-1 rounded">$parent</code> - Access parent scope</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">$root</code> - Access root scope</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">$refs</code> - Access DOM references</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">$el</code> - Current element</li>
-          </ul>
-        </div>
-
-        <div class="border-2 border-gray-200 rounded-xl p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">Event Modifiers</h3>
-          <ul class="space-y-2 text-gray-600">
-            <li><code class="bg-gray-100 px-2 py-1 rounded">.prevent</code> - preventDefault()</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">.stop</code> - stopPropagation()</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">.once</code> - Execute once</li>
-            <li><code class="bg-gray-100 px-2 py-1 rounded">.outside</code> - Detect outside clicks</li>
-          </ul>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-lg p-8 text-white text-center">
-      <h3 class="text-2xl font-bold mb-4">Ready to build with TinyPine?</h3>
-      <p class="text-purple-100 mb-6">Start building reactive UIs with zero configuration</p>
-      <div class="flex justify-center space-x-4">
-        <a href="https://github.com/DigitalCoreHub/TinyPine" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition">
-          View on GitHub
-        </a>
-        <a href="#" class="px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition">
-          Documentation
-        </a>
-      </div>
-      <p class="mt-8 text-purple-200 text-sm">
-        Built with ❤️ by the TinyPine team
-      </p>
-    </footer>
-
-  </div>
-
-    <!-- v0.5.0: Lifecycle Hooks Demo -->
-    <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-lg mr-3">5</span>
-        v0.5.0: Lifecycle Hooks & Plugin API
-      </h2>
-
-      <!-- Lifecycle Demo -->
-      <div class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">🔄 Lifecycle Hooks</h3>
-
-        <div t-data="{ count: 0 }"
-             class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
-
-          <p class="text-gray-700 mb-4">Count: <span t-text="count" class="font-bold text-purple-600"></span></p>
-          <button t-click="count++" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-            +1 (Check Console)
-          </button>
-          <p class="text-sm text-gray-500 mt-2">
-            Open console to see <code>t-init</code> log
-          </p>
-        </div>
-      </div>
-
-      <!-- v1.1.3: Unmount Lifecycle Demo -->
-      <div class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">🧹 Unmount Lifecycle (v1.1.3)</h3>
-
-        <div t-data="{ showDemo: true, methods: { remove() { this.showDemo = false; } } }" class="space-y-4">
-          <div t-show="showDemo">
-            <div t-data="{
-              count: 0,
-              mounted(el, ctx) {
-                el.classList.add('opacity-100');
-              },
-              beforeUnmount(el, ctx) {
-                // Cleanup before removal
-              },
-              unmounted(el, ctx) {
-                // Final cleanup after removal
-              }
-            }" class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-6 border-2 border-emerald-200">
-              <p class="text-gray-700 mb-4">
-                Count: <span t-text="count" class="font-bold text-emerald-600"></span>
-              </p>
-              <button t-click="count++" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition mb-4">
-                +1
-              </button>
-              <p class="text-sm text-gray-600 mb-2">
-                This component has <code>mounted()</code>, <code>beforeUnmount()</code>, and <code>unmounted()</code> hooks.
-              </p>
-            </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ count: 0 }" class="flex items-center gap-4">
+            <button t-click="count++" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">+</button>
+            <span t-text="count" class="text-2xl font-bold"></span>
           </div>
-
-          <button t-click="methods.remove()"
-                  t-show="showDemo"
-                  class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold">
-            🗑️ Remove Component (Check Console)
-          </button>
-
-          <button t-click="showDemo = true"
-                  t-show="!showDemo"
-                  class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
-            🔄 Restore Component
-          </button>
-
-          <p class="text-sm text-gray-500">
-            Open console to see lifecycle logs when component is removed/restored.
-          </p>
         </div>
       </div>
+    </div>
 
-      <!-- Plugin Demo -->
-      <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">🧩 Plugin System</h3>
-        <p class="text-gray-600 mb-4">
-          Custom plugins can extend TinyPine with new directives and functionality
-        </p>
-        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto">
-<code>TinyPine.use({
-  name: 'LoggerPlugin',
-  init(TinyPine) {
-    TinyPine.directive('log', (el, value) => {
-      console.log('[t-log]', value);
-    });
-  }
-});</code></pre>
+    <!-- t-text -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-text</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Set the text content of an element</span>
       </div>
-    </section>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div&gt;</span><br>
+          &nbsp;&nbsp;Copyright ©<br>
+          &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"new Date().getFullYear()"</span><span class="tag">&gt;&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{}">
+            Copyright © <span t-text="new Date().getFullYear()"></span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- v0.6.0: Transitions Demo -->
-    <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-green-100 text-green-600 px-3 py-1 rounded-lg mr-3">6</span>
-        v0.6.0: Transitions & Plugin API
-      </h2>
+    <!-- t-show -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-show</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Toggle the visibility of an element</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ open: false }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"open = !open"</span><span class="tag">&gt;</span>Toggle<span class="tag">&lt;/button&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-show</span>=<span class="string">"open"</span><span class="tag">&gt;</span>Content...<span class="tag">&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ open: false }">
+            <button t-click="open = !open" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition mb-4">Toggle</button>
+            <span t-show="open" class="block p-4 bg-purple-100 dark:bg-purple-900 rounded-lg">Content appears when open is true!</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <div class="space-y-6">
-        <!-- Working Example with Button -->
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border-2 border-green-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🎬 Working Example</h3>
+    <!-- t-click -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-click</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Listen for click events</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"count++"</span><span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ count: 0 }">
+            <button t-click="count++" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Count: <span t-text="count"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <div t-data="{ show: true }">
-            <button t-click="show = !show" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition mb-4">
-              <span t-text="show ? 'Hide' : 'Show'"></span> Box
-            </button>
+    <!-- t-model -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-model</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Synchronize data with input elements</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ search: '' }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">t-model</span>=<span class="string">"search"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;Searching for: <span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"search"</span><span class="tag">&gt;&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ search: '' }">
+            <input type="text" t-model="search" placeholder="Type to search..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700">
+            <p>Searching for: <span t-text="search" class="font-semibold"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <div t-show="show" class="bg-white p-6 rounded-lg border border-green-200">
-              <p class="text-gray-700 font-semibold">✅ Auto Fade Effect!</p>
-              <p class="text-sm text-gray-500 mt-2">t-show automatically adds transition</p>
+    <!-- t-for -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-for</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Repeat a block of HTML based on a data set</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ items: ['One', 'Two', 'Three'] }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;div</span> <span class="attr">t-for</span>=<span class="string">"item in items"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;h2</span> <span class="attr">t-text</span>=<span class="string">"item"</span><span class="tag">&gt;&lt;/h2&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;/div&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ items: ['Apple', 'Banana', 'Cherry'] }">
+            <div t-for="item in items" class="p-2 mb-2 bg-purple-100 dark:bg-purple-900 rounded">
+              <span t-text="item" class="font-semibold"></span>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Slide Example -->
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border-2 border-blue-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">📦 Slide Example</h3>
-
-          <div t-data="{ slideShow: true }">
-            <button t-click="slideShow = !slideShow" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition mb-4">
-              <span t-text="slideShow ? 'Hide' : 'Show'"></span> Box
-            </button>
-
-            <div t-show="slideShow" class="bg-white p-6 rounded-lg border border-blue-200">
-              <p class="text-gray-700 font-semibold">✅ Auto Transition!</p>
-              <p class="text-sm text-gray-500 mt-2">No extra CSS needed</p>
-            </div>
+    <!-- t-init -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-init</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Run code when an element is initialized</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ date: new Date() }"</span><span class="tag">&gt;</span><br>
+          &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"date.toLocaleString()"</span><span class="tag">&gt;&lt;/span&gt;</span><br>
+          <span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{ date: new Date() }">
+            <span t-text="date.toLocaleString()"></span>
           </div>
-        </div>
-
-        <!-- Scale Example -->
-        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">⚡ Scale Example</h3>
-
-          <div t-data="{ scaleShow: true }">
-            <button t-click="scaleShow = !scaleShow" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition mb-4">
-              <span t-text="scaleShow ? 'Hide' : 'Show'"></span> Box
-            </button>
-
-            <div t-show="scaleShow" class="bg-white p-6 rounded-lg border border-purple-200">
-              <p class="text-gray-700 font-semibold">✅ No CSS Required!</p>
-              <p class="text-sm text-gray-500 mt-2">Works out of the box</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Code Example -->
-        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">📝 Usage</h3>
-          <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
-<code>&lt;div t-show="visible"
-     t-transition="fade"
-     style="transition: 0.3s;"&gt;
-  Content
-&lt;/div&gt;</code></pre>
-          <p class="text-sm text-gray-500 mt-4">
-            💡 Presets: <code>fade</code>, <code>slide</code>, <code>scale</code>, <code>blur</code>
-          </p>
-        </div>
-
-        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🧩 Plugin System</h3>
-          <p class="text-gray-600 mb-4">
-            Extend TinyPine with custom directives and functionality.
-          </p>
-          <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto">
-<code>TinyPine.use({
-  name: 'MyPlugin',
-  init(TinyPine) {
-    console.log('Plugin loaded!');
-    TinyPine.directive('custom', (el, value) => {
-      console.log('Custom directive:', value);
-    });
-  }
-});
-
-&lt;div t-custom="'Hello'"&gt;&lt;/div&gt;</code></pre>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- v1.2.0: TinyPine UI Components -->
-    <section class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-        <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-lg mr-3">UI</span>
-        v1.2.0: TinyPine UI Components
-      </h2>
+    <!-- t-ref -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">t-ref</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Reference elements using $refs</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">t-ref</span>=<span class="string">"input"</span><span class="tag">&gt;</span><br>
+          <span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"$refs.input.focus()"</span><span class="tag">&gt;</span>Focus<span class="tag">&lt;/button&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{}">
+            <input type="text" t-ref="input" placeholder="Click button to focus" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700">
+            <button t-click="$refs.input.focus()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Focus Input</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <div class="space-y-6">
-        <!-- Button Component Demo -->
-        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6 border-2 border-indigo-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🔘 tp-button Component</h3>
+    <!-- $store -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">$store</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Access global stores registered with TinyPine.store()</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;h1</span> <span class="attr">t-text</span>=<span class="string">"$store.site.title"</span><span class="tag">&gt;&lt;/h1&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{}">
+            <h1 t-text="$store.site.title" class="text-2xl font-bold"></h1>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <div t-data="{ theme: 'light' }" class="space-y-4">
+    <!-- $el -->
+    <div class="mb-20">
+      <div class="flex items-center mb-4">
+        <h2 class="text-3xl font-bold mr-4">$el</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Reference the current DOM element</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="code-block">
+          <span class="tag">&lt;div</span> <span class="attr">t-init</span>=<span class="string">"$el.style.background = 'purple'"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+        </div>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+          <div t-data="{}" t-init="(function(){ $el.style.background = 'rgb(147, 51, 234)'; $el.style.color = 'white'; $el.style.padding = '1rem'; $el.style.borderRadius = '0.5rem'; })()">
+            This div's background was set via $el
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TinyPine UI Components -->
+    <div class="mb-20 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl p-8">
+      <h2 class="text-4xl font-bold mb-8 text-center">🎨 TinyPine UI Components</h2>
+      <p class="text-center text-gray-600 dark:text-gray-400 mb-12">Ready-to-use Tailwind CSS components</p>
+
+      <div class="space-y-12">
+        <!-- Button Demo -->
+        <div t-data="{ openModal: false }">
+          <h3 class="text-2xl font-bold mb-6">tp-button</h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="code-block">
+              <span class="tag">&lt;tp-button</span> <span class="attr">color</span>=<span class="string">"primary"</span> <span class="attr">size</span>=<span class="string">"md"</span><span class="tag">&gt;</span>Save<span class="tag">&lt;/tp-button&gt;</span>
+            </div>
             <div class="flex flex-wrap gap-3">
               <tp-button color="primary" size="md">Primary</tp-button>
               <tp-button color="success" size="md">Success</tp-button>
               <tp-button color="danger" size="md">Danger</tp-button>
               <tp-button color="outline" size="md">Outline</tp-button>
-              <tp-button color="ghost" size="md">Ghost</tp-button>
-            </div>
-
-            <div class="flex flex-wrap gap-3 items-center">
-              <tp-button color="primary" size="sm">Small</tp-button>
-              <tp-button color="primary" size="md">Medium</tp-button>
-              <tp-button color="primary" size="lg">Large</tp-button>
-            </div>
-
-            <div class="flex flex-wrap gap-3">
-              <tp-button color="primary" size="md" icon="check">Save</tp-button>
-              <tp-button color="success" size="md" icon="plus">Add</tp-button>
-              <tp-button color="danger" size="md" icon="close">Delete</tp-button>
             </div>
           </div>
         </div>
 
-        <!-- Modal Component Demo -->
-        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-6 border-2 border-blue-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🪟 tp-modal Component</h3>
+        <!-- Modal Demo -->
+        <div t-data="{ openModal: false }">
+          <h3 class="text-2xl font-bold mb-6">tp-modal</h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="code-block">
+              <span class="tag">&lt;tp-modal</span> <span class="attr">t-show</span>=<span class="string">"open"</span> <span class="attr">title</span>=<span class="string">"Modal"</span><span class="tag">&gt;</span><br>
+              &nbsp;&nbsp;Content...<br>
+              <span class="tag">&lt;/tp-modal&gt;</span>
+            </div>
+            <div>
+              <tp-button color="primary" size="md" t-click="openModal = true" class="mb-4">Open Modal</tp-button>
+              <tp-modal t-show="openModal" title="TinyPine Modal">
+                <p class="mb-4">This is a modal component!</p>
+                <tp-button color="outline" size="md" t-click="openModal = false">Close</tp-button>
+              </tp-modal>
+            </div>
+          </div>
+        </div>
 
-          <div t-data="{ openModal: false }" class="space-y-4">
-            <tp-button color="primary" size="md" t-click="openModal = true">Open Modal</tp-button>
-
-            <tp-modal t-show="openModal" title="TinyPine Modal Demo">
-              <p class="text-gray-700 mb-4">
-                This is a modal component built with TinyPine UI. It automatically handles backdrop clicks and close button.
-              </p>
-              <div class="flex gap-3">
-                <tp-button color="primary" size="md" t-click="openModal = false">Close</tp-button>
-                <tp-button color="outline" size="md" t-click="openModal = false">Cancel</tp-button>
+        <!-- Card Demo -->
+        <div>
+          <h3 class="text-2xl font-bold mb-6">tp-card</h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="code-block">
+              <span class="tag">&lt;tp-card</span> <span class="attr">title</span>=<span class="string">"Card Title"</span><span class="tag">&gt;</span><br>
+              &nbsp;&nbsp;<span class="tag">&lt;p&gt;</span>Content goes here...<span class="tag">&lt;/p&gt;</span><br>
+              <span class="tag">&lt;/tp-card&gt;</span>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800">
+              <div t-data="{ showCard: true }" class="space-y-4">
+                <button t-click="showCard = !showCard" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">
+                  <span t-text="showCard ? 'Hide Card' : 'Show Card'"></span>
+                </button>
+                <div t-show="showCard">
+                  <tp-card title="Card Title">
+                    <p class="mb-4">This is a card component with Tailwind styling. Click the button above to toggle it!</p>
+                    <tp-button color="primary" size="sm">Action Button</tp-button>
+                  </tp-card>
+                </div>
               </div>
-            </tp-modal>
-          </div>
-        </div>
-
-        <!-- Card Component Demo -->
-        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-6 border-2 border-emerald-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">📦 tp-card Component</h3>
-
-          <div class="grid md:grid-cols-2 gap-4">
-            <tp-card title="Card Title">
-              <p class="text-gray-700">
-                This is a card component with a title prop. Content goes here.
-              </p>
-            </tp-card>
-
-            <tp-card>
-              <p class="text-gray-700">
-                This card has no title. Just pure content.
-              </p>
-            </tp-card>
-          </div>
-        </div>
-
-        <!-- Theme Toggle Demo -->
-        <div class="bg-gradient-to-br from-gray-50 to-slate-50 rounded-lg p-6 border-2 border-gray-200">
-          <h3 class="text-xl font-semibold text-gray-800 mb-4">🌓 Theme Support</h3>
-
-          <div t-data="{ currentTheme: 'light', methods: { setTheme(theme) { TinyPine.theme = theme; this.currentTheme = theme; } } }" class="space-y-4">
-            <div class="flex gap-3">
-              <tp-button color="outline" size="md" t-click="methods.setTheme('light')">Light Mode</tp-button>
-              <tp-button color="outline" size="md" t-click="methods.setTheme('dark')">Dark Mode</tp-button>
             </div>
-            <p class="text-sm text-gray-600">
-              Current theme: <span t-text="currentTheme" class="font-semibold"></span>
-            </p>
+          </div>
+        </div>
+
+        <!-- Form Components (v1.3.0) -->
+        <div>
+          <h3 class="text-2xl font-bold mb-6">Form Components (v1.3.0)</h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="code-block">
+              <span class="tag">&lt;tp-field</span> <span class="attr">label</span>=<span class="string">"Email"</span><span class="tag">&gt;</span><br>
+              &nbsp;&nbsp;<span class="tag">&lt;tp-input</span> <span class="attr">icon</span>=<span class="string">"mail"</span> <span class="attr">placeholder</span>=<span class="string">"you@example.com"</span> <span class="attr">t-model</span>=<span class="string">"email"</span><span class="tag">&gt;&lt;/tp-input&gt;</span><br>
+              <span class="tag">&lt;/tp-field&gt;</span><br><br>
+              <span class="tag">&lt;tp-checkbox</span> <span class="attr">label</span>=<span class="string">"I agree"</span> <span class="attr">t-model</span>=<span class="string">"agree"</span><span class="tag">&gt;&lt;/tp-checkbox&gt;</span><br><br>
+              <span class="tag">&lt;tp-file-upload</span> <span class="attr">accept</span>=<span class="string">"image/*"</span> <span class="attr">t-model</span>=<span class="string">"file"</span><span class="tag">&gt;&lt;/tp-file-upload&gt;</span>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800">
+              <div t-data="{ email: '', password: '', name: '', agree: false, file: null }">
+                <tp-field label="Full Name" helper="Enter your full name" required>
+                  <tp-input icon="user" placeholder="John Doe" t-model="name" size="md"></tp-input>
+                </tp-field>
+
+                <tp-field label="Email Address" helper="We'll never share your email">
+                  <tp-input icon="mail" type="email" placeholder="hello@tinypine.dev" t-model="email" size="md"></tp-input>
+                </tp-field>
+
+                <tp-field label="Password">
+                  <tp-input icon="lock" type="password" placeholder="••••••••" t-model="password" size="md"></tp-input>
+                </tp-field>
+
+                <div class="mb-4">
+                  <tp-checkbox label="I agree to terms and conditions" t-model="agree"></tp-checkbox>
+                </div>
+
+                <tp-field label="Profile Picture">
+                  <tp-file-upload accept="image/*" max-size="5" t-model="file"></tp-file-upload>
+                </tp-field>
+
+                <div class="mt-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                  <p class="text-sm font-semibold mb-2">Form Data:</p>
+                  <p class="text-xs"><strong>Name:</strong> <span t-text="name || 'N/A'"></span></p>
+                  <p class="text-xs"><strong>Email:</strong> <span t-text="email || 'N/A'"></span></p>
+                  <p class="text-xs"><strong>Password:</strong> <span t-text="password ? '•'.repeat(password.length) : 'N/A'"></span></p>
+                  <p class="text-xs"><strong>Agreed:</strong> <span t-text="agree ? 'Yes' : 'No'"></span></p>
+                </div>
+
+                <tp-button color="success" size="md" class="w-full mt-4">Submit Form</tp-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-  </div>
+    <!-- Advanced Examples -->
+    <div class="mb-20">
+      <h2 class="text-4xl font-bold mb-12 text-center">More Examples</h2>
 
-  <!-- v0.7.0: Async & Router -->
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-top: 30px;">
-    <h2>🚀 v0.7.0: Async & Router</h2>
-    <p>TinyPine now includes async data fetching and hash-based routing.</p>
-
-    <!-- Async Fetch Demo -->
-    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-      <h3>📡 t-fetch: Fetch Data from API</h3>
-      <div t-data="{ users: [] }" t-fetch="'https://jsonplaceholder.typicode.com/users'">
-        <p>Fetched <strong style="color: #48bb78; font-size: 1.2em;" t-text="users.length"></strong> users</p>
-        <div style="max-height: 200px; overflow-y: auto;">
-          <ul style="list-style: none; padding: 0;">
-            <li t-for="user in users" style="padding: 10px; margin: 5px 0; background: rgba(255,255,255,0.1); border-radius: 5px;">
-              <strong t-text="user.name"></strong> - <span t-text="user.email"></span>
+      <!-- Todo List -->
+      <div class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800">
+        <h3 class="text-2xl font-bold mb-6">Todo List</h3>
+        <div t-data="{ todos: [], newTodo: '', methods: { add() { if(this.newTodo.trim()) { this.todos.push(this.newTodo); this.newTodo = ''; } }, remove(i) { this.todos.splice(i, 1); } } }">
+          <div class="flex gap-2 mb-4">
+            <input type="text" t-model="newTodo" placeholder="Add todo..." class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
+            <button t-click="methods.add()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Add</button>
+          </div>
+          <ul class="space-y-2">
+            <li t-for="(todo, i) in todos" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <span t-text="todo"></span>
+              <button t-click="methods.remove(i)" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition">Remove</button>
             </li>
           </ul>
         </div>
       </div>
-    </div>
 
-    <!-- t-await + t-loading + t-error Demo -->
-    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-      <h3>⏳ t-await: Async with Loading & Error States</h3>
-      <div t-data="{ user: {} }">
-        <div t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())">
-          <div t-loading="'⏳ Loading user data...'" style="padding: 20px; text-align: center;">Loading...</div>
-          <div t-error="'❌ Failed to load user!'" style="padding: 20px; text-align: center; color: #ff6b6b;">Error!</div>
-          <div style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 10px;">
-            <p><strong>Name:</strong> <span t-text="user?.name || ''"></span></p>
-            <p><strong>Email:</strong> <span t-text="user?.email || ''"></span></p>
-            <p><strong>Website:</strong> <span t-text="user?.website || ''"></span></p>
+      <!-- Async Fetch -->
+      <div class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800">
+        <h3 class="text-2xl font-bold mb-6">Async Data Fetching</h3>
+        <div t-data="{ user: {} }">
+          <div t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())">
+            <div t-loading="'Loading...'" class="text-center py-8">⏳ Loading...</div>
+            <div t-error="'Error loading user'" class="text-center py-8 text-red-500">❌ Error loading user</div>
+            <div class="p-4 bg-purple-50 dark:bg-purple-900 rounded-lg">
+              <p><strong>Name:</strong> <span t-text="user?.name || ''"></span></p>
+              <p><strong>Email:</strong> <span t-text="user?.email || ''"></span></p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Cache System Demo -->
-    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-      <h3>💾 TinyPine.cache(): Cache System</h3>
-      <div style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
-        <p>Open console to see cache operations:</p>
-        <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; font-size: 12px;">const cache = TinyPine.cache();
-cache.set('key', 'value');
-cache.get('key'); // returns 'value'</pre>
-        <button onclick="(()=>{const c=TinyPine.cache();c.set('demo','Works!');console.log('Set: demo =',c.get('demo'))})()" style="padding: 10px 20px; margin-top: 10px; background: #48bb78; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Cache (check console)</button>
+    <!-- Get Started -->
+    <div id="get-started" class="text-center py-20">
+      <h2 class="text-4xl font-bold mb-6">Get Started</h2>
+      <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">Add one script tag and you're ready to go</p>
+      <div class="code-block text-left max-w-2xl mx-auto">
+        <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span><br>
+        <span class="tag">&lt;script&gt;</span><br>
+        &nbsp;&nbsp;TinyPine.init();<br>
+        <span class="tag">&lt;/script&gt;</span>
+      </div>
+      <div class="mt-8">
+        <a href="https://www.npmjs.com/package/tinypine" class="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Install from NPM</a>
       </div>
     </div>
 
-    <!-- Router Demo -->
-    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-      <h3>🛣️ Hash Router (t-route)</h3>
-      <nav style="display: flex; gap: 10px; margin: 20px 0;">
-        <a href="#/home" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">Home</a>
-        <a href="#/about" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">About</a>
-        <a href="#/contact" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 5px;">Contact</a>
-      </nav>
-
-      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
-        <div t-route="'home'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
-          <h4>🏠 Home Page</h4>
-          <p>Welcome to the home page! This demonstrates hash-based routing.</p>
-        </div>
-
-        <div t-route="'about'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
-          <h4>ℹ️ About Page</h4>
-          <p>TinyPine's router automatically shows/hides content based on the current route.</p>
-        </div>
-
-        <div t-route="'contact'" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 5px;">
-          <h4>📧 Contact Page</h4>
-          <p>Click the navigation links to see the router in action!</p>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- v0.8.0: i18n & Localization -->
-  <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; margin-top: 30px;">
-    <h2>🌍 v0.8.0: i18n & Localization</h2>
-    <p>TinyPine now includes reactive internationalization with multi-language support.</p>
-
-    <!-- i18n Demo -->
-    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-      <h3>🌐 Reactive Translations (t-text.lang)</h3>
-      <div t-data="{ }">
-        <p style="font-size: 1.5em; margin: 20px 0;">
-          <span t-text.lang="'greeting'"></span> 🌍
-        </p>
-        <p style="margin: 20px 0;">
-          <span t-text.lang="'welcome'"></span>
-        </p>
-        <p style="margin: 20px 0;">
-          <span t-text.lang="'description'"></span>
-        </p>
-        <div style="margin-top: 20px; display: flex; gap: 10px;">
-          <button t-click="$lang = 'en'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇺🇸 English</button>
-          <button t-click="$lang = 'tr'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇹🇷 Türkçe</button>
-          <button t-click="$lang = 'es'" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; cursor: pointer;">🇪🇸 Español</button>
-        </div>
+  <!-- Footer -->
+  <footer class="bg-gray-50 dark:bg-gray-800 py-12 mt-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-gray-600 dark:text-gray-400 mb-4">Built with ❤️ by the TinyPine Team</p>
+      <div class="flex justify-center gap-6">
+        <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">GitHub</a>
+        <a href="https://www.npmjs.com/package/tinypine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">NPM</a>
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- TinyPine Core -->
   <script src="/src/store.js"></script>
   <script src="/src/core.js"></script>
   <script src="/src/devtools.js"></script>
   <script src="/src/ui.js"></script>
-  <link rel="stylesheet" href="/src/tinypine.ui.css">
+
   <script>
     // Create global stores
+    TinyPine.store('site', { title: 'TinyPine.js' });
     TinyPine.store('auth', { user: 'Guest', loggedIn: false });
     TinyPine.store('ui', { theme: 'light', language: 'en' });
 
-    // Test Watcher API
-    const unwatch = TinyPine.watch('auth.loggedIn', (newVal, oldVal, path) => {
-      // Watcher callback
-    });
-
-    // Initialize i18n with multiple languages
-    TinyPine.i18n({
-      en: {
-        greeting: 'Hello World!',
-        welcome: 'Welcome to TinyPine!',
-        description: 'This is a reactive micro-framework for building amazing UIs.'
-      },
-      tr: {
-        greeting: 'Merhaba Dünya!',
-        welcome: 'TinyPine\'e hoş geldiniz!',
-        description: 'Bu, harika arayüzler oluşturmak için reaktif bir mikro-framework\'dir.'
-      },
-      es: {
-        greeting: '¡Hola Mundo!',
-        welcome: '¡Bienvenido a TinyPine!',
-        description: 'Este es un micro-framework reactivo para crear interfaces increíbles.'
-      }
-    }, {
-      default: 'en',
-      cache: true,
-      onChange: function(lang) {
-        // Language changed
-      }
-    });
-
-    // Debug mode disabled (set to true to see internal logs)
-    TinyPine.debug = false;
-
-    // Global lifecycle listeners (silent)
-    TinyPine.onMount((el, ctx) => {
-      // Component mounted
-    });
-
-    TinyPine.onUnmount((el, ctx) => {
-      // Component unmounted
-    });
-
     // Initialize TinyPine
     TinyPine.init();
-
-    // Initialize router for v0.7.0 demo
-    TinyPine.router({
-      default: 'home',
-      onChange(route) {
-        // Route changed
-      }
-    });
-
-    // Initialize DevTools for v0.9.0 demo
-    TinyPine.devtools({
-      position: 'bottom-right',
-      theme: 'dark'
-    });
   </script>
 
 </body>

@@ -133,6 +133,196 @@ TinyPine.init();
 </tp-card>
 ```
 
+---
+
+## 📝 Form Components (v1.3.0)
+
+### tp-field
+
+Field wrapper component for adding labels, helper text, and error messages.
+
+**Props:**
+- `label` - Label text
+- `helper` - Helper text displayed below input
+- `error` - Error message (replaces helper text)
+- `required` - Shows red asterisk (*)
+
+```html
+<!-- Basic usage -->
+<tp-field label="Email Address">
+  <tp-input type="email" placeholder="you@example.com"></tp-input>
+</tp-field>
+
+<!-- With helper text -->
+<tp-field label="Password" helper="Must be at least 8 characters">
+  <tp-input type="password"></tp-input>
+</tp-field>
+
+<!-- Required field -->
+<tp-field label="Full Name" required>
+  <tp-input placeholder="John Doe"></tp-input>
+</tp-field>
+
+<!-- With error -->
+<tp-field label="Email" error="Invalid email address">
+  <tp-input type="email" state="error"></tp-input>
+</tp-field>
+```
+
+### tp-input
+
+Text input component with icon support and validation states.
+
+**Props:**
+- `type` - Input type (text, email, password, etc.) - default: "text"
+- `size` - Size: sm, md, lg - default: "md"
+- `icon` - Icon name (mail, user, lock, search, phone, calendar, location, link)
+- `state` - Validation state: error, valid
+- `placeholder` - Placeholder text
+
+```html
+<!-- Basic input -->
+<tp-input placeholder="Enter your name"></tp-input>
+
+<!-- With icon -->
+<tp-input icon="mail" placeholder="Email"></tp-input>
+<tp-input icon="lock" type="password" placeholder="Password"></tp-input>
+
+<!-- Different sizes -->
+<tp-input size="sm" placeholder="Small"></tp-input>
+<tp-input size="md" placeholder="Medium"></tp-input>
+<tp-input size="lg" placeholder="Large"></tp-input>
+
+<!-- Validation states -->
+<tp-input state="error" placeholder="Invalid"></tp-input>
+<tp-input state="valid" placeholder="Valid"></tp-input>
+
+<!-- With t-model -->
+<div t-data="{ email: '' }">
+  <tp-input icon="mail" type="email" t-model="email"></tp-input>
+  <p>You typed: <span t-text="email"></span></p>
+</div>
+```
+
+**Available Icons:**
+- `mail` 📧 - Email
+- `user` 👤 - User
+- `lock` 🔒 - Password
+- `search` 🔍 - Search
+- `phone` 📞 - Phone
+- `calendar` 📅 - Date
+- `location` 📍 - Location
+- `link` 🔗 - Link
+
+### tp-checkbox
+
+Custom checkbox component with label.
+
+**Props:**
+- `label` - Checkbox label text
+- `disabled` - Disable the checkbox
+
+```html
+<!-- Basic checkbox -->
+<tp-checkbox label="I agree to the terms"></tp-checkbox>
+
+<!-- Disabled -->
+<tp-checkbox label="Disabled option" disabled></tp-checkbox>
+
+<!-- With t-model -->
+<div t-data="{ agree: false }">
+  <tp-checkbox label="I agree" t-model="agree"></tp-checkbox>
+  <p>Agreed: <span t-text="agree ? 'Yes' : 'No'"></span></p>
+</div>
+
+<!-- Multiple checkboxes -->
+<div t-data="{ options: { newsletter: false, updates: false } }">
+  <tp-checkbox label="Newsletter" t-model="options.newsletter"></tp-checkbox>
+  <tp-checkbox label="Updates" t-model="options.updates"></tp-checkbox>
+</div>
+```
+
+### tp-file-upload
+
+Drag & drop file upload with image preview.
+
+**Props:**
+- `accept` - File types (e.g., "image/*", ".pdf") - default: "*"
+- `multiple` - Allow multiple files
+- `max-size` - Max file size in MB
+
+```html
+<!-- Basic upload -->
+<tp-file-upload></tp-file-upload>
+
+<!-- Image only -->
+<tp-file-upload accept="image/*"></tp-file-upload>
+
+<!-- Multiple files -->
+<tp-file-upload accept="image/*" multiple></tp-file-upload>
+
+<!-- With size limit -->
+<tp-file-upload accept="image/*" max-size="5"></tp-file-upload>
+
+<!-- With t-model -->
+<div t-data="{ file: null }">
+  <tp-file-upload accept="image/*" t-model="file"></tp-file-upload>
+</div>
+```
+
+**Features:**
+- ✅ Click to upload
+- ✅ Drag & drop support
+- ✅ Image preview
+- ✅ File size validation
+- ✅ Visual feedback
+
+### Complete Form Example
+
+```html
+<div t-data="{
+  form: {
+    name: '',
+    email: '',
+    password: '',
+    agree: false,
+    avatar: null
+  }
+}">
+  <!-- Name Field -->
+  <tp-field label="Full Name" helper="Enter your full name" required>
+    <tp-input icon="user" placeholder="John Doe" t-model="form.name"></tp-input>
+  </tp-field>
+
+  <!-- Email Field -->
+  <tp-field label="Email" helper="We'll never share your email">
+    <tp-input icon="mail" type="email" placeholder="hello@example.com" t-model="form.email"></tp-input>
+  </tp-field>
+
+  <!-- Password Field -->
+  <tp-field label="Password" helper="Must be at least 8 characters">
+    <tp-input icon="lock" type="password" placeholder="••••••••" t-model="form.password"></tp-input>
+  </tp-field>
+
+  <!-- Terms Checkbox -->
+  <div class="mb-4">
+    <tp-checkbox label="I agree to the terms" t-model="form.agree"></tp-checkbox>
+  </div>
+
+  <!-- Avatar Upload -->
+  <tp-field label="Profile Picture">
+    <tp-file-upload accept="image/*" max-size="5" t-model="form.avatar"></tp-file-upload>
+  </tp-field>
+
+  <!-- Submit Button -->
+  <tp-button color="success" size="md" class="w-full mt-4">
+    Create Account
+  </tp-button>
+</div>
+```
+
+---
+
 ## 🌓 Theme Usage
 
 ```js

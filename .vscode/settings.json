@@ -7,7 +7,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "never"
   },
-  "editor.minimap.enabled": true,
+  "editor.minimap.enabled": false,
   "editor.bracketPairColorization.enabled": true,
   // File associations
   "files.associations": {

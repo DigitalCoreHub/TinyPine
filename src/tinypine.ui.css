@@ -1,9 +1,9 @@
 /**
- * TinyPine UI - Base Styles
+ * TinyPine UI - Base Styles (v1.3.0)
  * Tailwind-compatible utility classes for TinyPine UI components
  */
 
-/* Base component styles (if Tailwind is not loaded) */
+/* Button Component */
 .tp-button {
   display: inline-flex;
   align-items: center;
@@ -19,6 +19,7 @@
   cursor: not-allowed;
 }
 
+/* Modal Component */
 .tp-modal {
   position: fixed;
   inset: 0;
@@ -40,6 +41,7 @@
   position: relative;
 }
 
+/* Card Component */
 .tp-card {
   background-color: white;
   border-radius: 0.5rem;
@@ -48,7 +50,78 @@
   border: 1px solid #e5e7eb;
 }
 
-/* Dark mode support */
+/* Form Components (v1.3.0) */
+
+/* Field Wrapper */
+.tp-field {
+  margin-bottom: 1rem;
+}
+
+.tp-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+/* Input Component */
+.tp-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  background-color: white;
+  color: #1f2937;
+}
+
+.tp-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.tp-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Checkbox Component */
+.tp-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #10b981;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.tp-checkbox:focus {
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.tp-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* File Upload Component */
+.tp-file-upload {
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tp-file-upload:hover {
+  background-color: #f9fafb;
+}
+
+/* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .dark .tp-modal-content,
   .dark .tp-card {
@@ -56,9 +129,36 @@
     color: white;
     border-color: #374151;
   }
+
+  .dark .tp-field label {
+    color: #d1d5db;
+  }
+
+  .dark .tp-input {
+    background-color: #111827;
+    color: #f3f4f6;
+    border-color: #374151;
+  }
+
+  .dark .tp-input::placeholder {
+    color: #6b7280;
+  }
+
+  .dark .tp-checkbox {
+    background-color: #111827;
+    border-color: #4b5563;
+  }
+
+  .dark .tp-file-upload {
+    border-color: #374151;
+  }
+
+  .dark .tp-file-upload:hover {
+    background-color: #1f2937;
+  }
 }
 
-/* Icon styles */
+/* Icon Support */
 .tp-icon {
   display: inline-block;
   line-height: 1;
