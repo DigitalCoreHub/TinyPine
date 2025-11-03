@@ -3,6 +3,7 @@
 ## 📦 NPM'e Yayınlama Adımları
 
 ### 1. NPM Hesabı
+
 ```bash
 # NPM'e login (eğer değilseniz)
 npm login
@@ -12,6 +13,7 @@ npm whoami
 ```
 
 ### 2. Package.json Kontrolü
+
 ```json
 {
   "name": "tinypine",              // Package adı (kontrol edin unique olmalı)
@@ -29,6 +31,7 @@ npm whoami
 ```
 
 ### 3. Package Adı Kontrolü
+
 ```bash
 # Package adının müsait olup olmadığını kontrol et
 npm search tinypine
@@ -38,11 +41,13 @@ npm search tinypine
 ```
 
 Eğer "tinypine" müsait değilse, alternatifler:
+
 - `@digitalcorehub/tinypine` (scoped package)
 - `tinypine-js`
 - `tinypinejs`
 
 ### 4. Build Oluşturma
+
 ```bash
 # Production build oluştur
 npm run build
@@ -52,6 +57,7 @@ ls -lh dist/
 ```
 
 ### 5. Test Publish (Dry Run)
+
 ```bash
 # Gerçek publish olmadan test et
 npm publish --dry-run
@@ -63,6 +69,7 @@ npm publish --dry-run
 ```
 
 ### 6. Git Commit & Tag
+
 ```bash
 # Tüm değişiklikleri commit et
 git add .
@@ -77,6 +84,7 @@ git push --tags
 ```
 
 ### 7. NPM Publish
+
 ```bash
 # Production'a publish et
 npm publish
@@ -86,6 +94,7 @@ npm publish --access public
 ```
 
 ### 8. Kontrol
+
 ```bash
 # Package'in yayınlandığını kontrol et
 npm view tinypine
@@ -97,6 +106,7 @@ https://www.npmjs.com/package/tinypine
 ## 🔄 Version Bump İçin
 
 ### Minor Update (0.1.0 -> 0.2.0)
+
 ```bash
 npm version minor
 git push && git push --tags
@@ -104,6 +114,7 @@ npm publish
 ```
 
 ### Patch Update (0.1.0 -> 0.1.1)
+
 ```bash
 npm version patch
 git push && git push --tags
@@ -111,6 +122,7 @@ npm publish
 ```
 
 ### Major Update (0.1.0 -> 1.0.0)
+
 ```bash
 npm version major
 git push && git push --tags
@@ -120,7 +132,9 @@ npm publish
 ## 📝 Önemli Notlar
 
 ### .npmignore Oluştur (Opsiyonel)
+
 Eğer belirli dosyaları publish etmek istemiyorsanız:
+
 ```
 .git/
 node_modules/
@@ -133,20 +147,24 @@ build.cjs
 ```
 
 ### README Güncelle
+
 NPM'de kullanım örneği ekle:
-```markdown
+
+````markdown
 ## Installation
 
 ```bash
 npm install tinypine
 ```
+````
 
 ## Usage
 
 ```html
 <script src="node_modules/tinypine/dist/tinypine.min.js"></script>
 ```
-```
+
+````
 
 ## 🚨 Troubleshooting
 
@@ -164,7 +182,7 @@ npm install tinypine
 ```bash
 npm version patch
 npm publish
-```
+````
 
 ## ✅ Checklist
 
@@ -175,4 +193,3 @@ npm publish
 - [ ] Git tag oluşturuldu
 - [ ] `npm publish` başarılı
 - [ ] NPM'de package görünüyor
-

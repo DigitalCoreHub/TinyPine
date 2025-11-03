@@ -3,8 +3,8 @@
  * Manages hierarchical scopes with $parent, $root, $refs, $el
  */
 
-import { reactive } from './core.js';
-import { debugLog } from './debug.js';
+import { reactive } from "./core.js";
+import { debugLog } from "./debug.js";
 
 /**
  * Context objesi - Her t-data element'i için oluşturulur
@@ -16,7 +16,7 @@ function createContext(element, data, parentContext) {
         parent: parentContext,
         root: parentContext ? parentContext.root : null,
         refs: {},
-        methods: {}
+        methods: {},
     };
 
     // Root context ise, kendisini root olarak işaretle
@@ -25,9 +25,7 @@ function createContext(element, data, parentContext) {
     }
 
     // Data objesini parse et
-    const dataObject = typeof data === 'string'
-        ? parseDataString(data)
-        : data;
+    const dataObject = typeof data === "string" ? parseDataString(data) : data;
 
     // Methods'u data'dan ayır
     if (dataObject.methods) {
@@ -56,16 +54,16 @@ function addContextAccessors(context) {
     context.data = new Proxy(originalData, {
         get(target, prop) {
             // Context erişim özellikleri
-            if (prop === '$parent') {
+            if (prop === "$parent") {
                 return context.parent ? context.parent.data : null;
             }
-            if (prop === '$root') {
+            if (prop === "$root") {
                 return context.root ? context.root.data : context.data;
             }
-            if (prop === '$refs') {
+            if (prop === "$refs") {
                 return context.refs;
             }
-            if (prop === '$el') {
+            if (prop === "$el") {
                 return context.el;
             }
 
@@ -75,7 +73,7 @@ function addContextAccessors(context) {
         set(target, prop, value) {
             target[prop] = value;
             return true;
-        }
+        },
     });
 }
 
@@ -84,9 +82,9 @@ function addContextAccessors(context) {
  */
 function parseDataString(dataAttr) {
     try {
-        return Function('"use strict"; return (' + dataAttr + ')')();
+        return Function('"use strict"; return (' + dataAttr + ")")();
     } catch (error) {
-        console.warn('[TinyPine] Failed to parse t-data:', dataAttr, error);
+        console.warn("[TinyPine] Failed to parse t-data:", dataAttr, error);
         return {};
     }
 }
@@ -122,5 +120,9 @@ export function initializeContext(element, dataString, parentElement) {
 }
 
 // Export default
-export default { createContext, registerContext, getContext, initializeContext };
-
+export default {
+    createContext,
+    registerContext,
+    getContext,
+    initializeContext,
+};

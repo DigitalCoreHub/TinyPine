@@ -24,6 +24,7 @@ npx tinypine new myapp
 ```
 
 Interactive wizard for selecting:
+
 - Project template (Vanilla, Tailwind, SPA, SSR, UI Ready)
 - Features (Router, i18n, UI Components, DevTools)
 
@@ -61,4 +62,3 @@ tinypine build
 ## License
 
 MIT
-

@@ -5,162 +5,188 @@
 
 /* Button Component */
 .tp-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .tp-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Modal Component */
 .tp-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 1rem;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
 }
 
 .tp-modal-content {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  max-width: 28rem;
-  width: 100%;
-  padding: 1.5rem;
-  position: relative;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 28rem;
+    width: 100%;
+    padding: 1.5rem;
+    position: relative;
 }
 
 /* Card Component */
 .tp-card {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  border: 1px solid #e5e7eb;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
 }
 
 /* Form Components (v1.3.0) */
 
 /* Field Wrapper */
 .tp-field {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .tp-field label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.25rem;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
 }
 
 /* Input Component */
 .tp-input {
-  width: 100%;
-  border-radius: 0.5rem;
-  border: 1px solid #d1d5db;
-  outline: none;
-  transition: all 0.2s ease-in-out;
-  background-color: white;
-  color: #1f2937;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    background-color: white;
+    color: #1f2937;
 }
 
 .tp-input:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
 .tp-input::placeholder {
-  color: #9ca3af;
+    color: #9ca3af;
 }
 
 /* Checkbox Component */
 .tp-checkbox {
-  width: 1rem;
-  height: 1rem;
-  accent-color: #10b981;
-  border-radius: 0.25rem;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #10b981;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
 }
 
 .tp-checkbox:focus {
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
 .tp-checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Validation States (v1.3.0) */
+.tp-invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+.tp-valid {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.tp-error-message {
+    display: block;
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 0.25rem;
+}
+
+.tp-field-error {
+    color: #ef4444;
+}
+
+/* Form Component (v1.3.0) */
+.tp-form {
+    width: 100%;
 }
 
 /* File Upload Component */
 .tp-file-upload {
-  border: 2px dashed #d1d5db;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .tp-file-upload:hover {
-  background-color: #f9fafb;
+    background-color: #f9fafb;
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-  .dark .tp-modal-content,
-  .dark .tp-card {
-    background-color: #1f2937;
-    color: white;
-    border-color: #374151;
-  }
+    .dark .tp-modal-content,
+    .dark .tp-card {
+        background-color: #1f2937;
+        color: white;
+        border-color: #374151;
+    }
 
-  .dark .tp-field label {
-    color: #d1d5db;
-  }
+    .dark .tp-field label {
+        color: #d1d5db;
+    }
 
-  .dark .tp-input {
-    background-color: #111827;
-    color: #f3f4f6;
-    border-color: #374151;
-  }
+    .dark .tp-input {
+        background-color: #111827;
+        color: #f3f4f6;
+        border-color: #374151;
+    }
 
-  .dark .tp-input::placeholder {
-    color: #6b7280;
-  }
+    .dark .tp-input::placeholder {
+        color: #6b7280;
+    }
 
-  .dark .tp-checkbox {
-    background-color: #111827;
-    border-color: #4b5563;
-  }
+    .dark .tp-checkbox {
+        background-color: #111827;
+        border-color: #4b5563;
+    }
 
-  .dark .tp-file-upload {
-    border-color: #374151;
-  }
+    .dark .tp-file-upload {
+        border-color: #374151;
+    }
 
-  .dark .tp-file-upload:hover {
-    background-color: #1f2937;
-  }
+    .dark .tp-file-upload:hover {
+        background-color: #1f2937;
+    }
 }
 
 /* Icon Support */
 .tp-icon {
-  display: inline-block;
-  line-height: 1;
+    display: inline-block;
+    line-height: 1;
 }
-

@@ -6,12 +6,12 @@
 /**
  * DevTools API for live debugging and inspection
  */
-if (typeof window !== 'undefined') {
-    window.TinyPine.devtools = function(options = {}) {
+if (typeof window !== "undefined") {
+    window.TinyPine.devtools = function (options = {}) {
         const config = {
-            position: options.position || 'bottom-right',
-            theme: options.theme || 'dark',
-            enabled: true
+            position: options.position || "bottom-right",
+            theme: options.theme || "dark",
+            enabled: true,
         };
 
         // Initialize DevTools panel
@@ -24,8 +24,8 @@ if (typeof window !== 'undefined') {
                 contexts: [],
                 performance: {
                     renders: [],
-                    diffs: []
-                }
+                    diffs: [],
+                },
             };
         }
 
@@ -48,20 +48,27 @@ if (typeof window !== 'undefined') {
         }, 1000);
 
         if (debugMode) {
-            console.log('[TinyPine][DevTools] Initialized (' + config.position + ')');
+            console.log(
+                "[TinyPine][DevTools] Initialized (" + config.position + ")"
+            );
         }
     };
+
+    // Initialize debug utilities object if not exists
+    if (!window.TinyPine.debug || typeof window.TinyPine.debug !== "object") {
+        window.TinyPine.debug = {};
+    }
 
     // Extended debug utilities
-    window.TinyPine.debug.log = function(message, data) {
-        console.log('[TinyPine][Debug]', message, data || '');
+    window.TinyPine.debug.log = function (message, data) {
+        console.log("[TinyPine][Debug]", message, data || "");
         if (window.TinyPine.devtoolsInstance) {
-            addDevToolsEvent('[Debug]', message);
+            addDevToolsEvent("[Debug]", message);
         }
     };
 
-    window.TinyPine.debug.inspect = function(obj) {
-        console.log('[TinyPine][Inspect]', obj);
+    window.TinyPine.debug.inspect = function (obj) {
+        console.log("[TinyPine][Inspect]", obj);
         return obj;
     };
 }
@@ -70,8 +77,8 @@ if (typeof window !== 'undefined') {
  * Create DevTools panel overlay
  */
 function createDevToolsPanel(config) {
-    const panel = document.createElement('div');
-    panel.id = 'tinypine-devtools';
+    const panel = document.createElement("div");
+    panel.id = "tinypine-devtools";
     panel.innerHTML = `
         <div class="devtools-header">
             <span class="devtools-title">🌲 TinyPine DevTools</span>
@@ -103,49 +110,59 @@ function createDevToolsPanel(config) {
 
     // Apply theme
     panel.className = `devtools-panel-${config.theme}`;
-    panel.style.position = 'fixed';
+    panel.style.position = "fixed";
 
     // Position handling
     const positions = {
-        'bottom-right': { bottom: '20px', right: '20px' },
-        'bottom-left': { bottom: '20px', left: '20px' },
-        'top-right': { top: '20px', right: '20px' },
-        'top-left': { top: '20px', left: '20px' }
+        "bottom-right": { bottom: "20px", right: "20px" },
+        "bottom-left": { bottom: "20px", left: "20px" },
+        "top-right": { top: "20px", right: "20px" },
+        "top-left": { top: "20px", left: "20px" },
     };
 
-    Object.assign(panel.style, positions[config.position] || positions['bottom-right']);
-    panel.style.zIndex = '99999';
-    panel.style.width = '400px';
-    panel.style.maxHeight = '500px';
-    panel.style.border = '1px solid #666';
-    panel.style.borderRadius = '8px';
-    panel.style.overflow = 'hidden';
-    panel.style.backgroundColor = config.theme === 'dark' ? '#1e1e1e' : '#ffffff';
-    panel.style.color = config.theme === 'dark' ? '#e0e0e0' : '#000';
-    panel.style.fontFamily = 'monospace';
-    panel.style.fontSize = '12px';
+    Object.assign(
+        panel.style,
+        positions[config.position] || positions["bottom-right"]
+    );
+    panel.style.zIndex = "99999";
+    panel.style.width = "400px";
+    panel.style.maxHeight = "500px";
+    panel.style.border = "1px solid #666";
+    panel.style.borderRadius = "8px";
+    panel.style.overflow = "hidden";
+    panel.style.backgroundColor =
+        config.theme === "dark" ? "#1e1e1e" : "#ffffff";
+    panel.style.color = config.theme === "dark" ? "#e0e0e0" : "#000";
+    panel.style.fontFamily = "monospace";
+    panel.style.fontSize = "12px";
 
     // Tab switching
-    panel.querySelectorAll('.devtools-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
+    panel.querySelectorAll(".devtools-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
             const tabName = tab.dataset.tab;
-            panel.querySelectorAll('.devtools-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            panel.querySelectorAll('.devtools-panel').forEach(p => p.classList.remove('active'));
-            panel.querySelector(`[data-panel="${tabName}"]`).classList.add('active');
+            panel
+                .querySelectorAll(".devtools-tab")
+                .forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+            panel
+                .querySelectorAll(".devtools-panel")
+                .forEach((p) => p.classList.remove("active"));
+            panel
+                .querySelector(`[data-panel="${tabName}"]`)
+                .classList.add("active");
         });
     });
 
     // Close button
-    panel.querySelector('.devtools-close').addEventListener('click', () => {
-        panel.style.display = 'none';
+    panel.querySelector(".devtools-close").addEventListener("click", () => {
+        panel.style.display = "none";
     });
 
     // Add inline styles
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
         #tinypine-devtools .devtools-header {
-            background: ${config.theme === 'dark' ? '#2d2d2d' : '#f5f5f5'};
+            background: ${config.theme === "dark" ? "#2d2d2d" : "#f5f5f5"};
             padding: 8px 12px;
             display: flex;
             justify-content: space-between;
@@ -158,7 +175,7 @@ function createDevToolsPanel(config) {
         #tinypine-devtools .devtools-close {
             background: none;
             border: none;
-            color: ${config.theme === 'dark' ? '#e0e0e0' : '#000'};
+            color: ${config.theme === "dark" ? "#e0e0e0" : "#000"};
             cursor: pointer;
             font-size: 20px;
             padding: 0;
@@ -167,20 +184,24 @@ function createDevToolsPanel(config) {
         }
         #tinypine-devtools .devtools-tabs {
             display: flex;
-            border-bottom: 1px solid ${config.theme === 'dark' ? '#444' : '#ddd'};
+            border-bottom: 1px solid ${
+                config.theme === "dark" ? "#444" : "#ddd"
+            };
         }
         #tinypine-devtools .devtools-tab {
             flex: 1;
             padding: 8px;
             border: none;
-            background: ${config.theme === 'dark' ? '#2d2d2d' : '#f5f5f5'};
-            color: ${config.theme === 'dark' ? '#e0e0e0' : '#000'};
+            background: ${config.theme === "dark" ? "#2d2d2d" : "#f5f5f5"};
+            color: ${config.theme === "dark" ? "#e0e0e0" : "#000"};
             cursor: pointer;
             font-size: 11px;
         }
         #tinypine-devtools .devtools-tab.active {
-            background: ${config.theme === 'dark' ? '#3d3d3d' : '#fff'};
-            border-bottom: 2px solid ${config.theme === 'dark' ? '#007acc' : '#007acc'};
+            background: ${config.theme === "dark" ? "#3d3d3d" : "#fff"};
+            border-bottom: 2px solid ${
+                config.theme === "dark" ? "#007acc" : "#007acc"
+            };
         }
         #tinypine-devtools .devtools-body {
             max-height: 350px;
@@ -195,13 +216,15 @@ function createDevToolsPanel(config) {
         }
         #tinypine-devtools .devtools-item {
             padding: 4px 0;
-            border-bottom: 1px solid ${config.theme === 'dark' ? '#333' : '#eee'};
+            border-bottom: 1px solid ${
+                config.theme === "dark" ? "#333" : "#eee"
+            };
         }
         #tinypine-devtools .devtools-key {
-            color: ${config.theme === 'dark' ? '#9cdcfe' : '#0451a5'};
+            color: ${config.theme === "dark" ? "#9cdcfe" : "#0451a5"};
         }
         #tinypine-devtools .devtools-value {
-            color: ${config.theme === 'dark' ? '#ce9178' : '#0000ff'};
+            color: ${config.theme === "dark" ? "#ce9178" : "#0000ff"};
         }
     `;
     document.head.appendChild(style);
@@ -214,20 +237,23 @@ function createDevToolsPanel(config) {
  */
 function updateDevToolsStores() {
     if (!window.TinyPine.devtoolsInstance) return;
-    const list = document.getElementById('devtools-stores-list');
+    const list = document.getElementById("devtools-stores-list");
     if (!list) return;
 
     const stores = window.TinyPine.getAllStores?.() || {};
-    const html = Object.keys(stores).map(storeName => {
-        const store = stores[storeName];
-        const data = JSON.stringify(store, null, 2);
-        return `<div class="devtools-item">
+    const html = Object.keys(stores)
+        .map((storeName) => {
+            const store = stores[storeName];
+            const data = JSON.stringify(store, null, 2);
+            return `<div class="devtools-item">
             <div class="devtools-key">${storeName}</div>
             <pre class="devtools-value" style="font-size: 10px; margin-top: 4px;">${data}</pre>
         </div>`;
-    }).join('');
+        })
+        .join("");
 
-    list.innerHTML = html || '<div style="padding: 12px; color: #888;">No stores</div>';
+    list.innerHTML =
+        html || '<div style="padding: 12px; color: #888;">No stores</div>';
 }
 
 /**
@@ -235,34 +261,37 @@ function updateDevToolsStores() {
  */
 function updateDevToolsContexts() {
     if (!window.TinyPine.devtoolsInstance) return;
-    const list = document.getElementById('devtools-contexts-list');
+    const list = document.getElementById("devtools-contexts-list");
     if (!list) return;
 
-    const contexts = document.querySelectorAll('[t-data]');
-    const html = Array.from(contexts).map((ctx, index) => {
-        try {
-            const state = ctx._tinypineState || {};
-            // Remove internal properties to avoid circular reference
-            const cleanState = Object.keys(state).reduce((acc, key) => {
-                if (!key.startsWith('_tinypine')) {
-                    acc[key] = state[key];
-                }
-                return acc;
-            }, {});
-            const data = JSON.stringify(cleanState, null, 2);
-            return `<div class="devtools-item">
+    const contexts = document.querySelectorAll("[t-data]");
+    const html = Array.from(contexts)
+        .map((ctx, index) => {
+            try {
+                const state = ctx._tinypineState || {};
+                // Remove internal properties to avoid circular reference
+                const cleanState = Object.keys(state).reduce((acc, key) => {
+                    if (!key.startsWith("_tinypine")) {
+                        acc[key] = state[key];
+                    }
+                    return acc;
+                }, {});
+                const data = JSON.stringify(cleanState, null, 2);
+                return `<div class="devtools-item">
                 <div class="devtools-key">Context #${index + 1}</div>
                 <pre class="devtools-value" style="font-size: 10px; margin-top: 4px;">${data}</pre>
             </div>`;
-        } catch (e) {
-            return `<div class="devtools-item">
+            } catch (e) {
+                return `<div class="devtools-item">
                 <div class="devtools-key">Context #${index + 1}</div>
                 <div class="devtools-value">Error: ${e.message}</div>
             </div>`;
-        }
-    }).join('');
+            }
+        })
+        .join("");
 
-    list.innerHTML = html || '<div style="padding: 12px; color: #888;">No contexts</div>';
+    list.innerHTML =
+        html || '<div style="padding: 12px; color: #888;">No contexts</div>';
 }
 
 /**
@@ -273,42 +302,56 @@ function startDevToolsTimeline() {
 
     // Track all TinyPine console logs
     const originalLog = console.log;
-    console.log = function(...args) {
+    console.log = function (...args) {
         originalLog.apply(console, args);
-        if (args[0] && typeof args[0] === 'string' && args[0].includes('[TinyPine]')) {
+        if (
+            args[0] &&
+            typeof args[0] === "string" &&
+            args[0].includes("[TinyPine]")
+        ) {
             const timestamp = new Date().toLocaleTimeString();
             window.TinyPine.devtoolsInstance.events.push({
-                text: `<small style="color: #888;">${timestamp}</small> ${args.join(' ')}`,
-                timestamp
+                text: `<small style="color: #888;">${timestamp}</small> ${args.join(
+                    " "
+                )}`,
+                timestamp,
             });
         }
     };
 
     // Update timeline UI periodically
     setInterval(() => {
-        const list = document.getElementById('devtools-timeline-list');
+        const list = document.getElementById("devtools-timeline-list");
         if (!list) return;
 
         const events = window.TinyPine.devtoolsInstance.events.slice(-10);
-        const html = events.map(event =>
-            `<div class="devtools-item">${event.text}</div>`
-        ).join('');
+        const html = events
+            .map((event) => `<div class="devtools-item">${event.text}</div>`)
+            .join("");
 
-        list.innerHTML = html || '<div style="padding: 12px; color: #888;">No events</div>';
+        list.innerHTML =
+            html || '<div style="padding: 12px; color: #888;">No events</div>';
     }, 500);
 
     // Update performance panel periodically
     setInterval(() => {
-        const list = document.getElementById('devtools-performance-list');
+        const list = document.getElementById("devtools-performance-list");
         if (!list) return;
 
         const perf = window.TinyPine.devtoolsInstance.performance;
-        const avgRender = perf.renders.length > 0
-            ? (perf.renders.reduce((a, b) => a + b, 0) / perf.renders.length).toFixed(2)
-            : '0';
-        const avgDiff = perf.diffs.length > 0
-            ? (perf.diffs.reduce((a, b) => a + b, 0) / perf.diffs.length).toFixed(2)
-            : '0';
+        const avgRender =
+            perf.renders.length > 0
+                ? (
+                      perf.renders.reduce((a, b) => a + b, 0) /
+                      perf.renders.length
+                  ).toFixed(2)
+                : "0";
+        const avgDiff =
+            perf.diffs.length > 0
+                ? (
+                      perf.diffs.reduce((a, b) => a + b, 0) / perf.diffs.length
+                  ).toFixed(2)
+                : "0";
 
         const html = `
             <div class="devtools-item">
@@ -334,4 +377,3 @@ function addDevToolsEvent(category, data) {
 
     window.TinyPine.devtoolsInstance.events.push({ text, data, timestamp });
 }
-

@@ -1,60 +1,59 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+    push:
+        tags:
+            - "v*"
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+    release:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
 
-    - name: Install dependencies
-      run: npm install
+            - name: Install dependencies
+              run: npm install
 
-    - name: Run build
-      run: npm run build
+            - name: Run build
+              run: npm run build
 
-    - name: Get version
-      id: version
-      run: |
-        VERSION=$(node -p "require('./package.json').version")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "📦 Version: $VERSION"
+            - name: Get version
+              id: version
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "📦 Version: $VERSION"
 
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.version.outputs.version }}
-        release_name: TinyPine.js v${{ steps.version.outputs.version }}
-        body: |
-          ## 📦 TinyPine.js ${{ steps.version.outputs.version }}
+            - name: Create GitHub Release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: v${{ steps.version.outputs.version }}
+                  release_name: TinyPine.js v${{ steps.version.outputs.version }}
+                  body: |
+                      ## 📦 TinyPine.js ${{ steps.version.outputs.version }}
 
-          ### 🎉 Changes
-          - Core reactivity improvements
-          - Bug fixes
+                      ### 🎉 Changes
+                      - Core reactivity improvements
+                      - Bug fixes
 
-          ### 📥 Installation
-          ```bash
-          npm install tinypine
-          ```
+                      ### 📥 Installation
+                      ```bash
+                      npm install tinypine
+                      ```
 
-          ### 🔗 Links
-          - [NPM Package](https://www.npmjs.com/package/tinypine)
-          - [Documentation](https://github.com/DigitalCoreHub/TinyPine#readme)
-        draft: false
-        prerelease: false
-
+                      ### 🔗 Links
+                      - [NPM Package](https://www.npmjs.com/package/tinypine)
+                      - [Documentation](https://github.com/DigitalCoreHub/TinyPine#readme)
+                  draft: false
+                  prerelease: false

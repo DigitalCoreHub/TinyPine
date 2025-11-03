@@ -1,45 +1,44 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    test:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
 
-    - name: Install dependencies (if needed)
-      run: npm install
+            - name: Install dependencies (if needed)
+              run: npm install
 
-    - name: Run build
-      run: npm run build
+            - name: Run build
+              run: npm run build
 
-    - name: Check build output
-      run: |
-        if [ ! -f "dist/tinypine.min.js" ]; then
-          echo "Build failed - dist/tinypine.min.js not found"
-          exit 1
-        fi
-        echo "✅ Build successful"
-        ls -lh dist/
+            - name: Check build output
+              run: |
+                  if [ ! -f "dist/tinypine.min.js" ]; then
+                    echo "Build failed - dist/tinypine.min.js not found"
+                    exit 1
+                  fi
+                  echo "✅ Build successful"
+                  ls -lh dist/
 
-    - name: Check file size
-      run: |
-        SIZE=$(stat -f%z dist/tinypine.min.js 2>/dev/null || stat -c%s dist/tinypine.min.js 2>/dev/null)
-        SIZE_KB=$((SIZE / 1024))
-        echo "📦 Bundle size: ${SIZE_KB} KB"
-        if [ $SIZE_KB -gt 10 ]; then
-          echo "⚠️ Warning: Bundle size exceeds 10KB"
-        fi
-
+            - name: Check file size
+              run: |
+                  SIZE=$(stat -f%z dist/tinypine.min.js 2>/dev/null || stat -c%s dist/tinypine.min.js 2>/dev/null)
+                  SIZE_KB=$((SIZE / 1024))
+                  echo "📦 Bundle size: ${SIZE_KB} KB"
+                  if [ $SIZE_KB -gt 10 ]; then
+                    echo "⚠️ Warning: Bundle size exceeds 10KB"
+                  fi
