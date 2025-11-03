@@ -1,59 +1,73 @@
-import chalk from 'chalk';
-import ora from 'ora';
-import fs from 'fs-extra';
-import path from 'path';
+import chalk from "chalk";
+import ora from "ora";
+import fs from "fs-extra";
+import path from "path";
 
-const AVAILABLE_MODULES = ['router', 'i18n', 'ui', 'devtools'];
+const AVAILABLE_MODULES = ["router", "i18n", "ui", "devtools"];
 
 export function addCommand(program) {
-  program
-    .command('add <module>')
-    .description('Add a preset module to your project')
-    .action(async (moduleName) => {
-      const spinner = ora(`Adding ${moduleName} module...`).start();
+    program
+        .command("add <module>")
+        .description("Add a preset module to your project")
+        .action(async (moduleName) => {
+            const spinner = ora(`Adding ${moduleName} module...`).start();
 
-      try {
-        // Validate module name
-        if (!AVAILABLE_MODULES.includes(moduleName)) {
-          spinner.fail(`Unknown module: ${moduleName}`);
-          console.log(chalk.gray(`Available modules: ${AVAILABLE_MODULES.join(', ')}`));
-          process.exit(1);
-        }
+            try {
+                // Validate module name
+                if (!AVAILABLE_MODULES.includes(moduleName)) {
+                    spinner.fail(`Unknown module: ${moduleName}`);
+                    console.log(
+                        chalk.gray(
+                            `Available modules: ${AVAILABLE_MODULES.join(", ")}`
+                        )
+                    );
+                    process.exit(1);
+                }
 
-        const projectPath = process.cwd();
+                const projectPath = process.cwd();
 
-        // Check if already installed
-        const modulePath = path.join(projectPath, `src/${moduleName}.js`);
-        if (await fs.pathExists(modulePath)) {
-          spinner.warn(`Module ${moduleName} already exists`);
-          return;
-        }
+                // Check if already installed
+                const modulePath = path.join(
+                    projectPath,
+                    `src/${moduleName}.js`
+                );
+                if (await fs.pathExists(modulePath)) {
+                    spinner.warn(`Module ${moduleName} already exists`);
+                    return;
+                }
 
-        // Install module
-        await installModule(projectPath, moduleName);
+                // Install module
+                await installModule(projectPath, moduleName);
 
-        spinner.succeed(`Added ${moduleName} module`);
+                spinner.succeed(`Added ${moduleName} module`);
 
-        // Update config
-        await updateConfig(projectPath, moduleName);
+                // Update config
+                await updateConfig(projectPath, moduleName);
 
-        console.log(chalk.green(`\n✅ Module '${moduleName}' added successfully!\n`));
-        console.log(chalk.cyan(`Import it in your code: import { ... } from './${moduleName}';\n`));
-
-      } catch (error) {
-        spinner.fail(`Error: ${error.message}`);
-        process.exit(1);
-      }
-    });
+                console.log(
+                    chalk.green(
+                        `\n✅ Module '${moduleName}' added successfully!\n`
+                    )
+                );
+                console.log(
+                    chalk.cyan(
+                        `Import it in your code: import { ... } from './${moduleName}';\n`
+                    )
+                );
+            } catch (error) {
+                spinner.fail(`Error: ${error.message}`);
+                process.exit(1);
+            }
+        });
 }
 
 async function installModule(projectPath, moduleName) {
-  const modulePath = path.join(projectPath, `src/${moduleName}.js`);
+    const modulePath = path.join(projectPath, `src/${moduleName}.js`);
 
-  let content = '';
-  switch (moduleName) {
-    case 'router':
-      content = `// TinyPine Router Module
+    let content = "";
+    switch (moduleName) {
+        case "router":
+            content = `// TinyPine Router Module
 export const createRouter = (routes) => {
   let currentRoute = location.hash.slice(1) || '/';
 
@@ -82,10 +96,10 @@ export const createRouter = (routes) => {
 
 export default { createRouter };
 `;
-      break;
+            break;
 
-    case 'i18n':
-      content = `// TinyPine i18n Module
+        case "i18n":
+            content = `// TinyPine i18n Module
 export const createI18n = (locales = {}) => {
   let currentLang = 'en';
   let translations = locales[currentLang] || {};
@@ -111,10 +125,10 @@ export const createI18n = (locales = {}) => {
 
 export default { createI18n };
 `;
-      break;
+            break;
 
-    case 'ui':
-      content = `// TinyPine UI Module
+        case "ui":
+            content = `// TinyPine UI Module
 export const UI = {
   Button: ({ text, onClick, variant = 'primary' }) => {
     const button = document.createElement('button');
@@ -147,10 +161,10 @@ export const UI = {
 
 export default UI;
 `;
-      break;
+            break;
 
-    case 'devtools':
-      content = `// TinyPine DevTools Module
+        case "devtools":
+            content = `// TinyPine DevTools Module
 export const DevTools = {
   enable: () => {
     console.log('%c🌲 TinyPine DevTools Enabled', 'color: #00ff00; font-weight: bold;');
@@ -171,31 +185,30 @@ export const DevTools = {
 
 export default DevTools;
 `;
-      break;
-  }
+            break;
+    }
 
-  await fs.writeFile(modulePath, content);
+    await fs.writeFile(modulePath, content);
 }
 
 async function updateConfig(projectPath, moduleName) {
-  const configPath = path.join(projectPath, 'tinypine.config.js');
+    const configPath = path.join(projectPath, "tinypine.config.js");
 
-  if (await fs.pathExists(configPath)) {
-    const configContent = await fs.readFile(configPath, 'utf-8');
-    // Simple update - in production, use proper parser
-    console.log(chalk.gray('Config file updated'));
-  } else {
-    // Create new config
-    const config = {
-      version: '1.1.0',
-      features: [moduleName],
-      compiler: {
-        target: 'es2022',
-        minify: true
-      }
-    };
-    const content = `export default ${JSON.stringify(config, null, 2)};\n`;
-    await fs.writeFile(configPath, content);
-  }
+    if (await fs.pathExists(configPath)) {
+        const configContent = await fs.readFile(configPath, "utf-8");
+        // Simple update - in production, use proper parser
+        console.log(chalk.gray("Config file updated"));
+    } else {
+        // Create new config
+        const config = {
+            version: "1.1.0",
+            features: [moduleName],
+            compiler: {
+                target: "es2022",
+                minify: true,
+            },
+        };
+        const content = `export default ${JSON.stringify(config, null, 2)};\n`;
+        await fs.writeFile(configPath, content);
+    }
 }
-

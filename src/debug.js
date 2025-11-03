@@ -11,7 +11,7 @@ let debugEnabled = false;
 export function setDebug(enabled) {
     debugEnabled = enabled;
     if (enabled) {
-        console.log('🔍 TinyPine debug mode enabled');
+        console.log("🔍 TinyPine debug mode enabled");
     }
 }
 
@@ -21,7 +21,7 @@ export function setDebug(enabled) {
 export function debugLog(message, data = null) {
     if (!debugEnabled) return;
 
-    console.log(message, data || '');
+    console.log(message, data || "");
 }
 
 /**
@@ -30,7 +30,7 @@ export function debugLog(message, data = null) {
 export function logReactiveChange(path, oldValue, newValue) {
     if (!debugEnabled) return;
 
-    console.log(`[TinyPine] ${path} changed:`, oldValue, '→', newValue);
+    console.log(`[TinyPine] ${path} changed:`, oldValue, "→", newValue);
 }
 
 /**
@@ -39,11 +39,11 @@ export function logReactiveChange(path, oldValue, newValue) {
 export function logContextCreation(context) {
     if (!debugEnabled) return;
 
-    console.log('[TinyPine] Context created:', {
+    console.log("[TinyPine] Context created:", {
         hasParent: !!context.parent,
         hasRoot: !!context.root,
         element: context.el,
-        keys: Object.keys(context.data)
+        keys: Object.keys(context.data),
     });
 }
 
@@ -53,17 +53,20 @@ export function logContextCreation(context) {
 export function logDirective(element, directive, value) {
     if (!debugEnabled) return;
 
-    console.log(`[TinyPine] Directive: ${directive} on`, element, `value: ${value}`);
+    console.log(
+        `[TinyPine] Directive: ${directive} on`,
+        element,
+        `value: ${value}`
+    );
 }
 
 // Global debug function
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
     window.TinyPineDebug = {
         enable: () => setDebug(true),
         disable: () => setDebug(false),
-        isEnabled: () => debugEnabled
+        isEnabled: () => debugEnabled,
     };
 }
 
 export { debugEnabled as isDebugEnabled };
-
