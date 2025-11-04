@@ -7,9 +7,9 @@
 
 Zero build · Zero config · Just write HTML
 
-[![Version](https://img.shields.io/badge/version-v1.3.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
-[![Size](https://img.shields.io/badge/size-38KB-blue.svg)](https://unpkg.com/tinypine@1.3.0)
-[![Tests](https://img.shields.io/badge/tests-100%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
+[![Version](https://img.shields.io/badge/version-v1.4.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+[![Size](https://img.shields.io/badge/size-42KB-blue.svg)](https://unpkg.com/tinypine@1.4.0)
+[![Tests](https://img.shields.io/badge/tests-107%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)</div>
 
 ---
@@ -50,7 +50,7 @@ Zero build · Zero config · Just write HTML
             <button t-click="message = 'Clicked!'">Click me</button>
         </div>
 
-        <script src="https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"></script>
+        <script src="https://unpkg.com/tinypine@1.4.0/dist/tinypine.min.js"></script>
         <script>
             TinyPine.init();
         </script>
@@ -103,7 +103,93 @@ npx tinypine-cli build
 
 ## ✨ What's New
 
-### 🔒 Core Stability (v1.3.0)
+### � Async Flow & Forms (v1.4.0)
+
+Powerful async operations and comprehensive form validation:
+
+**Enhanced t-fetch with Debounce:**
+
+```html
+<div t-data="{ search: '', results: [] }">
+    <!-- Debounce fetch requests -->
+    <button
+        t-fetch="'/api/search?q=' + search"
+        debounce="500"
+        method="POST"
+        headers="{ 'Authorization': 'Bearer ' + token }"
+    >
+        Search
+    </button>
+
+    <!-- Lifecycle hooks -->
+    <script>
+        TinyPine.context({
+            beforeFetch: async ({ url, method }) => {
+                console.log("Starting request:", url);
+                return true; // or false to cancel
+            },
+            afterFetch: ({ data }) => {
+                console.log("Received:", data);
+            },
+        });
+    </script>
+</div>
+```
+
+**Form Validation System:**
+
+```html
+<tp-form>
+    <div t-data="{ email: '', password: '' }">
+        <!-- Built-in validators -->
+        <input t-model="email" t-validate="required|email" name="email" />
+
+        <input
+            t-model="password"
+            t-validate="required|minLength:8"
+            name="password"
+            type="password"
+        />
+
+        <!-- Show validation errors -->
+        <p t-show="$errors.email" t-text="$errors.email[0]?.message"></p>
+
+        <!-- Disable submit if invalid -->
+        <button type="submit" :disabled="$invalid">Submit</button>
+    </div>
+</tp-form>
+```
+
+**Debounced Inputs:**
+
+```html
+<div t-data="{ searchQuery: '' }">
+    <!-- Update state after 300ms of inactivity -->
+    <input t-model="searchQuery" t-debounce="300" />
+    <p t-text="'Searching for: ' + searchQuery"></p>
+</div>
+```
+
+**Built-in Validators:**
+
+- `required` - Field must not be empty
+- `email` - Valid email format
+- `min:N` / `max:N` - Numeric range
+- `minLength:N` / `maxLength:N` - String length
+- `pattern:regex` - Custom regex pattern
+- `url` - Valid URL format
+- `number` - Numeric value
+- `integer` - Whole number
+
+**Form State Variables:**
+
+- `$errors` - Validation error messages per field
+- `$valid` / `$invalid` - Overall form validity
+- `$touched` - Fields that have been focused
+- `$dirty` - Fields that have been modified
+- `$pending` - Async operations in progress
+
+### �🔒 Core Stability (v1.3.0)
 
 Enhanced security and developer experience with powerful new features:
 
