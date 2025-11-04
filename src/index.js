@@ -1,5 +1,5 @@
 /**
- * TinyPine.js v1.0.0
+ * TinyPine.js v1.5.0
  * Main entry point - combines all modules
  */
 
@@ -7,6 +7,7 @@
 import "./store.js";
 import "./core.js";
 import "./devtools.js";
+import "./router.js"; // v1.5.0: Router module
 
 // Export TinyPine for ESM
 export default window.TinyPine;

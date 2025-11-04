@@ -1238,6 +1238,66 @@ const directiveHandlers = {
         }
     },
 
+    /**
+     * t-link: Smart router link with active state (v1.5.0)
+     * Automatically adds href and manages active class
+     */
+    "t-link": function (element, expression, state, contextObj) {
+        // Use the v1.5.0 setup function if available
+        if (window.TinyPine && window.TinyPine._setupTLinkDirective) {
+            window.TinyPine._setupTLinkDirective(element, expression, state, contextObj);
+            return;
+        }
+
+        // Fallback: Basic implementation
+        let path = evaluateExpression(expression, state, contextObj);
+
+        // Remove quotes if present
+        if (typeof path === "string") {
+            if (
+                (path.startsWith('"') && path.endsWith('"')) ||
+                (path.startsWith("'") && path.endsWith("'"))
+            ) {
+                path = path.slice(1, -1);
+            }
+        }
+
+        // Set href
+        const href = `#/${path.replace(/^\//, '')}`;
+        element.setAttribute('href', href);
+
+        // Add click handler
+        const clickHandler = (e) => {
+            e.preventDefault();
+            if (window.TinyPine && window.TinyPine.router && window.TinyPine.router.push) {
+                window.TinyPine.router.push(path);
+            } else {
+                window.location.hash = href;
+            }
+        };
+
+        // Remove old listener
+        if (element._tinypineLinkHandler) {
+            element.removeEventListener('click', element._tinypineLinkHandler);
+        }
+
+        element.addEventListener('click', clickHandler);
+        element._tinypineLinkHandler = clickHandler;
+
+        // Update active state
+        const currentHash = window.location.hash || '#/';
+        const currentPath = currentHash.replace(/^#\/?/, '').replace(/\?.*$/, '');
+        const linkPath = path.replace(/^\//, '');
+
+        if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) {
+            element.classList.add('active');
+            element.setAttribute('aria-current', 'page');
+        } else {
+            element.classList.remove('active');
+            element.removeAttribute('aria-current');
+        }
+    },
+
     "t-click": function (element, expression, state) {
         // Parse modifiers from expression FIRST to check for .once
         const knownModifiers = ["prevent", "stop", "once", "outside"];
@@ -1691,6 +1751,18 @@ function init(root = document.body) {
             element,
             "t-route",
             element.getAttribute("t-route"),
+            null,
+            null
+        );
+    });
+
+    // Process t-link elements (v1.5.0 - they work outside t-data scope)
+    const linkElements = root.querySelectorAll("[t-link]");
+    linkElements.forEach((element) => {
+        applyDirective(
+            element,
+            "t-link",
+            element.getAttribute("t-link"),
             null,
             null
         );
@@ -3121,6 +3193,11 @@ if (typeof window !== "undefined") {
 
     // Helper: Parse route pattern and extract params
     function matchRoute(pattern, path) {
+        // Handle null or undefined pattern
+        if (!pattern || !path) {
+            return { matched: false, params: {} };
+        }
+
         // Exact match first
         if (pattern === path) {
             return { matched: true, params: {} };

@@ -7,9 +7,9 @@
 
 Zero build · Zero config · Just write HTML
 
-[![Version](https://img.shields.io/badge/version-v1.4.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
-[![Size](https://img.shields.io/badge/size-42KB-blue.svg)](https://unpkg.com/tinypine@1.4.0)
-[![Tests](https://img.shields.io/badge/tests-107%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
+[![Version](https://img.shields.io/badge/version-v1.5.0-blue.svg)](https://github.com/DigitalCoreHub/TinyPine)
+[![Size](https://img.shields.io/badge/size-48KB-blue.svg)](https://unpkg.com/tinypine@1.5.0)
+[![Tests](https://img.shields.io/badge/tests-150%2B%20passing-green.svg)](https://github.com/DigitalCoreHub/TinyPine)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)</div>
 
 ---
@@ -50,7 +50,7 @@ Zero build · Zero config · Just write HTML
             <button t-click="message = 'Clicked!'">Click me</button>
         </div>
 
-        <script src="https://unpkg.com/tinypine@1.4.0/dist/tinypine.min.js"></script>
+        <script src="https://unpkg.com/tinypine@1.5.0/dist/tinypine.min.js"></script>
         <script>
             TinyPine.init();
         </script>
@@ -103,7 +103,155 @@ npx tinypine-cli build
 
 ## ✨ What's New
 
-### � Async Flow & Forms (v1.4.0)
+### 🧭 Routes & Guards (v1.5.0)
+
+Smart client-side routing with navigation guards, dynamic params, and programmatic control:
+
+**Smart Router with Dynamic Parameters:**
+
+```html
+<nav>
+    <a t-link="'home'">Home</a>
+    <a t-link="'about'">About</a>
+    <a t-link="'user/42'">User Profile</a>
+</nav>
+
+<!-- Route Views -->
+<div t-route="'home'">
+    <h1>Welcome Home!</h1>
+</div>
+
+<div t-route="'about'">
+    <h1>About Us</h1>
+</div>
+
+<!-- Dynamic Parameters -->
+<div t-route="'user/:id'">
+    <div t-data="{}">
+        <h1 t-text="'User ID: ' + $route.params.id"></h1>
+        <p t-text="'Path: ' + $route.path"></p>
+    </div>
+</div>
+
+<!-- 404 Fallback -->
+<div t-route="*">
+    <h1>404 - Page Not Found</h1>
+</div>
+
+<script>
+    TinyPine.router({
+        default: 'home'
+    });
+    TinyPine.init();
+</script>
+```
+
+**Navigation Guards:**
+
+```javascript
+TinyPine.router({
+    // Global beforeEnter guard
+    beforeEnter(to, from) {
+        const isLoggedIn = TinyPine.store('auth').loggedIn;
+
+        if (!isLoggedIn && to.path !== 'login') {
+            return '/login'; // Redirect to login
+        }
+
+        return true; // Allow navigation
+    },
+
+    // Global beforeLeave guard
+    beforeLeave(to, from) {
+        if (hasUnsavedChanges) {
+            return confirm('Discard unsaved changes?');
+        }
+        return true;
+    },
+
+    // Route-specific guards
+    routes: {
+        'admin': {
+            beforeEnter: async (to, from) => {
+                const isAdmin = await checkAdminRole();
+                return isAdmin ? true : '/';
+            }
+        }
+    }
+});
+```
+
+**Programmatic Navigation:**
+
+```html
+<div t-data="{ userId: 42 }">
+    <!-- Using $router in templates -->
+    <button t-click="$router.push('/user/' + userId)">
+        View Profile
+    </button>
+
+    <button t-click="$router.back()">
+        Go Back
+    </button>
+
+    <!-- Access route info -->
+    <p t-text="'Current: ' + $router.current().path"></p>
+</div>
+```
+
+**t-link Directive with Active State:**
+
+```html
+<nav>
+    <a t-link="'home'" class="nav-link">Home</a>
+    <a t-link="'about'" class="nav-link">About</a>
+    <a t-link="'contact'" class="nav-link">Contact</a>
+</nav>
+
+<style>
+    .nav-link.active {
+        color: blue;
+        font-weight: bold;
+    }
+</style>
+```
+
+**Route Lifecycle Events:**
+
+```javascript
+// Listen to route changes
+TinyPine.router.on('route:change', (to, from) => {
+    console.log('Navigated from', from.path, 'to', to.path);
+
+    // Track page views
+    if (typeof gtag !== 'undefined') {
+        gtag('config', 'GA_ID', { page_path: to.path });
+    }
+});
+
+// Other events: route:enter, route:leave, route:error
+TinyPine.router.on('route:enter', (to) => {
+    document.title = `My App - ${to.path}`;
+});
+```
+
+**Router Features:**
+
+- ✅ Dynamic route matching (`user/:id`, `blog/:category/:post`)
+- ✅ Nested routes support
+- ✅ Wildcard fallback (`*` for 404s)
+- ✅ Navigation guards (sync & async)
+- ✅ Query parameters (`?tab=posts&page=1`)
+- ✅ Programmatic navigation API
+- ✅ Active link detection
+- ✅ Route lifecycle events
+- ✅ Scroll behavior control
+
+[📖 Complete Router Guide →](docs/router/index.md)
+
+---
+
+### �� Async Flow & Forms (v1.4.0)
 
 Powerful async operations and comprehensive form validation:
 
@@ -818,7 +966,11 @@ Works everywhere JavaScript Proxies are supported.
 - ✅ **v1.2.0** - TinyPine UI Components
 - ✅ **v1.3.0** - Core Stability & Form Components
 - ✅ **v1.3.1** - Keyed Diffing & Advanced Features (100% Test Coverage!)
-- 🔜 **v1.4.0** - Performance Optimizations & Virtual DOM (Planned)
+- ✅ **v1.4.0** - Async Flow & Form Validation
+- ✅ **v1.5.0** - Smart Router with Guards & Navigation
+- 🔜 **v1.6.0** - Performance Optimizations & Virtual DOM (Planned)
+- 🔜 **v1.7.0** - DevTools 2.0 & Router Inspector (Planned)
+- 🔜 **v2.0.0** - Ecosystem & TypeScript-first Rewrite (Planned)
 
 ---
 

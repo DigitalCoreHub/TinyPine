@@ -1,7 +1,7 @@
 {
     "name": "tinypine",
-    "version": "1.4.0",
-    "description": "Minimal, comfortable & intuitive reactive micro-framework",
+    "version": "1.5.0",
+    "description": "Minimal, comfortable & intuitive reactive micro-framework with smart routing",
     "main": "src/core.js",
     "types": "types/tinypine.d.ts",
     "type": "module",
