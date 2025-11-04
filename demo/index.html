@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -6,6 +6,12 @@
         <title>TinyPine.js - Your new, lightweight, reactive framework</title>
         <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            // Suppress Tailwind CDN warning for demo purposes
+            tailwind.config = {
+                darkMode: 'class'
+            }
+        </script>
         <link rel="stylesheet" href="/src/tinypine.ui.css" />
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
@@ -46,7 +52,9 @@
 
             /* Transition animations */
             [t-show] {
-                transition: opacity 0.2s ease, transform 0.2s ease;
+                transition:
+                    opacity 0.2s ease,
+                    transform 0.2s ease;
             }
 
             /* Dark mode support */
@@ -55,9 +63,13 @@
             }
         </style>
     </head>
-    <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+    <body
+        class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
+    >
         <!-- Navigation -->
-        <nav class="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50">
+        <nav
+            class="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50"
+        >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-2">
@@ -65,9 +77,22 @@
                         <span class="text-xl font-bold">TinyPine.js</span>
                     </div>
                     <div class="flex items-center space-x-6">
-                        <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">GitHub</a>
-                        <a href="https://www.npmjs.com/package/tinypine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">NPM</a>
-                        <button onclick="document.documentElement.classList.toggle('dark')" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition">🌓</button>
+                        <a
+                            href="https://github.com/DigitalCoreHub/TinyPine"
+                            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                            >GitHub</a
+                        >
+                        <a
+                            href="https://www.npmjs.com/package/tinypine"
+                            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                            >NPM</a
+                        >
+                        <button
+                            onclick="document.documentElement.classList.toggle('dark')"
+                            class="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+                        >
+                            🌓
+                        </button>
                     </div>
                 </div>
             </div>
@@ -76,20 +101,50 @@
         <!-- Hero Section -->
         <section class="pt-32 pb-20 px-4">
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Your new, lightweight, JavaScript framework.</h1>
-                <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">Minimal, comfortable & intuitive reactive micro-framework</p>
+                <h1
+                    class="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent"
+                >
+                    Your new, lightweight, JavaScript framework.
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                    Minimal, comfortable & intuitive reactive micro-framework
+                </p>
                 <div class="flex justify-center gap-4 mb-12">
-                    <a href="#get-started" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Get started →</a>
-                    <a href="https://github.com/DigitalCoreHub/TinyPine" class="px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg font-semibold transition">GitHub</a>
+                    <a
+                        href="#get-started"
+                        class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                        >Get started →</a
+                    >
+                    <a
+                        href="https://github.com/DigitalCoreHub/TinyPine"
+                        class="px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg font-semibold transition"
+                        >GitHub</a
+                    >
                 </div>
 
                 <!-- Hero Code Example -->
                 <div class="mt-16">
-                    <div class="code-block text-left mb-4"><span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></div>
+                    <div class="code-block text-left mb-4">
+                        <span class="tag">&lt;script</span>
+                        <span class="attr">src</span>=<span class="string"
+                            >"https://unpkg.com/tinypine@1.4.0/dist/tinypine.min.js"</span
+                        ><span class="tag">&gt;&lt;/script&gt;</span>
+                    </div>
                     <div class="code-block text-left">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ open: false }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"open = true"</span><span class="tag">&gt;</span>Expand<span class="tag">&lt;/button&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-show</span>=<span class="string">"open"</span><span class="tag">&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ open: false }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                        <span class="attr">t-click</span>=<span class="string"
+                            >"open = true"</span
+                        ><span class="tag">&gt;</span>Expand<span class="tag"
+                            >&lt;/button&gt;</span
+                        ><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;span</span>
+                        <span class="attr">t-show</span>=<span class="string"
+                            >"open"</span
+                        ><span class="tag">&gt;</span><br />
                         &nbsp;&nbsp;&nbsp;&nbsp;Content...<br />
                         &nbsp;&nbsp;<span class="tag">&lt;/span&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
@@ -104,15 +159,26 @@
                 <div class="grid md:grid-cols-3 gap-8 text-center">
                     <div>
                         <h3 class="text-2xl font-bold mb-4">Simple.</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Declarative syntax that feels natural. Just add attributes to your HTML.</p>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Declarative syntax that feels natural. Just add
+                            attributes to your HTML.
+                        </p>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold mb-4">Lightweight.</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Only 30KB minified. No build step required. Drop it in and go.</p>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Only 49KB minified. No build step required. Drop it
+                            in and go.
+                        </p>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold mb-4">Powerful as hell.</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Everything you need: reactivity, routing, i18n, stores, and more.</p>
+                        <h3 class="text-2xl font-bold mb-4">
+                            Powerful as hell.
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Everything you need: reactivity, routing, i18n,
+                            stores, and more.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -120,25 +186,56 @@
 
         <!-- Main Content -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <p class="text-center text-lg text-gray-600 dark:text-gray-400 mb-16">There is no better way to get a feel for what TinyPine is and what it can do, than by seeing it for yourself:</p>
+            <p
+                class="text-center text-lg text-gray-600 dark:text-gray-400 mb-16"
+            >
+                There is no better way to get a feel for what TinyPine is and
+                what it can do, than by seeing it for yourself:
+            </p>
 
             <!-- t-data -->
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-data</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Declare a new component and its data</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Declare a new component and its data</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ count: 0 }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"count++"</span><span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"count"</span><span class="tag">&gt;&lt;/span&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ count: 0 }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                        <span class="attr">t-click</span>=<span class="string"
+                            >"count++"</span
+                        ><span class="tag">&gt;</span>+<span class="tag"
+                            >&lt;/button&gt;</span
+                        ><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;span</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"count"</span
+                        ><span class="tag">&gt;&lt;/span&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
-                        <div t-data="{ count: 0 }" class="flex items-center gap-4">
-                            <button t-click="count++" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">+</button>
-                            <span t-text="count" class="text-2xl font-bold"></span>
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
+                        <div
+                            t-data="{ count: 0 }"
+                            class="flex items-center gap-4"
+                        >
+                            <button
+                                t-click="count++"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                            >
+                                +
+                            </button>
+                            <span
+                                t-text="count"
+                                class="text-2xl font-bold"
+                            ></span>
                         </div>
                     </div>
                 </div>
@@ -148,17 +245,27 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-text</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Set the text content of an element</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Set the text content of an element</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
                         <span class="tag">&lt;div&gt;</span><br />
                         &nbsp;&nbsp;Copyright ©<br />
-                        &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"new Date().getFullYear()"</span><span class="tag">&gt;&lt;/span&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;span</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"new Date().getFullYear()"</span
+                        ><span class="tag">&gt;&lt;/span&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
-                        <div t-data="{}">Copyright © <span t-text="new Date().getFullYear()"></span></div>
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
+                        <div t-data="{}">
+                            Copyright ©
+                            <span t-text="new Date().getFullYear()"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,19 +274,46 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-show</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Toggle the visibility of an element</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Toggle the visibility of an element</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ open: false }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"open = !open"</span><span class="tag">&gt;</span>Toggle<span class="tag">&lt;/button&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-show</span>=<span class="string">"open"</span><span class="tag">&gt;</span>Content...<span class="tag">&lt;/span&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ open: false }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                        <span class="attr">t-click</span>=<span class="string"
+                            >"open = !open"</span
+                        ><span class="tag">&gt;</span>Toggle<span class="tag"
+                            >&lt;/button&gt;</span
+                        ><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;span</span>
+                        <span class="attr">t-show</span>=<span class="string"
+                            >"open"</span
+                        ><span class="tag">&gt;</span>Content...<span
+                            class="tag"
+                            >&lt;/span&gt;</span
+                        ><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{ open: false }">
-                            <button t-click="open = !open" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition mb-4">Toggle</button>
-                            <span t-show="open" class="block p-4 bg-purple-100 dark:bg-purple-900 rounded-lg">Content appears when open is true!</span>
+                            <button
+                                t-click="open = !open"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition mb-4"
+                            >
+                                Toggle
+                            </button>
+                            <span
+                                t-show="open"
+                                class="block p-4 bg-purple-100 dark:bg-purple-900 rounded-lg"
+                                >Content appears when open is true!</span
+                            >
                         </div>
                     </div>
                 </div>
@@ -189,13 +323,29 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-click</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Listen for click events</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Listen for click events</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="code-block"><span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"count++"</span><span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span></div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div class="code-block">
+                        <span class="tag">&lt;button</span>
+                        <span class="attr">t-click</span>=<span class="string"
+                            >"count++"</span
+                        ><span class="tag">&gt;</span>+<span class="tag"
+                            >&lt;/button&gt;</span
+                        >
+                    </div>
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{ count: 0 }">
-                            <button t-click="count++" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Count: <span t-text="count"></span></button>
+                            <button
+                                t-click="count++"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                            >
+                                Count: <span t-text="count"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -205,19 +355,47 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-model</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Synchronize data with input elements</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Synchronize data with input elements</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ search: '' }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">t-model</span>=<span class="string">"search"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;Searching for: <span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"search"</span><span class="tag">&gt;&lt;/span&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ search: '' }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;input</span>
+                        <span class="attr">type</span>=<span class="string"
+                            >"text"</span
+                        >
+                        <span class="attr">t-model</span>=<span class="string"
+                            >"search"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;Searching for:
+                        <span class="tag">&lt;span</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"search"</span
+                        ><span class="tag">&gt;&lt;/span&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{ search: '' }">
-                            <input type="text" t-model="search" placeholder="Type to search..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700" />
-                            <p>Searching for: <span t-text="search" class="font-semibold"></span></p>
+                            <input
+                                type="text"
+                                t-model="search"
+                                placeholder="Type to search..."
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700"
+                            />
+                            <p>
+                                Searching for:
+                                <span
+                                    t-text="search"
+                                    class="font-semibold"
+                                ></span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -227,20 +405,39 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-for</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Repeat a block of HTML based on a data set</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Repeat a block of HTML based on a data set</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ items: ['One', 'Two', 'Three'] }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;div</span> <span class="attr">t-for</span>=<span class="string">"item in items"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;h2</span> <span class="attr">t-text</span>=<span class="string">"item"</span><span class="tag">&gt;&lt;/h2&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ items: ['One', 'Two', 'Three'] }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;div</span>
+                        <span class="attr">t-for</span>=<span class="string"
+                            >"item in items"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;h2</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"item"</span
+                        ><span class="tag">&gt;&lt;/h2&gt;</span><br />
                         &nbsp;&nbsp;<span class="tag">&lt;/div&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{ items: ['Apple', 'Banana', 'Cherry'] }">
-                            <div t-for="item in items" class="p-2 mb-2 bg-purple-100 dark:bg-purple-900 rounded">
-                                <span t-text="item" class="font-semibold"></span>
+                            <div
+                                t-for="item in items"
+                                class="p-2 mb-2 bg-purple-100 dark:bg-purple-900 rounded"
+                            >
+                                <span
+                                    t-text="item"
+                                    class="font-semibold"
+                                ></span>
                             </div>
                         </div>
                     </div>
@@ -251,15 +448,25 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-init</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Run code when an element is initialized</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Run code when an element is initialized</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;div</span> <span class="attr">t-data</span>=<span class="string">"{ date: new Date() }"</span><span class="tag">&gt;</span><br />
-                        &nbsp;&nbsp;<span class="tag">&lt;span</span> <span class="attr">t-text</span>=<span class="string">"date.toLocaleString()"</span><span class="tag">&gt;&lt;/span&gt;</span><br />
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-data</span>=<span class="string"
+                            >"{ date: new Date() }"</span
+                        ><span class="tag">&gt;</span><br />
+                        &nbsp;&nbsp;<span class="tag">&lt;span</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"date.toLocaleString()"</span
+                        ><span class="tag">&gt;&lt;/span&gt;</span><br />
                         <span class="tag">&lt;/div&gt;</span>
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{ date: new Date() }">
                             <span t-text="date.toLocaleString()"></span>
                         </div>
@@ -271,17 +478,42 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">t-ref</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Reference elements using $refs</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Reference elements using $refs</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="code-block">
-                        <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">t-ref</span>=<span class="string">"input"</span><span class="tag">&gt;</span><br />
-                        <span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"$refs.input.focus()"</span><span class="tag">&gt;</span>Focus<span class="tag">&lt;/button&gt;</span>
+                        <span class="tag">&lt;input</span>
+                        <span class="attr">type</span>=<span class="string"
+                            >"text"</span
+                        >
+                        <span class="attr">t-ref</span>=<span class="string"
+                            >"input"</span
+                        ><span class="tag">&gt;</span><br />
+                        <span class="tag">&lt;button</span>
+                        <span class="attr">t-click</span>=<span class="string"
+                            >"$refs.input.focus()"</span
+                        ><span class="tag">&gt;</span>Focus<span class="tag"
+                            >&lt;/button&gt;</span
+                        >
                     </div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{}">
-                            <input type="text" t-ref="input" placeholder="Click button to focus" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700" />
-                            <button t-click="$refs.input.focus()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Focus Input</button>
+                            <input
+                                type="text"
+                                t-ref="input"
+                                placeholder="Click button to focus"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700"
+                            />
+                            <button
+                                t-click="$refs.input.focus()"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                            >
+                                Focus Input
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -291,13 +523,26 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">$store</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Access global stores registered with TinyPine.store()</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Access global stores registered with
+                        TinyPine.store()</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="code-block"><span class="tag">&lt;h1</span> <span class="attr">t-text</span>=<span class="string">"$store.site.title"</span><span class="tag">&gt;&lt;/h1&gt;</span></div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                    <div class="code-block">
+                        <span class="tag">&lt;h1</span>
+                        <span class="attr">t-text</span>=<span class="string"
+                            >"$store.site.title"</span
+                        ><span class="tag">&gt;&lt;/h1&gt;</span>
+                    </div>
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
                         <div t-data="{}">
-                            <h1 t-text="$store.site.title" class="text-2xl font-bold"></h1>
+                            <h1
+                                t-text="$store.site.title"
+                                class="text-2xl font-bold"
+                            ></h1>
                         </div>
                     </div>
                 </div>
@@ -307,32 +552,75 @@
             <div class="mb-20">
                 <div class="flex items-center mb-4">
                     <h2 class="text-3xl font-bold mr-4">$el</h2>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Reference the current DOM element</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Reference the current DOM element</span
+                    >
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="code-block"><span class="tag">&lt;div</span> <span class="attr">t-init</span>=<span class="string">"$el.style.background = 'purple'"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span></div>
-                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
-                        <div t-data="{}" t-init="(function(){ $el.style.background = 'rgb(147, 51, 234)'; $el.style.color = 'white'; $el.style.padding = '1rem'; $el.style.borderRadius = '0.5rem'; })()">This div's background was set via $el</div>
+                    <div class="code-block">
+                        <span class="tag">&lt;div</span>
+                        <span class="attr">t-init</span>=<span class="string"
+                            >"$el.style.background = 'purple'"</span
+                        ><span class="tag">&gt;</span>...<span class="tag"
+                            >&lt;/div&gt;</span
+                        >
+                    </div>
+                    <div
+                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                    >
+                        <div
+                            t-data="{}"
+                            t-init="$el.style.background = 'rgb(147, 51, 234)'; $el.style.color = 'white'; $el.style.padding = '1rem'; $el.style.borderRadius = '0.5rem'"
+                        >
+                            This div's background was set via $el
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- TinyPine UI Components -->
-            <div class="mb-20 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl p-8">
-                <h2 class="text-4xl font-bold mb-8 text-center">🎨 TinyPine UI Components</h2>
-                <p class="text-center text-gray-600 dark:text-gray-400 mb-12">Ready-to-use Tailwind CSS components</p>
+            <div
+                class="mb-20 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl p-8"
+            >
+                <h2 class="text-4xl font-bold mb-8 text-center">
+                    🎨 TinyPine UI Components
+                </h2>
+                <p class="text-center text-gray-600 dark:text-gray-400 mb-12">
+                    Ready-to-use Tailwind CSS components
+                </p>
 
                 <div class="space-y-12">
                     <!-- Button Demo -->
                     <div t-data="{ openModal: false }">
                         <h3 class="text-2xl font-bold mb-6">tp-button</h3>
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="code-block"><span class="tag">&lt;tp-button</span> <span class="attr">color</span>=<span class="string">"primary"</span> <span class="attr">size</span>=<span class="string">"md"</span><span class="tag">&gt;</span>Save<span class="tag">&lt;/tp-button&gt;</span></div>
+                            <div class="code-block">
+                                <span class="tag">&lt;tp-button</span>
+                                <span class="attr">color</span>=<span
+                                    class="string"
+                                    >"primary"</span
+                                >
+                                <span class="attr">size</span>=<span
+                                    class="string"
+                                    >"md"</span
+                                ><span class="tag">&gt;</span>Save<span
+                                    class="tag"
+                                    >&lt;/tp-button&gt;</span
+                                >
+                            </div>
                             <div class="flex flex-wrap gap-3">
-                                <tp-button color="primary" size="md">Primary</tp-button>
-                                <tp-button color="success" size="md">Success</tp-button>
-                                <tp-button color="danger" size="md">Danger</tp-button>
-                                <tp-button color="outline" size="md">Outline</tp-button>
+                                <tp-button color="primary" size="md"
+                                    >Primary</tp-button
+                                >
+                                <tp-button color="success" size="md"
+                                    >Success</tp-button
+                                >
+                                <tp-button color="danger" size="md"
+                                    >Danger</tp-button
+                                >
+                                <tp-button color="outline" size="md"
+                                    >Outline</tp-button
+                                >
                             </div>
                         </div>
                     </div>
@@ -342,15 +630,39 @@
                         <h3 class="text-2xl font-bold mb-6">tp-modal</h3>
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="tag">&lt;tp-modal</span> <span class="attr">t-show</span>=<span class="string">"open"</span> <span class="attr">title</span>=<span class="string">"Modal"</span><span class="tag">&gt;</span><br />
+                                <span class="tag">&lt;tp-modal</span>
+                                <span class="attr">t-show</span>=<span
+                                    class="string"
+                                    >"open"</span
+                                >
+                                <span class="attr">title</span>=<span
+                                    class="string"
+                                    >"Modal"</span
+                                ><span class="tag">&gt;</span><br />
                                 &nbsp;&nbsp;Content...<br />
                                 <span class="tag">&lt;/tp-modal&gt;</span>
                             </div>
                             <div>
-                                <tp-button color="primary" size="md" t-click="openModal = true" class="mb-4">Open Modal</tp-button>
-                                <tp-modal t-show="openModal" title="TinyPine Modal">
-                                    <p class="mb-4">This is a modal component!</p>
-                                    <tp-button color="outline" size="md" t-click="openModal = false">Close</tp-button>
+                                <tp-button
+                                    color="primary"
+                                    size="md"
+                                    t-click="openModal = true"
+                                    class="mb-4"
+                                    >Open Modal</tp-button
+                                >
+                                <tp-modal
+                                    t-show="openModal"
+                                    title="TinyPine Modal"
+                                >
+                                    <p class="mb-4">
+                                        This is a modal component!
+                                    </p>
+                                    <tp-button
+                                        color="outline"
+                                        size="md"
+                                        t-click="openModal = false"
+                                        >Close</tp-button
+                                    >
                                 </tp-modal>
                             </div>
                         </div>
@@ -361,19 +673,42 @@
                         <h3 class="text-2xl font-bold mb-6">tp-card</h3>
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="tag">&lt;tp-card</span> <span class="attr">title</span>=<span class="string">"Card Title"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;p&gt;</span>Content goes here...<span class="tag">&lt;/p&gt;</span><br />
+                                <span class="tag">&lt;tp-card</span>
+                                <span class="attr">title</span>=<span
+                                    class="string"
+                                    >"Card Title"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;p&gt;</span
+                                >Content goes here...<span class="tag"
+                                    >&lt;/p&gt;</span
+                                ><br />
                                 <span class="tag">&lt;/tp-card&gt;</span>
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800">
-                                <div t-data="{ showCard: true }" class="space-y-4">
-                                    <button t-click="showCard = !showCard" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">
-                                        <span t-text="showCard ? 'Hide Card' : 'Show Card'"></span>
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800"
+                            >
+                                <div
+                                    t-data="{ showCard: true }"
+                                    class="space-y-4"
+                                >
+                                    <button
+                                        t-click="showCard = !showCard"
+                                        class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                                    >
+                                        <span
+                                            t-text="showCard ? 'Hide Card' : 'Show Card'"
+                                        ></span>
                                     </button>
                                     <div t-show="showCard">
                                         <tp-card title="Card Title">
-                                            <p class="mb-4">This is a card component with Tailwind styling. Click the button above to toggle it!</p>
-                                            <tp-button color="primary" size="sm">Action Button</tp-button>
+                                            <p class="mb-4">
+                                                This is a card component with
+                                                Tailwind styling. Click the
+                                                button above to toggle it!
+                                            </p>
+                                            <tp-button color="primary" size="sm"
+                                                >Action Button</tp-button
+                                            >
                                         </tp-card>
                                     </div>
                                 </div>
@@ -383,46 +718,150 @@
 
                     <!-- Form Components (v1.3.0) -->
                     <div>
-                        <h3 class="text-2xl font-bold mb-6">Form Components (v1.3.0)</h3>
+                        <h3 class="text-2xl font-bold mb-6">
+                            Form Components (v1.3.0)
+                        </h3>
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="tag">&lt;tp-field</span> <span class="attr">label</span>=<span class="string">"Email"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;tp-input</span> <span class="attr">icon</span>=<span class="string">"mail"</span> <span class="attr">placeholder</span>=<span class="string">"you@example.com"</span> <span class="attr">t-model</span>=<span class="string">"email"</span><span class="tag">&gt;&lt;/tp-input&gt;</span><br />
-                                <span class="tag">&lt;/tp-field&gt;</span><br /><br />
-                                <span class="tag">&lt;tp-checkbox</span> <span class="attr">label</span>=<span class="string">"I agree"</span> <span class="attr">t-model</span>=<span class="string">"agree"</span><span class="tag">&gt;&lt;/tp-checkbox&gt;</span><br /><br />
-                                <span class="tag">&lt;tp-file-upload</span> <span class="attr">accept</span>=<span class="string">"image/*"</span> <span class="attr">t-model</span>=<span class="string">"file"</span><span class="tag">&gt;&lt;/tp-file-upload&gt;</span>
+                                <span class="tag">&lt;tp-field</span>
+                                <span class="attr">label</span>=<span
+                                    class="string"
+                                    >"Email"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag"
+                                    >&lt;tp-input</span
+                                >
+                                <span class="attr">icon</span>=<span
+                                    class="string"
+                                    >"mail"</span
+                                >
+                                <span class="attr">placeholder</span>=<span
+                                    class="string"
+                                    >"you@example.com"</span
+                                >
+                                <span class="attr">t-model</span>=<span
+                                    class="string"
+                                    >"email"</span
+                                ><span class="tag">&gt;&lt;/tp-input&gt;</span
+                                ><br />
+                                <span class="tag">&lt;/tp-field&gt;</span
+                                ><br /><br />
+                                <span class="tag">&lt;tp-checkbox</span>
+                                <span class="attr">label</span>=<span
+                                    class="string"
+                                    >"I agree"</span
+                                >
+                                <span class="attr">t-model</span>=<span
+                                    class="string"
+                                    >"agree"</span
+                                ><span class="tag"
+                                    >&gt;&lt;/tp-checkbox&gt;</span
+                                ><br /><br />
+                                <span class="tag">&lt;tp-file-upload</span>
+                                <span class="attr">accept</span>=<span
+                                    class="string"
+                                    >"image/*"</span
+                                >
+                                <span class="attr">t-model</span>=<span
+                                    class="string"
+                                    >"file"</span
+                                ><span class="tag"
+                                    >&gt;&lt;/tp-file-upload&gt;</span
+                                >
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800">
-                                <div t-data="{ email: '', password: '', name: '', agree: false, file: null }">
-                                    <tp-field label="Full Name" helper="Enter your full name" required>
-                                        <tp-input icon="user" placeholder="John Doe" t-model="name" size="md"></tp-input>
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800"
+                            >
+                                <div
+                                    t-data="{ email: '', password: '', name: '', agree: false, file: null }"
+                                >
+                                    <tp-field
+                                        label="Full Name"
+                                        helper="Enter your full name"
+                                        required
+                                    >
+                                        <tp-input
+                                            icon="user"
+                                            placeholder="John Doe"
+                                            t-model="name"
+                                            size="md"
+                                        ></tp-input>
                                     </tp-field>
 
-                                    <tp-field label="Email Address" helper="We'll never share your email">
-                                        <tp-input icon="mail" type="email" placeholder="hello@tinypine.dev" t-model="email" size="md"></tp-input>
+                                    <tp-field
+                                        label="Email Address"
+                                        helper="We'll never share your email"
+                                    >
+                                        <tp-input
+                                            icon="mail"
+                                            type="email"
+                                            placeholder="hello@tinypine.dev"
+                                            t-model="email"
+                                            size="md"
+                                        ></tp-input>
                                     </tp-field>
 
                                     <tp-field label="Password">
-                                        <tp-input icon="lock" type="password" placeholder="••••••••" t-model="password" size="md"></tp-input>
+                                        <tp-input
+                                            icon="lock"
+                                            type="password"
+                                            placeholder="••••••••"
+                                            t-model="password"
+                                            size="md"
+                                        ></tp-input>
                                     </tp-field>
 
                                     <div class="mb-4">
-                                        <tp-checkbox label="I agree to terms and conditions" t-model="agree"></tp-checkbox>
+                                        <tp-checkbox
+                                            label="I agree to terms and conditions"
+                                            t-model="agree"
+                                        ></tp-checkbox>
                                     </div>
 
                                     <tp-field label="Profile Picture">
-                                        <tp-file-upload accept="image/*" max-size="5" t-model="file"></tp-file-upload>
+                                        <tp-file-upload
+                                            accept="image/*"
+                                            max-size="5"
+                                            t-model="file"
+                                        ></tp-file-upload>
                                     </tp-field>
 
-                                    <div class="mt-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
-                                        <p class="text-sm font-semibold mb-2">Form Data:</p>
-                                        <p class="text-xs"><strong>Name:</strong> <span t-text="name || 'N/A'"></span></p>
-                                        <p class="text-xs"><strong>Email:</strong> <span t-text="email || 'N/A'"></span></p>
-                                        <p class="text-xs"><strong>Password:</strong> <span t-text="password ? '•'.repeat(password.length) : 'N/A'"></span></p>
-                                        <p class="text-xs"><strong>Agreed:</strong> <span t-text="agree ? 'Yes' : 'No'"></span></p>
+                                    <div
+                                        class="mt-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg"
+                                    >
+                                        <p class="text-sm font-semibold mb-2">
+                                            Form Data:
+                                        </p>
+                                        <p class="text-xs">
+                                            <strong>Name:</strong>
+                                            <span t-text="name || 'N/A'"></span>
+                                        </p>
+                                        <p class="text-xs">
+                                            <strong>Email:</strong>
+                                            <span
+                                                t-text="email || 'N/A'"
+                                            ></span>
+                                        </p>
+                                        <p class="text-xs">
+                                            <strong>Password:</strong>
+                                            <span
+                                                t-text="password ? '•'.repeat(password.length) : 'N/A'"
+                                            ></span>
+                                        </p>
+                                        <p class="text-xs">
+                                            <strong>Agreed:</strong>
+                                            <span
+                                                t-text="agree ? 'Yes' : 'No'"
+                                            ></span>
+                                        </p>
                                     </div>
 
-                                    <tp-button color="success" size="md" class="w-full mt-4">Submit Form</tp-button>
+                                    <tp-button
+                                        color="success"
+                                        size="md"
+                                        class="w-full mt-4"
+                                        >Submit Form</tp-button
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -430,58 +869,534 @@
                 </div>
             </div>
 
-            <!-- v1.3.1 NEW FEATURES -->
-            <div class="mb-20 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-2xl p-8">
+            <!-- v1.4.0 NEW FEATURES -->
+            <div
+                class="mb-20 bg-gradient-to-br from-emerald-50 to-cyan-50 dark:from-emerald-900/20 dark:to-cyan-900/20 rounded-2xl p-8"
+            >
                 <div class="text-center mb-12">
-                    <span class="inline-block px-4 py-2 bg-blue-500 text-white rounded-full text-sm font-bold mb-4">NEW in v1.3.1 🎉</span>
+                    <span
+                        class="inline-block px-4 py-2 bg-emerald-500 text-white rounded-full text-sm font-bold mb-4"
+                        >NEW in v1.4.0 🚀</span
+                    >
+                    <h2 class="text-4xl font-bold">Async Flow & Forms</h2>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2">
+                        Enhanced async operations, comprehensive form
+                        validation, and input debouncing
+                    </p>
+                </div>
+
+                <div class="space-y-16">
+                    <!-- t-debounce with Search -->
+                    <div>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>⚡</span> Debounced Search Input
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            Using t-debounce to delay state updates (Future: Enhanced t-fetch with API calls)
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="code-block">
+                                <span class="comment"
+                                    >// Debounced search with method &
+                                    headers</span
+                                ><br />
+                                <span class="tag">&lt;input</span>
+                                <span class="attr">type</span>=<span
+                                    class="string"
+                                    >"text"</span
+                                >
+                                <span class="attr">t-model</span>=<span
+                                    class="string"
+                                    >"query"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-fetch</span
+                                >=<span class="string"
+                                    >"`/api/search?q=${query}`"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-fetch-debounce</span
+                                >=<span class="string">"500"</span><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-fetch-method</span
+                                >=<span class="string">"GET"</span><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-fetch-before</span
+                                >=<span class="string">"loading = true"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-fetch-after</span
+                                >=<span class="string"
+                                    >"loading = false; results = $data"</span
+                                ><span class="tag">&gt;</span><br /><br />
+                                <span class="tag">&lt;div</span>
+                                <span class="attr">t-show</span>=<span
+                                    class="string"
+                                    >"$pending"</span
+                                ><span class="tag">&gt;</span>Loading...<span
+                                    class="tag"
+                                    >&lt;/div&gt;</span
+                                ><br />
+                                <span class="tag">&lt;div</span>
+                                <span class="attr">t-for</span>=<span
+                                    class="string"
+                                    >"item in results"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;p</span>
+                                <span class="attr">t-text</span>=<span
+                                    class="string"
+                                    >"item.title"</span
+                                ><span class="tag">&gt;&lt;/p&gt;</span><br />
+                                <span class="tag">&lt;/div&gt;</span>
+                            </div>
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
+                                <div
+                                    t-data="{ query: '', message: '' }"
+                                >
+                                    <tp-field label="Search Input (with t-debounce)">
+                                        <input
+                                            type="text"
+                                            t-model="query"
+                                            t-debounce="500"
+                                            placeholder="Type to search..."
+                                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                        />
+                                    </tp-field>
+
+                                    <div
+                                        t-show="query && query.length > 0"
+                                        class="mt-4 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg"
+                                    >
+                                        <p class="text-blue-700 dark:text-blue-300">
+                                            Searching for: "<span t-text="query"></span>"
+                                        </p>
+                                        <p class="text-sm text-blue-600 dark:text-blue-400 mt-2">
+                                            (This updates 500ms after you stop typing)
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="mt-4 p-3 bg-gray-100 dark:bg-gray-900 rounded-lg text-xs"
+                                    >
+                                        <p class="font-semibold mb-1">
+                                            💡 How it works:
+                                        </p>
+                                        <p>
+                                            <strong>t-debounce</strong> delays the model update by 500ms.
+                                            Try typing quickly - the value only updates after you pause!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Validation v1.4.0 -->
+                    <div>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>✅</span> Advanced Form Validation
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            10 built-in validators with automatic CSS classes
+                            and state management
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="code-block">
+                                <span class="comment"
+                                    >// 10 Validators: required, email, min,
+                                    max,</span
+                                ><br />
+                                <span class="comment"
+                                    >// minLength, maxLength, pattern, url,
+                                    number, integer</span
+                                ><br />
+                                <span class="tag">&lt;tp-form</span>
+                                <span class="attr">name</span>=<span
+                                    class="string"
+                                    >"contact"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;input</span>
+                                <span class="attr">t-validate</span>=<span
+                                    class="string"
+                                    >"required|email"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >name</span
+                                >=<span class="string">"email"</span>
+                                <span class="attr">placeholder</span>=<span
+                                    class="string"
+                                    >"Email"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;input</span>
+                                <span class="attr">t-validate</span>=<span
+                                    class="string"
+                                    >"required|minLength:3|maxLength:50"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >name</span
+                                >=<span class="string">"name"</span>
+                                <span class="attr">placeholder</span>=<span
+                                    class="string"
+                                    >"Name"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;input</span>
+                                <span class="attr">t-validate</span>=<span
+                                    class="string"
+                                    >"url"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >name</span
+                                >=<span class="string">"website"</span>
+                                <span class="attr">placeholder</span>=<span
+                                    class="string"
+                                    >"Website"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                                <span class="attr">type</span>=<span
+                                    class="string"
+                                    >"submit"</span
+                                ><span class="tag">&gt;</span>Submit<span
+                                    class="tag"
+                                    >&lt;/button&gt;</span
+                                ><br />
+                                <span class="tag">&lt;/tp-form&gt;</span
+                                ><br /><br />
+                                <span class="comment"
+                                    >// Access form state: $errors, $valid,
+                                    $invalid</span
+                                ><br />
+                                <span class="comment"
+                                    >// $touched, $dirty, $pending</span
+                                >
+                            </div>
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
+                                <div
+                                    t-data="{ email: '', name: '', website: '', age: '', result: null, handleSubmit() { this.result = '✓ Form is valid!'; } }"
+                                >
+                                    <tp-form name="contact">
+                                        <tp-field
+                                            label="Email Address"
+                                            required
+                                        >
+                                            <input
+                                                t-validate="required|email"
+                                                name="email"
+                                                t-model="email"
+                                                placeholder="you@example.com"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                            />
+                                        </tp-field>
+
+                                        <tp-field
+                                            label="Full Name (3-50 chars)"
+                                            required
+                                        >
+                                            <input
+                                                t-validate="required|minLength:3|maxLength:50"
+                                                name="name"
+                                                t-model="name"
+                                                placeholder="John Doe"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                            />
+                                        </tp-field>
+
+                                        <tp-field label="Age (18-120)">
+                                            <input
+                                                t-validate="number|min:18|max:120"
+                                                name="age"
+                                                t-model="age"
+                                                placeholder="25"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                            />
+                                        </tp-field>
+
+                                        <tp-field label="Website (Optional)">
+                                            <input
+                                                t-validate="url"
+                                                name="website"
+                                                t-model="website"
+                                                placeholder="https://example.com"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                            />
+                                        </tp-field>
+
+                                        <div class="flex gap-2 mt-6">
+                                            <button
+                                                type="button"
+                                                t-click="handleSubmit()"
+                                                class="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition"
+                                            >
+                                                Validate Form
+                                            </button>
+                                            <button
+                                                type="button"
+                                                t-click="result = null; email=''; name=''; age=''; website=''"
+                                                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition"
+                                            >
+                                                Reset
+                                            </button>
+                                        </div>
+
+                                        <div
+                                            t-show="typeof result !== 'undefined' && result"
+                                            class="mt-4 p-4 bg-emerald-100 dark:bg-emerald-900 rounded-lg"
+                                        >
+                                            <p
+                                                t-text="typeof result !== 'undefined' ? result : ''"
+                                                class="text-emerald-800 dark:text-emerald-200 font-semibold"
+                                            ></p>
+                                        </div>
+                                    </tp-form>
+
+                                    <div
+                                        class="mt-4 p-3 bg-gray-100 dark:bg-gray-900 rounded-lg text-xs"
+                                    >
+                                        <p class="font-semibold mb-1">
+                                            💡 Form Data:
+                                        </p>
+                                        <p>
+                                            Email:
+                                            <span
+                                                t-text="email || 'N/A'"
+                                            ></span>
+                                        </p>
+                                        <p>
+                                            Name:
+                                            <span t-text="name || 'N/A'"></span>
+                                        </p>
+                                        <p>
+                                            Age:
+                                            <span t-text="age || 'N/A'"></span>
+                                        </p>
+                                        <p>
+                                            Website:
+                                            <span
+                                                t-text="website || 'N/A'"
+                                            ></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- t-debounce -->
+                    <div>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>⏱️</span> Input Debouncing (t-debounce)
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            Delay state updates with automatic event dispatching
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="code-block">
+                                <span class="comment"
+                                    >// Debounce input changes by 300ms</span
+                                ><br />
+                                <span class="tag">&lt;input</span>
+                                <span class="attr">type</span>=<span
+                                    class="string"
+                                    >"text"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-model</span
+                                >=<span class="string">"search"</span><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-debounce</span
+                                >=<span class="string">"300"</span><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >placeholder</span
+                                >=<span class="string">"Search..."</span
+                                ><span class="tag">&gt;</span><br /><br />
+                                <span class="tag">&lt;p&gt;</span>Debounced
+                                value: <span class="tag">&lt;span</span>
+                                <span class="attr">t-text</span>=<span
+                                    class="string"
+                                    >"search"</span
+                                ><span class="tag"
+                                    >&gt;&lt;/span&gt;&lt;/p&gt;</span
+                                ><br /><br />
+                                <span class="comment"
+                                    >// Dispatches 'debounced' event after
+                                    delay</span
+                                ><br />
+                                <span class="comment"
+                                    >// Perfect for search inputs!</span
+                                >
+                            </div>
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
+                                <div
+                                    t-data="{ instant: '', debounced: '' }"
+                                >
+                                    <tp-field label="Instant (No Debounce)">
+                                        <input
+                                            type="text"
+                                            t-model="instant"
+                                            placeholder="Type here..."
+                                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                        />
+                                    </tp-field>
+
+                                    <tp-field label="Debounced (500ms delay)">
+                                        <input
+                                            type="text"
+                                            t-model="debounced"
+                                            t-debounce="500"
+                                            placeholder="Type here..."
+                                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                        />
+                                    </tp-field>
+
+                                    <div
+                                        class="p-4 bg-gradient-to-r from-cyan-100 to-emerald-100 dark:from-cyan-900 dark:to-emerald-900 rounded-lg"
+                                    >
+                                        <p class="text-sm mb-2">
+                                            <strong>Instant Value:</strong>
+                                            "<span t-text="instant"></span>"
+                                        </p>
+                                        <p class="text-sm mb-2">
+                                            <strong>Debounced Value:</strong>
+                                            "<span t-text="debounced"></span>"
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="mt-4 p-3 bg-gray-100 dark:bg-gray-900 rounded-lg text-xs"
+                                    >
+                                        <p class="font-semibold mb-1">
+                                            💡 Notice:
+                                        </p>
+                                        <p>
+                                            The debounced input only updates
+                                            after you stop typing for 500ms!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- v1.3.1 FEATURES -->
+            <div
+                class="mb-20 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-2xl p-8"
+            >
+                <div class="text-center mb-12">
+                    <span
+                        class="inline-block px-4 py-2 bg-blue-500 text-white rounded-full text-sm font-bold mb-4"
+                        >v1.3.1 Features</span
+                    >
                     <h2 class="text-4xl font-bold">Advanced Features</h2>
                 </div>
 
                 <div class="space-y-16">
-                    <!-- Form Validation -->
+                    <!-- Basic Form Validation (v1.3.1) -->
                     <div>
-                        <h3 class="text-3xl font-bold mb-6 flex items-center gap-2"><span>✅</span> Form Validation System</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-8">Built-in validation with t-validate directive and TinyPine.forms API</p>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>📋</span> Basic Form Validation
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            Simple validation with TinyPine.forms API (See
+                            v1.4.0 for advanced validation)
+                        </p>
 
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="comment">// Validation rules: required, email, min:N, max:N, numeric, url</span><br />
-                                <span class="tag">&lt;tp-form</span> <span class="attr">name</span>=<span class="string">"signup"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;input</span> <span class="attr">t-validate</span>=<span class="string">"required|email"</span><br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">t-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"Email"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;input</span> <span class="attr">t-validate</span>=<span class="string">"required|min:8"</span><br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">t-model</span>=<span class="string">"password"</span> <span class="attr">type</span>=<span class="string">"password"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;input</span> <span class="attr">t-validate</span>=<span class="string">"required|numeric|min:18"</span><br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">t-model</span>=<span class="string">"age"</span> <span class="attr">placeholder</span>=<span class="string">"Age"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="string">"submit"</span><span class="tag">&gt;</span>Sign Up<span class="tag">&lt;/button&gt;</span><br />
-                                <span class="tag">&lt;/tp-form&gt;</span>
+                                <span class="comment"
+                                    >// Basic form validation (v1.3.1)</span
+                                ><br />
+                                <span class="tag">&lt;tp-form</span>
+                                <span class="attr">name</span>=<span
+                                    class="string"
+                                    >"basic"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;input</span>
+                                <span class="attr">name</span>=<span
+                                    class="string"
+                                    >"username"</span
+                                ><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="attr"
+                                    >t-model</span
+                                >=<span class="string">"username"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                                <span class="attr">type</span>=<span
+                                    class="string"
+                                    >"submit"</span
+                                ><span class="tag">&gt;</span>Submit<span
+                                    class="tag"
+                                    >&lt;/button&gt;</span
+                                ><br />
+                                <span class="tag">&lt;/tp-form&gt;</span
+                                ><br /><br />
+                                <span class="comment"
+                                    >// For advanced validation with 10
+                                    validators,</span
+                                ><br />
+                                <span class="comment"
+                                    >// see v1.4.0 section above!</span
+                                >
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
-                                <div t-data="{ email: '', password: '', age: '', website: '', result: null }">
-                                    <tp-form name="signup" t-on:submit="result = 'Form submitted! ✓'">
-                                        <tp-field label="Email" required>
-                                            <input t-validate="required|email" t-model="email" placeholder="your@email.com" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" />
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
+                                <div t-data="{ username: '', result: null }">
+                                    <tp-form name="basic">
+                                        <tp-field label="Username">
+                                            <input
+                                                name="username"
+                                                t-model="username"
+                                                placeholder="Enter username"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                                            />
                                         </tp-field>
 
-                                        <tp-field label="Password (min 8 chars)" required>
-                                            <input t-validate="required|min:8" t-model="password" type="password" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" />
-                                        </tp-field>
+                                        <button
+                                            type="button"
+                                            t-click="result = username ? 'Submitted: ' + username : 'Please enter username'"
+                                            class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+                                        >
+                                            Submit
+                                        </button>
 
-                                        <tp-field label="Age (18+)" required>
-                                            <input t-validate="required|numeric|min:18|max:120" t-model="age" placeholder="25" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" />
-                                        </tp-field>
-
-                                        <tp-field label="Website (optional)">
-                                            <input t-validate="url" t-model="website" placeholder="https://example.com" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" />
-                                        </tp-field>
-
-                                        <div class="flex gap-2 mt-6">
-                                            <button type="submit" class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition">Submit Form</button>
-                                            <button type="button" t-click="TinyPine.forms.reset('signup'); result = null" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition">Reset</button>
-                                        </div>
-
-                                        <div t-show="result" class="mt-4 p-4 bg-green-100 dark:bg-green-900 rounded-lg">
-                                            <p t-text="result" class="text-green-800 dark:text-green-200 font-semibold"></p>
+                                        <div
+                                            t-show="typeof result !== 'undefined' && result"
+                                            class="mt-4 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg"
+                                        >
+                                            <p
+                                                t-text="typeof result !== 'undefined' ? result : ''"
+                                                class="text-blue-800 dark:text-blue-200 font-semibold"
+                                            ></p>
                                         </div>
                                     </tp-form>
                                 </div>
@@ -491,54 +1406,145 @@
 
                     <!-- Advanced Router -->
                     <div>
-                        <h3 class="text-3xl font-bold mb-6 flex items-center gap-2"><span>🛣️</span> Advanced Router with Dynamic Params</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-8">Route parameters, guards, and $route/$router helpers</p>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>🛣️</span> Advanced Router with Dynamic Params
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            Route parameters, guards, and $route/$router helpers
+                        </p>
 
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="comment">// Define routes with dynamic params</span><br />
+                                <span class="comment"
+                                    >// Define routes with dynamic params</span
+                                ><br />
                                 TinyPine.router({<br />
                                 &nbsp;&nbsp;'/': 'home',<br />
                                 &nbsp;&nbsp;'/user/:id': 'user-profile',<br />
                                 &nbsp;&nbsp;'/post/:id/edit': 'edit-post',<br />
                                 &nbsp;&nbsp;'/admin': {<br />
                                 &nbsp;&nbsp;&nbsp;&nbsp;view: 'admin',<br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;beforeEnter: (to) => isAdmin()<br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;beforeEnter: (to) =>
+                                isAdmin()<br />
                                 &nbsp;&nbsp;}<br />
                                 });<br /><br />
-                                <span class="comment">// Access params with $route helper</span><br />
-                                <span class="tag">&lt;div</span> <span class="attr">t-view</span>=<span class="string">"'user-profile'"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;h1</span> <span class="attr">t-text</span>=<span class="string">"'User: ' + $route.params.id"</span><span class="tag">&gt;&lt;/h1&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">t-click</span>=<span class="string">"$router.navigate('/user/' + ($route.params.id*1 + 1))"</span><span class="tag">&gt;</span><br />
+                                <span class="comment"
+                                    >// Access params with $route helper</span
+                                ><br />
+                                <span class="tag">&lt;div</span>
+                                <span class="attr">t-view</span>=<span
+                                    class="string"
+                                    >"'user-profile'"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;h1</span>
+                                <span class="attr">t-text</span>=<span
+                                    class="string"
+                                    >"'User: ' + $route.params.id"</span
+                                ><span class="tag">&gt;&lt;/h1&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;button</span>
+                                <span class="attr">t-click</span>=<span
+                                    class="string"
+                                    >"$router.navigate('/user/' +
+                                    ($route.params.id*1 + 1))"</span
+                                ><span class="tag">&gt;</span><br />
                                 &nbsp;&nbsp;&nbsp;&nbsp;Next User<br />
-                                &nbsp;&nbsp;<span class="tag">&lt;/button&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag"
+                                    >&lt;/button&gt;</span
+                                ><br />
                                 <span class="tag">&lt;/div&gt;</span>
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
                                 <div t-data="{}">
                                     <div class="space-y-4">
                                         <div class="flex gap-2 flex-wrap">
-                                            <button t-click="$router.navigate('/demo-user/1')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition">User 1</button>
-                                            <button t-click="$router.navigate('/demo-user/2')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition">User 2</button>
-                                            <button t-click="$router.navigate('/demo-post/42/edit')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition">Edit Post 42</button>
+                                            <button
+                                                t-click="$router.navigate('/demo-user/1')"
+                                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition"
+                                            >
+                                                User 1
+                                            </button>
+                                            <button
+                                                t-click="$router.navigate('/demo-user/2')"
+                                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition"
+                                            >
+                                                User 2
+                                            </button>
+                                            <button
+                                                t-click="$router.navigate('/demo-post/42/edit')"
+                                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition"
+                                            >
+                                                Edit Post 42
+                                            </button>
                                         </div>
 
-                                        <div class="p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
-                                            <p class="text-sm font-semibold mb-2">Current Route Info:</p>
-                                            <p class="text-xs"><strong>Path:</strong> <span t-text="$route.path || '/'"></span></p>
-                                            <p class="text-xs"><strong>Params:</strong> <span t-text="JSON.stringify($route.params || {})"></span></p>
-                                            <p class="text-xs"><strong>View:</strong> <span t-text="$route.view || 'none'"></span></p>
+                                        <div
+                                            class="p-4 bg-gray-100 dark:bg-gray-900 rounded-lg"
+                                        >
+                                            <p
+                                                class="text-sm font-semibold mb-2"
+                                            >
+                                                Current Route Info:
+                                            </p>
+                                            <p class="text-xs">
+                                                <strong>Path:</strong>
+                                                <span
+                                                    t-text="$route.path || '/'"
+                                                ></span>
+                                            </p>
+                                            <p class="text-xs">
+                                                <strong>Params:</strong>
+                                                <span
+                                                    t-text="JSON.stringify($route.params || {})"
+                                                ></span>
+                                            </p>
+                                            <p class="text-xs">
+                                                <strong>View:</strong>
+                                                <span
+                                                    t-text="$route.view || 'none'"
+                                                ></span>
+                                            </p>
                                         </div>
 
-                                        <div t-view="'demo-user'" class="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                                            <h3 class="text-lg font-bold mb-2">User Profile Page</h3>
-                                            <p>Viewing User ID: <span t-text="$route.params.id" class="font-bold text-blue-700 dark:text-blue-300"></span></p>
-                                            <button t-click="$router.navigate('/demo-user/' + ($route.params.id*1 + 1))" class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition">Next User →</button>
+                                        <div
+                                            t-show="$route.view === 'demo-user'"
+                                            class="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg"
+                                        >
+                                            <h3 class="text-lg font-bold mb-2">
+                                                User Profile Page
+                                            </h3>
+                                            <p>
+                                                Viewing User ID:
+                                                <span
+                                                    t-text="$route.params.id"
+                                                    class="font-bold text-blue-700 dark:text-blue-300"
+                                                ></span>
+                                            </p>
+                                            <button
+                                                t-click="$router.navigate('/demo-user/' + ($route.params.id*1 + 1))"
+                                                class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition"
+                                            >
+                                                Next User →
+                                            </button>
                                         </div>
 
-                                        <div t-view="'demo-post'" class="p-4 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                                            <h3 class="text-lg font-bold mb-2">Edit Post</h3>
-                                            <p>Editing Post ID: <span t-text="$route.params.id" class="font-bold text-purple-700 dark:text-purple-300"></span></p>
+                                        <div
+                                            t-show="$route.view === 'demo-post'"
+                                            class="p-4 bg-purple-100 dark:bg-purple-900 rounded-lg"
+                                        >
+                                            <h3 class="text-lg font-bold mb-2">
+                                                Edit Post
+                                            </h3>
+                                            <p>
+                                                Editing Post ID:
+                                                <span
+                                                    t-text="$route.params.id"
+                                                    class="font-bold text-purple-700 dark:text-purple-300"
+                                                ></span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -548,21 +1554,58 @@
 
                     <!-- Keyed Diffing -->
                     <div>
-                        <h3 class="text-3xl font-bold mb-6 flex items-center gap-2"><span>🔑</span> Keyed List Diffing</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-8">Efficient list updates with :key binding for optimal performance</p>
+                        <h3
+                            class="text-3xl font-bold mb-6 flex items-center gap-2"
+                        >
+                            <span>🔑</span> Keyed List Diffing
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-8">
+                            Efficient list updates with :key binding for optimal
+                            performance
+                        </p>
 
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="code-block">
-                                <span class="comment">// Use :key for efficient list updates</span><br />
-                                <span class="tag">&lt;div</span> <span class="attr">t-for</span>=<span class="string">"item in items"</span> <span class="attr">:key</span>=<span class="string">"item.id"</span><span class="tag">&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;h3</span> <span class="attr">t-text</span>=<span class="string">"item.name"</span><span class="tag">&gt;&lt;/h3&gt;</span><br />
-                                &nbsp;&nbsp;<span class="tag">&lt;p</span> <span class="attr">t-text</span>=<span class="string">"item.value"</span><span class="tag">&gt;&lt;/p&gt;</span><br />
-                                <span class="tag">&lt;/div&gt;</span><br /><br />
-                                <span class="comment">// DOM elements are reused based on key</span><br />
-                                <span class="comment">// Only changed items are updated</span><br />
-                                <span class="comment">// Preserves component state & animations</span>
+                                <span class="comment"
+                                    >// Use :key for efficient list
+                                    updates</span
+                                ><br />
+                                <span class="tag">&lt;div</span>
+                                <span class="attr">t-for</span>=<span
+                                    class="string"
+                                    >"item in items"</span
+                                >
+                                <span class="attr">:key</span>=<span
+                                    class="string"
+                                    >"item.id"</span
+                                ><span class="tag">&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;h3</span>
+                                <span class="attr">t-text</span>=<span
+                                    class="string"
+                                    >"item.name"</span
+                                ><span class="tag">&gt;&lt;/h3&gt;</span><br />
+                                &nbsp;&nbsp;<span class="tag">&lt;p</span>
+                                <span class="attr">t-text</span>=<span
+                                    class="string"
+                                    >"item.value"</span
+                                ><span class="tag">&gt;&lt;/p&gt;</span><br />
+                                <span class="tag">&lt;/div&gt;</span
+                                ><br /><br />
+                                <span class="comment"
+                                    >// DOM elements are reused based on
+                                    key</span
+                                ><br />
+                                <span class="comment"
+                                    >// Only changed items are updated</span
+                                ><br />
+                                <span class="comment"
+                                    >// Preserves component state &
+                                    animations</span
+                                >
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800">
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800"
+                            >
                                 <div
                                     t-data="{
                 items: [{id:1,name:'Alpha',count:0},{id:2,name:'Beta',count:0},{id:3,name:'Gamma',count:0}],
@@ -578,27 +1621,79 @@
               }"
                                 >
                                     <div class="flex gap-2 mb-4 flex-wrap">
-                                        <button t-click="methods.shuffle()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm transition">🔀 Shuffle</button>
-                                        <button t-click="methods.reverse()" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition">↕️ Reverse</button>
-                                        <button t-click="methods.add()" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition">➕ Add</button>
-                                        <button t-click="methods.remove()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition">➖ Remove</button>
+                                        <button
+                                            t-click="methods.shuffle()"
+                                            class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm transition"
+                                        >
+                                            🔀 Shuffle
+                                        </button>
+                                        <button
+                                            t-click="methods.reverse()"
+                                            class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition"
+                                        >
+                                            ↕️ Reverse
+                                        </button>
+                                        <button
+                                            t-click="methods.add()"
+                                            class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition"
+                                        >
+                                            ➕ Add
+                                        </button>
+                                        <button
+                                            t-click="methods.remove()"
+                                            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition"
+                                        >
+                                            ➖ Remove
+                                        </button>
                                     </div>
 
                                     <div class="space-y-2">
-                                        <div t-for="item in items" :key="item.id" class="p-3 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 rounded-lg flex items-center justify-between transition-all duration-300">
+                                        <div
+                                            t-for="item in items"
+                                            :key="item.id"
+                                            class="p-3 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 rounded-lg flex items-center justify-between transition-all duration-300"
+                                        >
                                             <div>
-                                                <span t-text="item.name" class="font-bold"></span>
-                                                <span class="text-sm text-gray-600 dark:text-gray-400"> (ID: <span t-text="item.id"></span>)</span>
+                                                <span
+                                                    t-text="item.name"
+                                                    class="font-bold"
+                                                ></span>
+                                                <span
+                                                    class="text-sm text-gray-600 dark:text-gray-400"
+                                                >
+                                                    (ID:
+                                                    <span
+                                                        t-text="item.id"
+                                                    ></span
+                                                    >)</span
+                                                >
                                             </div>
                                             <div>
-                                                <button t-click="item.count++" class="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs transition">Clicks: <span t-text="item.count"></span></button>
+                                                <button
+                                                    t-click="item.count++"
+                                                    class="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs transition"
+                                                >
+                                                    Clicks:
+                                                    <span
+                                                        t-text="item.count"
+                                                    ></span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="mt-4 p-3 bg-gray-100 dark:bg-gray-900 rounded-lg text-xs">
-                                        <p class="font-semibold mb-1">💡 Notice:</p>
-                                        <p>Each item's click count is preserved when you shuffle or reverse the list. This is thanks to keyed diffing!</p>
+                                    <div
+                                        class="mt-4 p-3 bg-gray-100 dark:bg-gray-900 rounded-lg text-xs"
+                                    >
+                                        <p class="font-semibold mb-1">
+                                            💡 Notice:
+                                        </p>
+                                        <p>
+                                            Each item's click count is preserved
+                                            when you shuffle or reverse the
+                                            list. This is thanks to keyed
+                                            diffing!
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -609,35 +1704,81 @@
 
             <!-- Advanced Examples -->
             <div class="mb-20">
-                <h2 class="text-4xl font-bold mb-12 text-center">More Examples</h2>
+                <h2 class="text-4xl font-bold mb-12 text-center">
+                    More Examples
+                </h2>
 
                 <!-- Todo List -->
-                <div class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800">
+                <div
+                    class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800"
+                >
                     <h3 class="text-2xl font-bold mb-6">Todo List</h3>
-                    <div t-data="{ todos: [], newTodo: '', methods: { add() { if(this.newTodo.trim()) { this.todos.push(this.newTodo); this.newTodo = ''; } }, remove(i) { this.todos.splice(i, 1); } } }">
+                    <div
+                        t-data="{ todos: [], newTodo: '', methods: { add() { if(this.newTodo.trim()) { this.todos.push(this.newTodo); this.newTodo = ''; } }, remove(i) { this.todos.splice(i, 1); } } }"
+                    >
                         <div class="flex gap-2 mb-4">
-                            <input type="text" t-model="newTodo" placeholder="Add todo..." class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" />
-                            <button t-click="methods.add()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Add</button>
+                            <input
+                                type="text"
+                                t-model="newTodo"
+                                placeholder="Add todo..."
+                                class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                            />
+                            <button
+                                t-click="methods.add()"
+                                class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                            >
+                                Add
+                            </button>
                         </div>
                         <ul class="space-y-2">
-                            <li t-for="(todo, i) in todos" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <li
+                                t-for="(todo, i) in todos"
+                                class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                            >
                                 <span t-text="todo"></span>
-                                <button t-click="methods.remove(i)" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition">Remove</button>
+                                <button
+                                    t-click="methods.remove(i)"
+                                    class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition"
+                                >
+                                    Remove
+                                </button>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <!-- Async Fetch -->
-                <div class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800">
+                <div
+                    class="mb-12 border border-gray-200 dark:border-gray-700 rounded-lg p-8 bg-white dark:bg-gray-800"
+                >
                     <h3 class="text-2xl font-bold mb-6">Async Data Fetching</h3>
                     <div t-data="{ user: {} }">
-                        <div t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())">
-                            <div t-loading="'Loading...'" class="text-center py-8">⏳ Loading...</div>
-                            <div t-error="'Error loading user'" class="text-center py-8 text-red-500">❌ Error loading user</div>
-                            <div class="p-4 bg-purple-50 dark:bg-purple-900 rounded-lg">
-                                <p><strong>Name:</strong> <span t-text="user?.name || ''"></span></p>
-                                <p><strong>Email:</strong> <span t-text="user?.email || ''"></span></p>
+                        <div
+                            t-await="fetch('https://jsonplaceholder.typicode.com/users/1').then(r=>r.json())"
+                        >
+                            <div
+                                t-loading="'Loading...'"
+                                class="text-center py-8"
+                            >
+                                ⏳ Loading...
+                            </div>
+                            <div
+                                t-error="'Error loading user'"
+                                class="text-center py-8 text-red-500"
+                            >
+                                ❌ Error loading user
+                            </div>
+                            <div
+                                class="p-4 bg-purple-50 dark:bg-purple-900 rounded-lg"
+                            >
+                                <p>
+                                    <strong>Name:</strong>
+                                    <span t-text="user?.name || ''"></span>
+                                </p>
+                                <p>
+                                    <strong>Email:</strong>
+                                    <span t-text="user?.email || ''"></span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -647,15 +1788,24 @@
             <!-- Get Started -->
             <div id="get-started" class="text-center py-20">
                 <h2 class="text-4xl font-bold mb-6">Get Started</h2>
-                <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">Add one script tag and you're ready to go</p>
+                <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                    Add one script tag and you're ready to go
+                </p>
                 <div class="code-block text-left max-w-2xl mx-auto">
-                    <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://unpkg.com/tinypine@1.2.0/dist/tinypine.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span><br />
+                    <span class="tag">&lt;script</span>
+                    <span class="attr">src</span>=<span class="string"
+                        >"https://unpkg.com/tinypine@1.4.0/dist/tinypine.min.js"</span
+                    ><span class="tag">&gt;&lt;/script&gt;</span><br />
                     <span class="tag">&lt;script&gt;</span><br />
                     &nbsp;&nbsp;TinyPine.init();<br />
                     <span class="tag">&lt;/script&gt;</span>
                 </div>
                 <div class="mt-8">
-                    <a href="https://www.npmjs.com/package/tinypine" class="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">Install from NPM</a>
+                    <a
+                        href="https://www.npmjs.com/package/tinypine"
+                        class="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
+                        >Install from NPM</a
+                    >
                 </div>
             </div>
         </div>
@@ -663,10 +1813,20 @@
         <!-- Footer -->
         <footer class="bg-gray-50 dark:bg-gray-800 py-12 mt-20">
             <div class="max-w-7xl mx-auto px-4 text-center">
-                <p class="text-gray-600 dark:text-gray-400 mb-4">Built with ❤️ by the TinyPine Team</p>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Built with ❤️ by the TinyPine Team
+                </p>
                 <div class="flex justify-center gap-6">
-                    <a href="https://github.com/DigitalCoreHub/TinyPine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">GitHub</a>
-                    <a href="https://www.npmjs.com/package/tinypine" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">NPM</a>
+                    <a
+                        href="https://github.com/DigitalCoreHub/TinyPine"
+                        class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                        >GitHub</a
+                    >
+                    <a
+                        href="https://www.npmjs.com/package/tinypine"
+                        class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                        >NPM</a
+                    >
                 </div>
             </div>
         </footer>

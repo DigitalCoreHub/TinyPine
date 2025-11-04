@@ -7,6 +7,9 @@ dist/
 build/
 *.min.js
 
+# Demo (has inline code examples, don't format)
+demo/
+
 # Cache
 .cache/
 .vitest/

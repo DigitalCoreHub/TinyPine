@@ -83,6 +83,86 @@ function reactive(data, callback) {
  * - Supports arrow functions (=>)
  * - Enhanced security and error handling
  */
+
+/**
+ * v1.4.0 Built-in Validators
+ * Provides common validation functions for forms
+ */
+const validators = {
+    required: (value) => {
+        if (value === null || value === undefined) return false;
+        if (typeof value === "string") return value.trim().length > 0;
+        if (Array.isArray(value)) return value.length > 0;
+        return true;
+    },
+    email: (value) => {
+        if (!value) return true; // Empty is valid (use required for mandatory)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value);
+    },
+    min: (value, minValue) => {
+        if (value === "" || value === null || value === undefined) return true;
+        const num = parseFloat(value);
+        return !isNaN(num) && num >= minValue;
+    },
+    max: (value, maxValue) => {
+        if (value === "" || value === null || value === undefined) return true;
+        const num = parseFloat(value);
+        return !isNaN(num) && num <= maxValue;
+    },
+    minLength: (value, length) => {
+        if (!value) return true;
+        return String(value).length >= length;
+    },
+    maxLength: (value, length) => {
+        if (!value) return true;
+        return String(value).length <= length;
+    },
+    pattern: (value, regex) => {
+        if (!value) return true;
+        if (typeof regex === "string") {
+            regex = new RegExp(regex);
+        }
+        return regex.test(value);
+    },
+    url: (value) => {
+        if (!value) return true;
+        try {
+            new URL(value);
+            return true;
+        } catch {
+            return false;
+        }
+    },
+    number: (value) => {
+        if (value === "" || value === null || value === undefined) return true;
+        return !isNaN(parseFloat(value)) && isFinite(value);
+    },
+    integer: (value) => {
+        if (value === "" || value === null || value === undefined) return true;
+        return Number.isInteger(Number(value));
+    },
+};
+
+/**
+ * Get error message for validator rule (v1.4.0)
+ */
+function getErrorMessage(ruleName, param) {
+    const messages = {
+        required: "This field is required",
+        email: "Please enter a valid email address",
+        min: `Minimum value is ${param}`,
+        max: `Maximum value is ${param}`,
+        minLength: `Minimum length is ${param} characters`,
+        maxLength: `Maximum length is ${param} characters`,
+        pattern: "Invalid format",
+        url: "Please enter a valid URL",
+        number: "Please enter a valid number",
+        integer: "Please enter a whole number",
+    };
+    return messages[ruleName] || "Validation failed";
+}
+
 function evaluateExpression(expression, state, contextObj, depTracker) {
     try {
         const context = {};
@@ -549,6 +629,20 @@ const directiveHandlers = {
      * - Loading/error state management ($loading, $error, $response)
      * - Lifecycle events (t:onFetchStart, t:onFetchError, t:onFetchEnd)
      */
+    /**
+     * t-fetch: Enhanced async data fetching (v1.4.0)
+     * Features: Race control, AbortController, debounce, lifecycle hooks
+     * Attributes:
+     *   - debounce="500" - delay in ms before fetching
+     *   - method="POST" - HTTP method (default: GET)
+     *   - headers="{...}" - custom headers
+     * State variables:
+     *   - $loading, $error, $response, $pending
+     * Events:
+     *   - t:onFetchStart, t:onFetchEnd, t:onFetchError
+     * Context hooks:
+     *   - beforeFetch(el, ctx), afterFetch(el, ctx, data)
+     */
     "t-fetch": function (element, expression, state, contextObj) {
         // Initialize fetch metadata on first run
         if (!element._tinypineFetchMeta) {
@@ -556,6 +650,7 @@ const directiveHandlers = {
                 requestId: 0,
                 abortController: null,
                 url: null,
+                debounceTimer: null,
             };
         }
 
@@ -587,170 +682,268 @@ const directiveHandlers = {
         // Update URL
         meta.url = url;
 
-        // Cancel previous request if exists
-        if (meta.abortController) {
-            meta.abortController.abort();
-            if (debugMode) {
-                console.log("[TinyPine][t-fetch] Aborted previous request");
+        // Get debounce delay from attribute (v1.4.0)
+        const debounceDelay = parseInt(element.getAttribute("debounce")) || 0;
+
+        // Get HTTP method and headers (v1.4.0)
+        const method = element.getAttribute("method") || "GET";
+        const headersAttr = element.getAttribute("headers");
+        let headers = { "Content-Type": "application/json" };
+        if (headersAttr) {
+            try {
+                const customHeaders = evaluateExpression(
+                    headersAttr,
+                    state,
+                    contextObj
+                );
+                headers = { ...headers, ...customHeaders };
+            } catch (e) {
+                console.warn("[TinyPine][t-fetch] Invalid headers:", e);
             }
         }
 
-        // Create new AbortController for this request
-        meta.abortController = new AbortController();
-        const signal = meta.abortController.signal;
+        // Debounce logic (v1.4.0)
+        const executeFetch = async () => {
+            // Cancel previous request if exists
+            if (meta.abortController) {
+                meta.abortController.abort();
+                if (debugMode) {
+                    console.log("[TinyPine][t-fetch] Aborted previous request");
+                }
+            }
 
-        // Increment request ID to track race conditions
-        meta.requestId++;
-        const currentRequestId = meta.requestId;
+            // Create new AbortController for this request
+            meta.abortController = new AbortController();
+            const signal = meta.abortController.signal;
 
-        // Get the scope element (parent with t-data)
-        let scopeElement = element;
-        while (scopeElement && !scopeElement.hasAttribute("t-data")) {
-            scopeElement = scopeElement.parentElement;
-        }
+            // Increment request ID to track race conditions
+            meta.requestId++;
+            const currentRequestId = meta.requestId;
 
-        if (!scopeElement) {
-            console.warn("[TinyPine][t-fetch] No parent scope element found");
-            return;
-        }
+            // Get the scope element (parent with t-data)
+            let scopeElement = element;
+            while (scopeElement && !scopeElement.hasAttribute("t-data")) {
+                scopeElement = scopeElement.parentElement;
+            }
 
-        // Set loading state
-        state.$loading = true;
-        state.$error = null;
-        state.$response = null;
+            if (!scopeElement) {
+                console.warn(
+                    "[TinyPine][t-fetch] No parent scope element found"
+                );
+                return;
+            }
 
-        // Dispatch lifecycle event: t:onFetchStart
-        const startEvent = new CustomEvent("t:onFetchStart", {
-            detail: { url, requestId: currentRequestId },
-            bubbles: true,
-        });
-        element.dispatchEvent(startEvent);
+            // Call beforeFetch hook if exists (v1.4.0)
+            if (contextObj?.beforeFetch) {
+                try {
+                    const shouldContinue = await contextObj.beforeFetch({
+                        url,
+                        method,
+                        headers,
+                    });
+                    if (shouldContinue === false) {
+                        if (debugMode) {
+                            console.log(
+                                "[TinyPine][t-fetch] Fetch cancelled by beforeFetch hook"
+                            );
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    console.warn(
+                        "[TinyPine][t-fetch] beforeFetch hook error:",
+                        e
+                    );
+                }
+            }
 
-        if (debugMode) {
-            console.log(
-                "[TinyPine][t-fetch] Starting request:",
-                url,
-                "ID:",
-                currentRequestId
-            );
-        }
+            // Set loading and pending states (v1.4.0)
+            state.$loading = true;
+            state.$pending = true;
+            state.$error = null;
+            state.$response = null;
 
-        // Make fetch request with AbortSignal
-        fetch(url, { signal })
-            .then((res) => {
-                // Check if this request is still the latest
-                if (currentRequestId !== meta.requestId) {
-                    if (debugMode) {
-                        console.log(
-                            "[TinyPine][t-fetch] Ignoring stale response, ID:",
-                            currentRequestId
+            // Dispatch lifecycle event: t:onFetchStart
+            const startEvent = new CustomEvent("t:onFetchStart", {
+                detail: { url, requestId: currentRequestId, method, headers },
+                bubbles: true,
+            });
+            element.dispatchEvent(startEvent);
+
+            if (debugMode) {
+                console.log(
+                    "[TinyPine][t-fetch] Starting request:",
+                    url,
+                    "ID:",
+                    currentRequestId,
+                    "Method:",
+                    method
+                );
+            }
+
+            // Make fetch request with AbortSignal and custom method/headers (v1.4.0)
+            fetch(url, { signal, method, headers })
+                .then((res) => {
+                    // Check if this request is still the latest
+                    if (currentRequestId !== meta.requestId) {
+                        if (debugMode) {
+                            console.log(
+                                "[TinyPine][t-fetch] Ignoring stale response, ID:",
+                                currentRequestId
+                            );
+                        }
+                        return null; // Stale request, ignore
+                    }
+
+                    if (!res.ok) {
+                        throw new Error(
+                            `HTTP ${res.status}: ${res.statusText}`
                         );
                     }
-                    return null; // Stale request, ignore
-                }
 
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                }
+                    return res.json();
+                })
+                .then((data) => {
+                    // Check again after async operation
+                    if (currentRequestId !== meta.requestId || data === null) {
+                        return; // Stale or aborted
+                    }
 
-                return res.json();
-            })
-            .then((data) => {
-                // Check again after async operation
-                if (currentRequestId !== meta.requestId || data === null) {
-                    return; // Stale or aborted
-                }
+                    // Clear loading and pending states (v1.4.0)
+                    state.$loading = false;
+                    state.$pending = false;
+                    state.$error = null;
+                    state.$response = data;
 
-                // Clear loading state
-                state.$loading = false;
-                state.$error = null;
-                state.$response = data;
-
-                // Update state with fetched data
-                if (Array.isArray(data)) {
-                    // Find the array key in state
-                    Object.keys(state).forEach((key) => {
-                        if (key.startsWith("$")) return; // Skip $ variables
-                        if (Array.isArray(state[key])) {
-                            // Clear and populate array
-                            state[key].splice(0);
-                            data.forEach((item) => {
-                                state[key].push(item);
-                            });
-                        }
-                    });
-                } else if (data && typeof data === "object") {
                     // Update state with fetched data
-                    Object.keys(data).forEach((key) => {
-                        if (state.hasOwnProperty(key) && !key.startsWith("$")) {
-                            if (
-                                Array.isArray(state[key]) &&
-                                Array.isArray(data[key])
-                            ) {
-                                // For arrays, replace all items
+                    if (Array.isArray(data)) {
+                        // Find the array key in state
+                        Object.keys(state).forEach((key) => {
+                            if (key.startsWith("$")) return; // Skip $ variables
+                            if (Array.isArray(state[key])) {
+                                // Clear and populate array
                                 state[key].splice(0);
-                                data[key].forEach((item) => {
+                                data.forEach((item) => {
                                     state[key].push(item);
                                 });
-                            } else {
-                                state[key] = data[key];
                             }
+                        });
+                    } else if (data && typeof data === "object") {
+                        // Update state with fetched data
+                        Object.keys(data).forEach((key) => {
+                            if (
+                                state.hasOwnProperty(key) &&
+                                !key.startsWith("$")
+                            ) {
+                                if (
+                                    Array.isArray(state[key]) &&
+                                    Array.isArray(data[key])
+                                ) {
+                                    // For arrays, replace all items
+                                    state[key].splice(0);
+                                    data[key].forEach((item) => {
+                                        state[key].push(item);
+                                    });
+                                } else {
+                                    state[key] = data[key];
+                                }
+                            }
+                        });
+                    }
+
+                    // Call afterFetch hook if exists (v1.4.0)
+                    if (contextObj?.afterFetch) {
+                        try {
+                            contextObj.afterFetch({
+                                url,
+                                data,
+                                method,
+                                headers,
+                            });
+                        } catch (e) {
+                            console.warn(
+                                "[TinyPine][t-fetch] afterFetch hook error:",
+                                e
+                            );
                         }
+                    }
+
+                    // Trigger update manually with correct scope element
+                    if (scopeElement) {
+                        updateDirectives(scopeElement, state);
+                    }
+
+                    // Dispatch lifecycle event: t:onFetchEnd
+                    const endEvent = new CustomEvent("t:onFetchEnd", {
+                        detail: { url, data, requestId: currentRequestId },
+                        bubbles: true,
                     });
-                }
+                    element.dispatchEvent(endEvent);
 
-                // Trigger update manually with correct scope element
-                if (scopeElement) {
-                    updateDirectives(scopeElement, state);
-                }
-
-                // Dispatch lifecycle event: t:onFetchEnd
-                const endEvent = new CustomEvent("t:onFetchEnd", {
-                    detail: { url, data, requestId: currentRequestId },
-                    bubbles: true,
-                });
-                element.dispatchEvent(endEvent);
-
-                if (debugMode) {
-                    console.log("[TinyPine][t-fetch] Success:", url, "→", data);
-                }
-            })
-            .catch((err) => {
-                // Ignore AbortError (user canceled)
-                if (err.name === "AbortError") {
                     if (debugMode) {
                         console.log(
-                            "[TinyPine][t-fetch] Request aborted:",
-                            url
+                            "[TinyPine][t-fetch] Success:",
+                            url,
+                            "→",
+                            data
                         );
                     }
-                    return;
-                }
+                })
+                .catch((err) => {
+                    // Ignore AbortError (user canceled)
+                    if (err.name === "AbortError") {
+                        if (debugMode) {
+                            console.log(
+                                "[TinyPine][t-fetch] Request aborted:",
+                                url
+                            );
+                        }
+                        return;
+                    }
 
-                // Check if this request is still the latest
-                if (currentRequestId !== meta.requestId) {
-                    return; // Stale request, ignore error
-                }
+                    // Check if this request is still the latest
+                    if (currentRequestId !== meta.requestId) {
+                        return; // Stale request, ignore error
+                    }
 
-                // Set error state
-                state.$loading = false;
-                state.$error = err.message || "Fetch failed";
-                state.$response = null;
+                    // Set error state (v1.4.0)
+                    state.$loading = false;
+                    state.$pending = false;
+                    state.$error = err.message || "Fetch failed";
+                    state.$response = null;
 
-                // Trigger update to show error state
-                if (scopeElement) {
-                    updateDirectives(scopeElement, state);
-                }
+                    // Trigger update to show error state
+                    if (scopeElement) {
+                        updateDirectives(scopeElement, state);
+                    }
 
-                // Dispatch lifecycle event: t:onFetchError
-                const errorEvent = new CustomEvent("t:onFetchError", {
-                    detail: { url, error: err, requestId: currentRequestId },
-                    bubbles: true,
+                    // Dispatch lifecycle event: t:onFetchError
+                    const errorEvent = new CustomEvent("t:onFetchError", {
+                        detail: {
+                            url,
+                            error: err,
+                            requestId: currentRequestId,
+                        },
+                        bubbles: true,
+                    });
+                    element.dispatchEvent(errorEvent);
+
+                    console.error("[TinyPine][t-fetch] Error:", url, "→", err);
                 });
-                element.dispatchEvent(errorEvent);
+        };
 
-                console.error("[TinyPine][t-fetch] Error:", url, "→", err);
-            });
+        // Clear previous debounce timer and execute (v1.4.0)
+        if (meta.debounceTimer) {
+            clearTimeout(meta.debounceTimer);
+        }
+
+        if (debounceDelay > 0) {
+            // Debounce: wait before executing
+            meta.debounceTimer = setTimeout(executeFetch, debounceDelay);
+        } else {
+            // No debounce: execute immediately
+            executeFetch();
+        }
     },
 
     /**
@@ -864,6 +1057,154 @@ const directiveHandlers = {
         const text = evaluateExpression(expression, state, contextObj);
         element.textContent = text;
         element.style.display = "none"; // Hidden by default
+    },
+
+    /**
+     * t-validate: Form validation directive (v1.4.0)
+     * Syntax: t-validate="required|email|min:5|max:100"
+     * Sets up validation rules and updates element classes/state
+     *
+     * Example:
+     * <input t-model="email" t-validate="required|email" />
+     *
+     * Adds classes: tp-valid, tp-invalid, tp-touched, tp-dirty
+     * Updates form state: $errors, $valid, $invalid, $touched
+     */
+    "t-validate": function (element, expression, state, contextObj) {
+        if (!element._tinypineValidateSetup) {
+            element._tinypineValidateSetup = true;
+
+            // Parse validation rules from expression
+            const rules = expression.split("|").map((rule) => {
+                const parts = rule.trim().split(":");
+                return {
+                    name: parts[0],
+                    param: parts[1],
+                };
+            });
+
+            // Get field name from t-model or name attribute
+            const fieldName =
+                element.getAttribute("t-model") || element.getAttribute("name");
+
+            if (!fieldName) {
+                console.warn(
+                    "[TinyPine][t-validate] Element must have t-model or name attribute"
+                );
+                return;
+            }
+
+            // Initialize form state in parent scope
+            const formElement = element.closest("tp-form, [t-data]");
+            if (!formElement) {
+                console.warn(
+                    "[TinyPine][t-validate] No parent form or scope found"
+                );
+                return;
+            }
+
+            const formState = formElement._tinypineState || state;
+
+            // Initialize validation state
+            if (!formState.$errors) {
+                formState.$errors = {};
+            }
+            if (!formState.$touched) {
+                formState.$touched = {};
+            }
+            if (!formState.$dirty) {
+                formState.$dirty = {};
+            }
+
+            formState.$errors[fieldName] = [];
+            formState.$touched[fieldName] = false;
+            formState.$dirty[fieldName] = false;
+
+            // Validate function
+            const validate = () => {
+                const value = element.value || formState[fieldName];
+                const errors = [];
+
+                for (const rule of rules) {
+                    const validator = validators[rule.name];
+                    if (!validator) {
+                        // Check for custom validator in contextObj
+                        if (contextObj?.validators?.[rule.name]) {
+                            const isValid = contextObj.validators[rule.name](
+                                value,
+                                rule.param
+                            );
+                            if (!isValid) {
+                                errors.push({
+                                    rule: rule.name,
+                                    message:
+                                        contextObj.validatorMessages?.[
+                                            rule.name
+                                        ] || `${rule.name} validation failed`,
+                                });
+                            }
+                        } else {
+                            console.warn(
+                                `[TinyPine][t-validate] Unknown validator: ${rule.name}`
+                            );
+                        }
+                        continue;
+                    }
+
+                    const isValid = validator(value, rule.param);
+                    if (!isValid) {
+                        errors.push({
+                            rule: rule.name,
+                            message: getErrorMessage(rule.name, rule.param),
+                        });
+                    }
+                }
+
+                // Update form state
+                formState.$errors[fieldName] = errors;
+
+                // Update element classes
+                if (errors.length > 0) {
+                    element.classList.add("tp-invalid");
+                    element.classList.remove("tp-valid");
+                } else {
+                    element.classList.add("tp-valid");
+                    element.classList.remove("tp-invalid");
+                }
+
+                // Update form-level validity
+                formState.$valid = Object.keys(formState.$errors).every(
+                    (key) => formState.$errors[key].length === 0
+                );
+                formState.$invalid = !formState.$valid;
+
+                // Trigger update
+                if (formElement) {
+                    updateDirectives(formElement, formState);
+                }
+
+                return errors.length === 0;
+            };
+
+            // Attach validation to input events
+            element.addEventListener("blur", () => {
+                formState.$touched[fieldName] = true;
+                element.classList.add("tp-touched");
+                validate();
+            });
+
+            element.addEventListener("input", () => {
+                formState.$dirty[fieldName] = true;
+                element.classList.add("tp-dirty");
+                validate();
+            });
+
+            // Store validate function for programmatic access
+            element._tinypineValidate = validate;
+
+            // Initial validation (silent)
+            setTimeout(() => validate(), 0);
+        }
     },
 
     /**
@@ -1248,133 +1589,80 @@ const directiveHandlers = {
     },
 
     /**
-     * t-validate: Form validation directive (v1.3.0)
-     * Örnek: <input t-validate="required|email" t-model="email">
+     * t-debounce: Debounced input handling (v1.4.0)
+     * Usage: <input t-model="search" t-debounce="500" />
+     * Delays state update until user stops typing for specified milliseconds
      *
-     * Validation rules:
-     * - required: Field must not be empty
-     * - email: Must be valid email format
-     * - min:5: Minimum length
-     * - max:20: Maximum length
-     * - numeric: Must be a number
-     * - url: Must be valid URL
+     * Example:
+     * <input t-model="searchQuery" t-debounce="300" />
+     *
+     * Works with:
+     * - t-model: Delays the model update
+     * - @input: Delays the event handler
+     * - Any input element
      */
-    "t-validate": function (element, rulesString, state, contextObj) {
-        if (!element._tinypineValidateHandler) {
-            const rules = rulesString.split("|").map((r) => r.trim());
+    "t-debounce": function (element, expression, state, contextObj) {
+        const delay = parseInt(expression) || 300; // Default 300ms
 
-            // Get or create $errors object in state
-            const scopeElement = element.closest("[t-data]");
-            if (!scopeElement || !scopeElement._tinypineState) return;
+        if (!element._tinypineDebounceSetup) {
+            element._tinypineDebounceSetup = true;
+            element._tinypineDebounceTimer = null;
 
-            const currentState = scopeElement._tinypineState;
-            if (!currentState.$errors) {
-                currentState.$errors = reactive({}, () => {
-                    updateDirectives(scopeElement, currentState);
-                });
-            }
-
-            // Get field name from t-model
+            // Find the original t-model handler
             const modelAttr = element.getAttribute("t-model");
             if (!modelAttr) {
                 console.warn(
-                    "[TinyPine][t-validate] t-model attribute required for validation"
+                    "[TinyPine][t-debounce] Works best with t-model attribute"
                 );
                 return;
             }
-            const fieldName = modelAttr.trim();
 
-            // Validation function
-            const validate = () => {
-                const value = element.value;
-                const errors = [];
+            // Remove the original input handler temporarily
+            if (element._tinypineModelHandler) {
+                element.removeEventListener(
+                    "input",
+                    element._tinypineModelHandler
+                );
+            }
 
-                rules.forEach((rule) => {
-                    if (rule === "required" && !value) {
-                        errors.push("This field is required");
-                    } else if (rule === "email" && value) {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailRegex.test(value)) {
-                            errors.push("Invalid email format");
-                        }
-                    } else if (rule.startsWith("min:")) {
-                        const min = parseInt(rule.split(":")[1]);
-                        if (value.length < min) {
-                            errors.push(`Minimum ${min} characters required`);
-                        }
-                    } else if (rule.startsWith("max:")) {
-                        const max = parseInt(rule.split(":")[1]);
-                        if (value.length > max) {
-                            errors.push(`Maximum ${max} characters allowed`);
-                        }
-                    } else if (rule === "numeric" && value) {
-                        if (isNaN(value)) {
-                            errors.push("Must be a number");
-                        }
-                    } else if (rule === "url" && value) {
-                        try {
-                            new URL(value);
-                        } catch {
-                            errors.push("Invalid URL format");
-                        }
+            // Create debounced handler
+            const debouncedHandler = function (event) {
+                // Clear previous timer
+                if (element._tinypineDebounceTimer) {
+                    clearTimeout(element._tinypineDebounceTimer);
+                }
+
+                // Set new timer
+                element._tinypineDebounceTimer = setTimeout(() => {
+                    // Call original model handler
+                    if (element._tinypineModelHandler) {
+                        element._tinypineModelHandler(event);
                     }
-                });
 
-                // Update $errors state
-                if (errors.length > 0) {
-                    currentState.$errors[fieldName] = errors;
-                } else {
-                    delete currentState.$errors[fieldName];
-                }
-
-                // Add/remove error class
-                if (errors.length > 0) {
-                    element.classList.add("tp-invalid");
-                    element.classList.remove("tp-valid");
-                } else if (value) {
-                    element.classList.add("tp-valid");
-                    element.classList.remove("tp-invalid");
-                } else {
-                    element.classList.remove("tp-invalid", "tp-valid");
-                }
-
-                // Dispatch validation event
-                const validationEvent = new CustomEvent("t:validation", {
-                    detail: {
-                        field: fieldName,
-                        errors,
-                        isValid: errors.length === 0,
-                    },
-                    bubbles: true,
-                });
-                element.dispatchEvent(validationEvent);
-
-                if (debugMode) {
-                    console.log(
-                        "[TinyPine][t-validate]",
-                        fieldName,
-                        "→",
-                        errors.length ? errors : "valid"
-                    );
-                }
+                    // Dispatch debounced event
+                    const debouncedEvent = new CustomEvent("t:debounced", {
+                        detail: {
+                            value: event.target.value,
+                            delay,
+                        },
+                        bubbles: true,
+                    });
+                    element.dispatchEvent(debouncedEvent);
+                }, delay);
             };
 
-            // Validate on input and blur
-            const inputHandler = () => validate();
-            const blurHandler = () => validate();
+            // Attach debounced handler
+            element.addEventListener("input", debouncedHandler);
 
-            element.addEventListener("input", inputHandler);
-            element.addEventListener("blur", blurHandler);
+            // Store reference for cleanup
+            element._tinypineDebouncedHandler = debouncedHandler;
 
-            element._tinypineValidateHandler = {
-                inputHandler,
-                blurHandler,
-                validate,
-            };
-
-            // Initial validation (only if field has value)
-            if (element.value) {
-                validate();
+            if (debugMode) {
+                console.log(
+                    "[TinyPine][t-debounce] Setup with delay:",
+                    delay,
+                    "ms"
+                );
             }
         }
     },
@@ -3154,4 +3442,130 @@ function applyTransition(element, presetName) {
     if (config.active) {
         element.classList.add(config.active);
     }
+}
+
+/**
+ * v1.4.0 Register tp-form component
+ * Provides form validation and state management
+ */
+if (typeof window !== "undefined" && window.TinyPine) {
+    window.TinyPine.component("tp-form", {
+        mounted(element) {
+            // Initialize form state
+            if (!element._tinypineState) {
+                const initialData = {
+                    $errors: {},
+                    $touched: {},
+                    $dirty: {},
+                    $valid: true,
+                    $invalid: false,
+                    $submitting: false,
+                };
+
+                element._tinypineState = reactive(initialData, () => {
+                    updateDirectives(element, element._tinypineState);
+                });
+            }
+
+            // Add validateAll method to form
+            element.validateAll = function () {
+                const inputs = element.querySelectorAll("[t-validate]");
+                let allValid = true;
+
+                inputs.forEach((input) => {
+                    if (input._tinypineValidate) {
+                        const isValid = input._tinypineValidate();
+                        if (!isValid) {
+                            allValid = false;
+                        }
+                    }
+                });
+
+                return allValid;
+            };
+
+            // Add reset method to form
+            element.reset = function () {
+                const inputs = element.querySelectorAll("[t-validate]");
+
+                inputs.forEach((input) => {
+                    input.classList.remove(
+                        "tp-valid",
+                        "tp-invalid",
+                        "tp-touched",
+                        "tp-dirty"
+                    );
+
+                    const fieldName =
+                        input.getAttribute("t-model") ||
+                        input.getAttribute("name");
+                    if (fieldName && element._tinypineState) {
+                        element._tinypineState.$errors[fieldName] = [];
+                        element._tinypineState.$touched[fieldName] = false;
+                        element._tinypineState.$dirty[fieldName] = false;
+                    }
+                });
+
+                if (element._tinypineState) {
+                    element._tinypineState.$valid = true;
+                    element._tinypineState.$invalid = false;
+                }
+
+                // Trigger native form reset if it's a real form
+                if (element.tagName === "FORM") {
+                    HTMLFormElement.prototype.reset.call(element);
+                }
+            };
+
+            // Intercept form submission
+            element.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                // Validate all fields
+                const isValid = element.validateAll();
+
+                if (!isValid) {
+                    // Dispatch validation failed event
+                    const failEvent = new CustomEvent("tp:validation-failed", {
+                        detail: {
+                            errors: element._tinypineState.$errors,
+                        },
+                        bubbles: true,
+                    });
+                    element.dispatchEvent(failEvent);
+                    return;
+                }
+
+                // Set submitting state
+                if (element._tinypineState) {
+                    element._tinypineState.$submitting = true;
+                }
+
+                // Dispatch submit event
+                const submitEvent = new CustomEvent("tp:submit", {
+                    detail: {
+                        data: element._tinypineState,
+                    },
+                    bubbles: true,
+                });
+                element.dispatchEvent(submitEvent);
+
+                // Reset submitting state after a delay
+                setTimeout(() => {
+                    if (element._tinypineState) {
+                        element._tinypineState.$submitting = false;
+                    }
+                }, 100);
+            });
+
+            if (debugMode) {
+                console.log("[TinyPine][tp-form] Form component mounted");
+            }
+        },
+        unmounted(element) {
+            if (debugMode) {
+                console.log("[TinyPine][tp-form] Form component unmounted");
+            }
+        },
+    });
 }
