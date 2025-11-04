@@ -140,7 +140,7 @@ Smart client-side routing with navigation guards, dynamic params, and programmat
 
 <script>
     TinyPine.router({
-        default: 'home'
+        default: "home",
     });
     TinyPine.init();
 </script>
@@ -152,10 +152,10 @@ Smart client-side routing with navigation guards, dynamic params, and programmat
 TinyPine.router({
     // Global beforeEnter guard
     beforeEnter(to, from) {
-        const isLoggedIn = TinyPine.store('auth').loggedIn;
+        const isLoggedIn = TinyPine.store("auth").loggedIn;
 
-        if (!isLoggedIn && to.path !== 'login') {
-            return '/login'; // Redirect to login
+        if (!isLoggedIn && to.path !== "login") {
+            return "/login"; // Redirect to login
         }
 
         return true; // Allow navigation
@@ -164,20 +164,20 @@ TinyPine.router({
     // Global beforeLeave guard
     beforeLeave(to, from) {
         if (hasUnsavedChanges) {
-            return confirm('Discard unsaved changes?');
+            return confirm("Discard unsaved changes?");
         }
         return true;
     },
 
     // Route-specific guards
     routes: {
-        'admin': {
+        admin: {
             beforeEnter: async (to, from) => {
                 const isAdmin = await checkAdminRole();
-                return isAdmin ? true : '/';
-            }
-        }
-    }
+                return isAdmin ? true : "/";
+            },
+        },
+    },
 });
 ```
 
@@ -186,13 +186,9 @@ TinyPine.router({
 ```html
 <div t-data="{ userId: 42 }">
     <!-- Using $router in templates -->
-    <button t-click="$router.push('/user/' + userId)">
-        View Profile
-    </button>
+    <button t-click="$router.push('/user/' + userId)">View Profile</button>
 
-    <button t-click="$router.back()">
-        Go Back
-    </button>
+    <button t-click="$router.back()">Go Back</button>
 
     <!-- Access route info -->
     <p t-text="'Current: ' + $router.current().path"></p>
@@ -220,17 +216,17 @@ TinyPine.router({
 
 ```javascript
 // Listen to route changes
-TinyPine.router.on('route:change', (to, from) => {
-    console.log('Navigated from', from.path, 'to', to.path);
+TinyPine.router.on("route:change", (to, from) => {
+    console.log("Navigated from", from.path, "to", to.path);
 
     // Track page views
-    if (typeof gtag !== 'undefined') {
-        gtag('config', 'GA_ID', { page_path: to.path });
+    if (typeof gtag !== "undefined") {
+        gtag("config", "GA_ID", { page_path: to.path });
     }
 });
 
 // Other events: route:enter, route:leave, route:error
-TinyPine.router.on('route:enter', (to) => {
+TinyPine.router.on("route:enter", (to) => {
     document.title = `My App - ${to.path}`;
 });
 ```

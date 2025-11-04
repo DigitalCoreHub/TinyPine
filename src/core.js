@@ -1245,7 +1245,12 @@ const directiveHandlers = {
     "t-link": function (element, expression, state, contextObj) {
         // Use the v1.5.0 setup function if available
         if (window.TinyPine && window.TinyPine._setupTLinkDirective) {
-            window.TinyPine._setupTLinkDirective(element, expression, state, contextObj);
+            window.TinyPine._setupTLinkDirective(
+                element,
+                expression,
+                state,
+                contextObj
+            );
             return;
         }
 
@@ -1263,13 +1268,17 @@ const directiveHandlers = {
         }
 
         // Set href
-        const href = `#/${path.replace(/^\//, '')}`;
-        element.setAttribute('href', href);
+        const href = `#/${path.replace(/^\//, "")}`;
+        element.setAttribute("href", href);
 
         // Add click handler
         const clickHandler = (e) => {
             e.preventDefault();
-            if (window.TinyPine && window.TinyPine.router && window.TinyPine.router.push) {
+            if (
+                window.TinyPine &&
+                window.TinyPine.router &&
+                window.TinyPine.router.push
+            ) {
                 window.TinyPine.router.push(path);
             } else {
                 window.location.hash = href;
@@ -1278,23 +1287,28 @@ const directiveHandlers = {
 
         // Remove old listener
         if (element._tinypineLinkHandler) {
-            element.removeEventListener('click', element._tinypineLinkHandler);
+            element.removeEventListener("click", element._tinypineLinkHandler);
         }
 
-        element.addEventListener('click', clickHandler);
+        element.addEventListener("click", clickHandler);
         element._tinypineLinkHandler = clickHandler;
 
         // Update active state
-        const currentHash = window.location.hash || '#/';
-        const currentPath = currentHash.replace(/^#\/?/, '').replace(/\?.*$/, '');
-        const linkPath = path.replace(/^\//, '');
+        const currentHash = window.location.hash || "#/";
+        const currentPath = currentHash
+            .replace(/^#\/?/, "")
+            .replace(/\?.*$/, "");
+        const linkPath = path.replace(/^\//, "");
 
-        if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) {
-            element.classList.add('active');
-            element.setAttribute('aria-current', 'page');
+        if (
+            currentPath === linkPath ||
+            currentPath.startsWith(linkPath + "/")
+        ) {
+            element.classList.add("active");
+            element.setAttribute("aria-current", "page");
         } else {
-            element.classList.remove('active');
-            element.removeAttribute('aria-current');
+            element.classList.remove("active");
+            element.removeAttribute("aria-current");
         }
     },
 

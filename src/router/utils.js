@@ -9,30 +9,30 @@
  * @returns {Object} - { segments, paramNames, regex }
  */
 export function parseRoutePath(pattern) {
-    if (!pattern || pattern === '*') {
+    if (!pattern || pattern === "*") {
         return { segments: [], paramNames: [], regex: null, isWildcard: true };
     }
 
     // Normalize path - remove leading/trailing slashes
-    pattern = pattern.replace(/^\/+|\/+$/g, '');
+    pattern = pattern.replace(/^\/+|\/+$/g, "");
 
-    const segments = pattern.split('/');
+    const segments = pattern.split("/");
     const paramNames = [];
     const regexParts = [];
 
     segments.forEach((segment) => {
-        if (segment.startsWith(':')) {
+        if (segment.startsWith(":")) {
             // Dynamic parameter
             const paramName = segment.substring(1);
             paramNames.push(paramName);
-            regexParts.push('([^/]+)'); // Match any characters except /
+            regexParts.push("([^/]+)"); // Match any characters except /
         } else {
             // Static segment
-            regexParts.push(segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // Escape special chars
+            regexParts.push(segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")); // Escape special chars
         }
     });
 
-    const regexString = '^' + regexParts.join('/') + '$';
+    const regexString = "^" + regexParts.join("/") + "$";
     const regex = new RegExp(regexString);
 
     return {
@@ -40,7 +40,7 @@ export function parseRoutePath(pattern) {
         paramNames,
         regex,
         isWildcard: false,
-        pattern
+        pattern,
     };
 }
 
@@ -56,7 +56,7 @@ export function matchRoute(path, routeInfo) {
     }
 
     // Normalize path
-    path = path.replace(/^\/+|\/+$/g, '');
+    path = path.replace(/^\/+|\/+$/g, "");
 
     const match = path.match(routeInfo.regex);
     if (!match) {
@@ -78,7 +78,7 @@ export function matchRoute(path, routeInfo) {
  * @returns {Object} - Query parameters as key-value pairs
  */
 export function parseQueryString(url) {
-    const queryIndex = url.indexOf('?');
+    const queryIndex = url.indexOf("?");
     if (queryIndex === -1) {
         return {};
     }
@@ -86,10 +86,10 @@ export function parseQueryString(url) {
     const queryString = url.substring(queryIndex + 1);
     const params = {};
 
-    queryString.split('&').forEach((pair) => {
-        const [key, value] = pair.split('=');
+    queryString.split("&").forEach((pair) => {
+        const [key, value] = pair.split("=");
         if (key) {
-            params[decodeURIComponent(key)] = decodeURIComponent(value || '');
+            params[decodeURIComponent(key)] = decodeURIComponent(value || "");
         }
     });
 
@@ -115,9 +115,12 @@ export function buildPath(pattern, params = {}, query = {}) {
     const queryKeys = Object.keys(query);
     if (queryKeys.length > 0) {
         const queryString = queryKeys
-            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(query[key])}`)
-            .join('&');
-        path += '?' + queryString;
+            .map(
+                (key) =>
+                    `${encodeURIComponent(key)}=${encodeURIComponent(query[key])}`
+            )
+            .join("&");
+        path += "?" + queryString;
     }
 
     return path;
@@ -129,21 +132,21 @@ export function buildPath(pattern, params = {}, query = {}) {
  * @returns {string} - Normalized hash
  */
 export function normalizeHash(hash) {
-    if (!hash) return '#/';
+    if (!hash) return "#/";
 
     hash = hash.trim();
 
     // Remove leading #
-    if (hash.startsWith('#')) {
+    if (hash.startsWith("#")) {
         hash = hash.substring(1);
     }
 
     // Ensure leading /
-    if (!hash.startsWith('/')) {
-        hash = '/' + hash;
+    if (!hash.startsWith("/")) {
+        hash = "/" + hash;
     }
 
-    return '#' + hash;
+    return "#" + hash;
 }
 
 /**
@@ -153,18 +156,18 @@ export function normalizeHash(hash) {
  */
 export function extractPathFromHash(hash) {
     // Remove #/ prefix
-    let path = hash.replace(/^#\/?/, '');
+    let path = hash.replace(/^#\/?/, "");
 
     // Remove query string
-    const queryIndex = path.indexOf('?');
+    const queryIndex = path.indexOf("?");
     if (queryIndex !== -1) {
         path = path.substring(0, queryIndex);
     }
 
     // Remove trailing slash
-    path = path.replace(/\/$/, '');
+    path = path.replace(/\/$/, "");
 
-    return path || 'home';
+    return path || "home";
 }
 
 /**
@@ -185,7 +188,7 @@ export function isSameRoute(route1, route2) {
  */
 export function scrollToTop(smooth = false) {
     if (smooth) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
         window.scrollTo(0, 0);
     }

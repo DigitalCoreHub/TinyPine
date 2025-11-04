@@ -3,7 +3,7 @@
  * Smart link directive for router-aware navigation with active state
  */
 
-import { extractPathFromHash, isSameRoute } from './utils.js';
+import { extractPathFromHash, isSameRoute } from "./utils.js";
 
 /**
  * Setup t-link directive
@@ -16,13 +16,14 @@ import { extractPathFromHash, isSameRoute } from './utils.js';
  */
 export function setupTLink(element, path, state, contextObj, router) {
     // Evaluate path expression
-    const evaluatedPath = typeof path === 'string' && path.startsWith("'")
-        ? path.slice(1, -1)
-        : path;
+    const evaluatedPath =
+        typeof path === "string" && path.startsWith("'")
+            ? path.slice(1, -1)
+            : path;
 
     // Set href attribute
-    const href = `#/${evaluatedPath.replace(/^\//, '')}`;
-    element.setAttribute('href', href);
+    const href = `#/${evaluatedPath.replace(/^\//, "")}`;
+    element.setAttribute("href", href);
 
     // Add click handler for programmatic navigation
     const clickHandler = (e) => {
@@ -36,10 +37,10 @@ export function setupTLink(element, path, state, contextObj, router) {
 
     // Remove old listener if exists
     if (element._tinypineLinkHandler) {
-        element.removeEventListener('click', element._tinypineLinkHandler);
+        element.removeEventListener("click", element._tinypineLinkHandler);
     }
 
-    element.addEventListener('click', clickHandler);
+    element.addEventListener("click", clickHandler);
     element._tinypineLinkHandler = clickHandler;
 
     // Update active state
@@ -53,9 +54,9 @@ export function setupTLink(element, path, state, contextObj, router) {
     if (router && router.on) {
         // Remove old listener if exists
         if (element._tinypineRouteHandler) {
-            router.off('route:change', element._tinypineRouteHandler);
+            router.off("route:change", element._tinypineRouteHandler);
         }
-        router.on('route:change', routeChangeHandler);
+        router.on("route:change", routeChangeHandler);
         element._tinypineRouteHandler = routeChangeHandler;
     }
 }
@@ -66,22 +67,22 @@ export function setupTLink(element, path, state, contextObj, router) {
  * @param {string} href - Link href
  */
 export function updateActiveLinkState(element, href) {
-    const currentHash = window.location.hash || '#/';
+    const currentHash = window.location.hash || "#/";
 
     // Extract paths for comparison
     const currentPath = extractPathFromHash(currentHash);
     const linkPath = extractPathFromHash(href);
 
     // Check if active
-    const isActive = currentPath === linkPath ||
-                     currentPath.startsWith(linkPath + '/');
+    const isActive =
+        currentPath === linkPath || currentPath.startsWith(linkPath + "/");
 
     if (isActive) {
-        element.classList.add('active');
-        element.setAttribute('aria-current', 'page');
+        element.classList.add("active");
+        element.setAttribute("aria-current", "page");
     } else {
-        element.classList.remove('active');
-        element.removeAttribute('aria-current');
+        element.classList.remove("active");
+        element.removeAttribute("aria-current");
     }
 }
 
@@ -92,15 +93,15 @@ export function updateActiveLinkState(element, href) {
  */
 export function cleanupTLink(element, router) {
     if (element._tinypineLinkHandler) {
-        element.removeEventListener('click', element._tinypineLinkHandler);
+        element.removeEventListener("click", element._tinypineLinkHandler);
         delete element._tinypineLinkHandler;
     }
 
     if (element._tinypineRouteHandler && router && router.off) {
-        router.off('route:change', element._tinypineRouteHandler);
+        router.off("route:change", element._tinypineRouteHandler);
         delete element._tinypineRouteHandler;
     }
 
-    element.classList.remove('active');
-    element.removeAttribute('aria-current');
+    element.classList.remove("active");
+    element.removeAttribute("aria-current");
 }

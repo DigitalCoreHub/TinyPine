@@ -3,24 +3,27 @@
  * Router integration, t-link directive, and route guards
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { JSDOM } from 'jsdom';
-import '../src/store.js';
-import '../src/core.js';
-import '../src/router.js';
+import { describe, it, expect, beforeEach } from "vitest";
+import { JSDOM } from "jsdom";
+import "../src/store.js";
+import "../src/core.js";
+import "../src/router.js";
 
-describe('v1.5.0 - Router Integration', () => {
+describe("v1.5.0 - Router Integration", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
                     <div id="app"></div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -28,51 +31,54 @@ describe('v1.5.0 - Router Integration', () => {
         global.history = dom.window.history;
     });
 
-    it('should have router available on TinyPine', () => {
+    it("should have router available on TinyPine", () => {
         expect(window.TinyPine.router).toBeDefined();
-        expect(typeof window.TinyPine.router).toBe('function');
+        expect(typeof window.TinyPine.router).toBe("function");
     });
 
-    it('should have router.push method', () => {
+    it("should have router.push method", () => {
         expect(window.TinyPine.router.push).toBeDefined();
-        expect(typeof window.TinyPine.router.push).toBe('function');
+        expect(typeof window.TinyPine.router.push).toBe("function");
     });
 
-    it('should have router.replace method', () => {
+    it("should have router.replace method", () => {
         expect(window.TinyPine.router.replace).toBeDefined();
-        expect(typeof window.TinyPine.router.replace).toBe('function');
+        expect(typeof window.TinyPine.router.replace).toBe("function");
     });
 
-    it('should have router.back method', () => {
+    it("should have router.back method", () => {
         expect(window.TinyPine.router.back).toBeDefined();
-        expect(typeof window.TinyPine.router.back).toBe('function');
+        expect(typeof window.TinyPine.router.back).toBe("function");
     });
 
-    it('should have router.forward method', () => {
+    it("should have router.forward method", () => {
         expect(window.TinyPine.router.forward).toBeDefined();
-        expect(typeof window.TinyPine.router.forward).toBe('function');
+        expect(typeof window.TinyPine.router.forward).toBe("function");
     });
 
-    it('should have router.current method', () => {
+    it("should have router.current method", () => {
         expect(window.TinyPine.router.current).toBeDefined();
-        expect(typeof window.TinyPine.router.current).toBe('function');
+        expect(typeof window.TinyPine.router.current).toBe("function");
     });
 
-    it('should have router.getCurrent method (backwards compatibility)', () => {
+    it("should have router.getCurrent method (backwards compatibility)", () => {
         expect(window.TinyPine.router.getCurrent).toBeDefined();
-        expect(typeof window.TinyPine.router.getCurrent).toBe('function');
+        expect(typeof window.TinyPine.router.getCurrent).toBe("function");
     });
 
-    it('should have router.navigate as alias for push', () => {
-        expect(window.TinyPine.router.navigate).toBe(window.TinyPine.router.push);
+    it("should have router.navigate as alias for push", () => {
+        expect(window.TinyPine.router.navigate).toBe(
+            window.TinyPine.router.push
+        );
     });
 });
 
-describe('v1.5.0 - t-route Directive', () => {
+describe("v1.5.0 - t-route Directive", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
@@ -82,7 +88,9 @@ describe('v1.5.0 - t-route Directive', () => {
                     <div t-route="*">404 Not Found</div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -92,37 +100,38 @@ describe('v1.5.0 - t-route Directive', () => {
         window.TinyPine.init();
     });
 
-    it('should register route elements', () => {
+    it("should register route elements", () => {
         expect(window.TinyPine.routeElements).toBeDefined();
         expect(window.TinyPine.routeElements.length).toBeGreaterThan(0);
     });
 
-    it('should hide non-matching routes', () => {
-        const homeElement = document.querySelector('[t-route="\'home\'"]');
-        const aboutElement = document.querySelector('[t-route="\'about\'"]');
+    it("should hide non-matching routes", () => {
+        const homeElement = document.querySelector("[t-route=\"'home'\"]");
+        const aboutElement = document.querySelector("[t-route=\"'about'\"]");
 
         // Initially on home
-        window.location.hash = '#/home';
+        window.location.hash = "#/home";
         window.TinyPine.init();
 
         // About should be hidden
-        expect(aboutElement.style.display).toBe('none');
+        expect(aboutElement.style.display).toBe("none");
     });
 
-    it('should show matching route', () => {
-        window.location.hash = '#/home';
+    it("should show matching route", () => {
+        window.location.hash = "#/home";
         window.TinyPine.init();
 
-        const homeElement = document.querySelector('[t-route="\'home\'"]');
-        expect(homeElement.style.display).toBe('');
+        const homeElement = document.querySelector("[t-route=\"'home'\"]");
+        expect(homeElement.style.display).toBe("");
     });
 });
 
-describe('v1.5.0 - t-link Directive', () => {
+describe("v1.5.0 - t-link Directive", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
@@ -131,7 +140,9 @@ describe('v1.5.0 - t-link Directive', () => {
                     <a t-link="'user/42'">User 42</a>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -141,38 +152,39 @@ describe('v1.5.0 - t-link Directive', () => {
         window.TinyPine.init();
     });
 
-    it('should add href attribute to links', () => {
-        const homeLink = document.querySelector('a[t-link="\'home\'"]');
-        expect(homeLink.getAttribute('href')).toBe('#/home');
+    it("should add href attribute to links", () => {
+        const homeLink = document.querySelector("a[t-link=\"'home'\"]");
+        expect(homeLink.getAttribute("href")).toBe("#/home");
     });
 
-    it('should add click handler', () => {
-        const homeLink = document.querySelector('a[t-link="\'home\'"]');
+    it("should add click handler", () => {
+        const homeLink = document.querySelector("a[t-link=\"'home'\"]");
         expect(homeLink._tinypineLinkHandler).toBeDefined();
     });
 
-    it('should add active class to current route', () => {
-        window.location.hash = '#/home';
+    it("should add active class to current route", () => {
+        window.location.hash = "#/home";
         window.TinyPine.init();
 
-        const homeLink = document.querySelector('a[t-link="\'home\'"]');
-        expect(homeLink.classList.contains('active')).toBe(true);
+        const homeLink = document.querySelector("a[t-link=\"'home'\"]");
+        expect(homeLink.classList.contains("active")).toBe(true);
     });
 
-    it('should add aria-current to active link', () => {
-        window.location.hash = '#/about';
+    it("should add aria-current to active link", () => {
+        window.location.hash = "#/about";
         window.TinyPine.init();
 
-        const aboutLink = document.querySelector('a[t-link="\'about\'"]');
-        expect(aboutLink.getAttribute('aria-current')).toBe('page');
+        const aboutLink = document.querySelector("a[t-link=\"'about'\"]");
+        expect(aboutLink.getAttribute("aria-current")).toBe("page");
     });
 });
 
-describe('v1.5.0 - Router Context Variables', () => {
+describe("v1.5.0 - Router Context Variables", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
@@ -183,7 +195,9 @@ describe('v1.5.0 - Router Context Variables', () => {
                     </div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -191,35 +205,38 @@ describe('v1.5.0 - Router Context Variables', () => {
         global.history = dom.window.history;
     });
 
-    it('should have $route in context', () => {
+    it("should have $route in context", () => {
         window.TinyPine._routerState = {
-            currentRoute: 'user/42',
-            currentParams: { id: '42' }
+            currentRoute: "user/42",
+            currentParams: { id: "42" },
         };
 
         window.TinyPine.init();
 
         // $route should be available in evaluateExpression context
-        expect(window.TinyPine._routerState.currentParams.id).toBe('42');
+        expect(window.TinyPine._routerState.currentParams.id).toBe("42");
     });
 
-    it('should have $router in context', () => {
+    it("should have $router in context", () => {
         expect(window.TinyPine._routerState).toBeDefined();
     });
 });
 
-describe('v1.5.0 - Route Guards', () => {
+describe("v1.5.0 - Route Guards", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
                     <div id="app"></div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -227,44 +244,45 @@ describe('v1.5.0 - Route Guards', () => {
         global.history = dom.window.history;
     });
 
-    it('should support beforeEnter guard configuration', () => {
+    it("should support beforeEnter guard configuration", () => {
         const beforeEnter = (to, from) => {
             return true;
         };
 
         window.TinyPine.router({
-            default: 'home',
+            default: "home",
             beforeEnter,
             routes: {
-                'home': {},
-                'about': {}
-            }
+                home: {},
+                about: {},
+            },
         });
 
         expect(window.TinyPine.router).toBeDefined();
     });
 
-    it('should support route-specific guards', () => {
+    it("should support route-specific guards", () => {
         window.TinyPine.router({
-            default: 'home',
+            default: "home",
             routes: {
-                'protected': {
+                protected: {
                     beforeEnter: (to, from) => {
                         return false; // Block access
-                    }
-                }
-            }
+                    },
+                },
+            },
         });
 
         expect(window.TinyPine._routerState.guards).toBeDefined();
     });
 });
 
-describe('v1.5.0 - Wildcard 404 Route', () => {
+describe("v1.5.0 - Wildcard 404 Route", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
@@ -273,7 +291,9 @@ describe('v1.5.0 - Wildcard 404 Route', () => {
                     <div t-route="*" id="fallback">404 Not Found</div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -283,30 +303,34 @@ describe('v1.5.0 - Wildcard 404 Route', () => {
         window.TinyPine.init();
     });
 
-    it('should register wildcard route', () => {
-        const wildcardElement = document.getElementById('fallback');
+    it("should register wildcard route", () => {
+        const wildcardElement = document.getElementById("fallback");
         expect(wildcardElement).toBeTruthy();
-        expect(wildcardElement.getAttribute('t-route')).toBe('*');
+        expect(wildcardElement.getAttribute("t-route")).toBe("*");
     });
 
-    it('should show fallback when no route matches', () => {
-        window.location.hash = '#/nonexistent';
+    it("should show fallback when no route matches", () => {
+        window.location.hash = "#/nonexistent";
         window.TinyPine.init();
 
-        const fallbackElement = document.getElementById('fallback');
+        const fallbackElement = document.getElementById("fallback");
 
         // Fallback should be shown for non-existent routes
-        expect(window.TinyPine.routeElements.some(item =>
-            item.routeName === '*' && item.element === fallbackElement
-        )).toBe(true);
+        expect(
+            window.TinyPine.routeElements.some(
+                (item) =>
+                    item.routeName === "*" && item.element === fallbackElement
+            )
+        ).toBe(true);
     });
 });
 
-describe('v1.5.0 - Nested Routes', () => {
+describe("v1.5.0 - Nested Routes", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
@@ -317,7 +341,9 @@ describe('v1.5.0 - Nested Routes', () => {
                     </div>
                 </body>
             </html>
-        `, { url: 'http://localhost/' });
+        `,
+            { url: "http://localhost/" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -327,27 +353,34 @@ describe('v1.5.0 - Nested Routes', () => {
         window.TinyPine.init();
     });
 
-    it('should support nested route definitions', () => {
-        const dashboardElement = document.querySelector('[t-route="\'dashboard\'"]');
-        const overviewElement = document.querySelector('[t-route="\'dashboard/overview\'"]');
+    it("should support nested route definitions", () => {
+        const dashboardElement = document.querySelector(
+            "[t-route=\"'dashboard'\"]"
+        );
+        const overviewElement = document.querySelector(
+            "[t-route=\"'dashboard/overview'\"]"
+        );
 
         expect(dashboardElement).toBeTruthy();
         expect(overviewElement).toBeTruthy();
     });
 });
 
-describe('v1.5.0 - Query Parameters', () => {
+describe("v1.5.0 - Query Parameters", () => {
     let dom;
 
     beforeEach(() => {
-        dom = new JSDOM(`
+        dom = new JSDOM(
+            `
             <!DOCTYPE html>
             <html>
                 <body>
                     <div id="app"></div>
                 </body>
             </html>
-        `, { url: 'http://localhost/#/search?q=test&page=1' });
+        `,
+            { url: "http://localhost/#/search?q=test&page=1" }
+        );
 
         global.window = dom.window;
         global.document = dom.window.document;
@@ -355,10 +388,10 @@ describe('v1.5.0 - Query Parameters', () => {
         global.history = dom.window.history;
     });
 
-    it('should parse query parameters from URL', () => {
+    it("should parse query parameters from URL", () => {
         // Query params should be accessible via router
         const current = window.TinyPine.router.current();
         // Current might not have query yet, but the utility functions support it
-        expect(window.location.hash).toContain('?q=test');
+        expect(window.location.hash).toContain("?q=test");
     });
 });

@@ -51,7 +51,7 @@ export class RouteGuards {
             if (this.globalBeforeEnter) {
                 const result = await this.globalBeforeEnter(to, from);
                 if (result === false) return false;
-                if (typeof result === 'string') return result; // Redirect
+                if (typeof result === "string") return result; // Redirect
             }
 
             // Run route-specific beforeEnter
@@ -60,13 +60,13 @@ export class RouteGuards {
                 if (guards && guards.beforeEnter) {
                     const result = await guards.beforeEnter(to, from);
                     if (result === false) return false;
-                    if (typeof result === 'string') return result; // Redirect
+                    if (typeof result === "string") return result; // Redirect
                 }
             }
 
             return true; // Allow navigation
         } catch (error) {
-            console.error('[TinyPine][Router] Guard error:', error);
+            console.error("[TinyPine][Router] Guard error:", error);
             return false; // Cancel navigation on error
         }
     }
@@ -83,7 +83,7 @@ export class RouteGuards {
             if (this.globalBeforeLeave) {
                 const result = await this.globalBeforeLeave(to, from);
                 if (result === false) return false;
-                if (typeof result === 'string') return result; // Redirect
+                if (typeof result === "string") return result; // Redirect
             }
 
             // Run route-specific beforeLeave
@@ -92,13 +92,13 @@ export class RouteGuards {
                 if (guards && guards.beforeLeave) {
                     const result = await guards.beforeLeave(to, from);
                     if (result === false) return false;
-                    if (typeof result === 'string') return result; // Redirect
+                    if (typeof result === "string") return result; // Redirect
                 }
             }
 
             return true; // Allow navigation
         } catch (error) {
-            console.error('[TinyPine][Router] Guard error:', error);
+            console.error("[TinyPine][Router] Guard error:", error);
             return false; // Cancel navigation on error
         }
     }

@@ -52,7 +52,10 @@ export class RouterEvents {
             try {
                 callback(...args);
             } catch (error) {
-                console.error(`[TinyPine][Router] Error in ${event} handler:`, error);
+                console.error(
+                    `[TinyPine][Router] Error in ${event} handler:`,
+                    error
+                );
             }
         });
     }
@@ -87,10 +90,10 @@ export class RouterEvents {
  * Route lifecycle event types
  */
 export const RouteEvents = {
-    CHANGE: 'route:change',
-    ENTER: 'route:enter',
-    LEAVE: 'route:leave',
-    ERROR: 'route:error',
-    BEFORE_ENTER: 'route:before-enter',
-    BEFORE_LEAVE: 'route:before-leave'
+    CHANGE: "route:change",
+    ENTER: "route:enter",
+    LEAVE: "route:leave",
+    ERROR: "route:error",
+    BEFORE_ENTER: "route:before-enter",
+    BEFORE_LEAVE: "route:before-leave",
 };

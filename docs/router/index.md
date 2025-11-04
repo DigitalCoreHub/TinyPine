@@ -23,45 +23,45 @@
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-    <title>My SPA</title>
-</head>
-<body>
-    <!-- Navigation Links -->
-    <nav>
-        <a t-link="'home'">Home</a>
-        <a t-link="'about'">About</a>
-        <a t-link="'user/42'">User Profile</a>
-    </nav>
+    <head>
+        <title>My SPA</title>
+    </head>
+    <body>
+        <!-- Navigation Links -->
+        <nav>
+            <a t-link="'home'">Home</a>
+            <a t-link="'about'">About</a>
+            <a t-link="'user/42'">User Profile</a>
+        </nav>
 
-    <!-- Route Views -->
-    <div t-route="'home'">
-        <h1>Welcome Home!</h1>
-    </div>
-
-    <div t-route="'about'">
-        <h1>About Us</h1>
-    </div>
-
-    <div t-route="'user/:id'">
-        <div t-data="{ userId: $route.params.id }">
-            <h1 t-text="'User Profile: ' + userId"></h1>
+        <!-- Route Views -->
+        <div t-route="'home'">
+            <h1>Welcome Home!</h1>
         </div>
-    </div>
 
-    <!-- 404 Fallback -->
-    <div t-route="*">
-        <h1>404 - Page Not Found</h1>
-    </div>
+        <div t-route="'about'">
+            <h1>About Us</h1>
+        </div>
 
-    <script src="https://unpkg.com/tinypine@1.5.0/dist/tinypine.min.js"></script>
-    <script>
-        TinyPine.router({
-            default: 'home'
-        });
-        TinyPine.init();
-    </script>
-</body>
+        <div t-route="'user/:id'">
+            <div t-data="{ userId: $route.params.id }">
+                <h1 t-text="'User Profile: ' + userId"></h1>
+            </div>
+        </div>
+
+        <!-- 404 Fallback -->
+        <div t-route="*">
+            <h1>404 - Page Not Found</h1>
+        </div>
+
+        <script src="https://unpkg.com/tinypine@1.5.0/dist/tinypine.min.js"></script>
+        <script>
+            TinyPine.router({
+                default: "home",
+            });
+            TinyPine.init();
+        </script>
+    </body>
 </html>
 ```
 
@@ -74,6 +74,7 @@
 TinyPine uses hash-based routing (`#/path`) for client-side navigation without page reloads.
 
 **URL Structure:**
+
 ```
 http://example.com/#/user/42?tab=posts
                     │  └─────┘ └────────┘
@@ -84,12 +85,12 @@ http://example.com/#/user/42?tab=posts
 
 ### Route Patterns
 
-| Pattern | Example URL | Matches | Params |
-|---------|-------------|---------|--------|
-| `home` | `#/home` | Exact match | - |
-| `user/:id` | `#/user/42` | Dynamic param | `{ id: '42' }` |
+| Pattern                    | Example URL           | Matches         | Params                      |
+| -------------------------- | --------------------- | --------------- | --------------------------- |
+| `home`                     | `#/home`              | Exact match     | -                           |
+| `user/:id`                 | `#/user/42`           | Dynamic param   | `{ id: '42' }`              |
 | `post/:postId/comment/:id` | `#/post/10/comment/5` | Multiple params | `{ postId: '10', id: '5' }` |
-| `*` | `#/anything` | Wildcard (404) | - |
+| `*`                        | `#/anything`          | Wildcard (404)  | -                           |
 
 ---
 
@@ -100,6 +101,7 @@ http://example.com/#/user/42?tab=posts
 Shows element only when the route matches.
 
 **Basic Usage:**
+
 ```html
 <div t-route="'home'">
     <h1>Home Page</h1>
@@ -107,6 +109,7 @@ Shows element only when the route matches.
 ```
 
 **With Dynamic Parameters:**
+
 ```html
 <div t-route="'user/:id'">
     <div t-data="{}">
@@ -116,6 +119,7 @@ Shows element only when the route matches.
 ```
 
 **Nested Routes:**
+
 ```html
 <div t-route="'dashboard'">
     <h1>Dashboard</h1>
@@ -136,6 +140,7 @@ Shows element only when the route matches.
 ```
 
 **404 Fallback:**
+
 ```html
 <div t-route="*">
     <h1>404 - Page Not Found</h1>
@@ -148,12 +153,13 @@ Shows element only when the route matches.
 Smart router link that automatically manages `href`, click events, and active state.
 
 **Basic Usage:**
+
 ```html
-<a t-link="'home'">Home</a>
-<a t-link="'about'">About</a>
+<a t-link="'home'">Home</a> <a t-link="'about'">About</a>
 ```
 
 **With Dynamic Params:**
+
 ```html
 <div t-data="{ userId: 42 }">
     <a t-link="'user/' + userId">View Profile</a>
@@ -161,6 +167,7 @@ Smart router link that automatically manages `href`, click events, and active st
 ```
 
 **Active State:**
+
 ```css
 /* Links automatically get .active class when route matches */
 a.active {
@@ -183,18 +190,18 @@ Navigate to a new route.
 
 ```javascript
 // Simple navigation
-$router.push('/about');
+$router.push("/about");
 
 // With parameters
-$router.push('/user/:id', { params: { id: '42' } });
+$router.push("/user/:id", { params: { id: "42" } });
 
 // With query parameters
-$router.push('/search', { query: { q: 'test', page: '1' } });
+$router.push("/search", { query: { q: "test", page: "1" } });
 
 // Combined
-$router.push('/user/:id', {
-    params: { id: '42' },
-    query: { tab: 'posts' }
+$router.push("/user/:id", {
+    params: { id: "42" },
+    query: { tab: "posts" },
 });
 ```
 
@@ -203,7 +210,7 @@ $router.push('/user/:id', {
 Navigate without adding to history.
 
 ```javascript
-$router.replace('/login');
+$router.replace("/login");
 ```
 
 #### back()
@@ -228,9 +235,9 @@ Get current route information.
 
 ```javascript
 const route = $router.current();
-console.log(route.path);    // 'user/42'
-console.log(route.params);  // { id: '42' }
-console.log(route.query);   // { tab: 'posts' }
+console.log(route.path); // 'user/42'
+console.log(route.params); // { id: '42' }
+console.log(route.query); // { tab: 'posts' }
 ```
 
 ### $route Object
@@ -248,6 +255,7 @@ Available in all t-data contexts.
 ```
 
 **Example:**
+
 ```html
 <div t-route="'user/:id'">
     <div t-data="{}">
@@ -266,32 +274,36 @@ Available in all t-data contexts.
 Control navigation across all routes.
 
 **beforeEnter:**
+
 ```javascript
 TinyPine.router({
     beforeEnter(to, from) {
         // Check authentication
-        const isLoggedIn = TinyPine.store('auth').loggedIn;
+        const isLoggedIn = TinyPine.store("auth").loggedIn;
 
-        if (!isLoggedIn && to.path !== 'login') {
-            return '/login'; // Redirect to login
+        if (!isLoggedIn && to.path !== "login") {
+            return "/login"; // Redirect to login
         }
 
         return true; // Allow navigation
-    }
+    },
 });
 ```
 
 **beforeLeave:**
+
 ```javascript
 TinyPine.router({
     beforeLeave(to, from) {
         // Confirm leaving unsaved changes
         if (hasUnsavedChanges) {
-            const confirmed = confirm('You have unsaved changes. Leave anyway?');
+            const confirmed = confirm(
+                "You have unsaved changes. Leave anyway?"
+            );
             return confirmed; // true = allow, false = cancel
         }
         return true;
-    }
+    },
 });
 ```
 
@@ -302,18 +314,18 @@ Apply guards to individual routes.
 ```javascript
 TinyPine.router({
     routes: {
-        'admin': {
+        admin: {
             beforeEnter(to, from) {
-                const isAdmin = TinyPine.store('user').role === 'admin';
-                return isAdmin ? true : '/';
-            }
+                const isAdmin = TinyPine.store("user").role === "admin";
+                return isAdmin ? true : "/";
+            },
         },
-        'edit/:id': {
+        "edit/:id": {
             beforeLeave(to, from) {
-                return confirm('Discard changes?');
-            }
-        }
-    }
+                return confirm("Discard changes?");
+            },
+        },
+    },
 });
 ```
 
@@ -325,26 +337,26 @@ Guards can be async for API calls.
 TinyPine.router({
     async beforeEnter(to, from) {
         try {
-            const response = await fetch('/api/verify-token');
+            const response = await fetch("/api/verify-token");
             const { valid } = await response.json();
 
-            return valid ? true : '/login';
+            return valid ? true : "/login";
         } catch (error) {
-            console.error('Auth check failed:', error);
-            return '/login';
+            console.error("Auth check failed:", error);
+            return "/login";
         }
-    }
+    },
 });
 ```
 
 ### Guard Return Values
 
-| Return Value | Effect |
-|--------------|--------|
-| `true` | Allow navigation |
-| `false` | Cancel navigation |
-| `'/path'` | Redirect to path |
-| `Promise` | Wait for async result |
+| Return Value | Effect                |
+| ------------ | --------------------- |
+| `true`       | Allow navigation      |
+| `false`      | Cancel navigation     |
+| `'/path'`    | Redirect to path      |
+| `Promise`    | Wait for async result |
 
 ---
 
@@ -356,60 +368,63 @@ Listen to route changes across your application.
 
 ```javascript
 // Route is about to change (before guards)
-TinyPine.router.on('route:before-enter', (to, from) => {
-    console.log('Navigating to:', to.path);
+TinyPine.router.on("route:before-enter", (to, from) => {
+    console.log("Navigating to:", to.path);
 });
 
 // Route has changed (after guards)
-TinyPine.router.on('route:change', (to, from) => {
-    console.log('Route changed from', from.path, 'to', to.path);
+TinyPine.router.on("route:change", (to, from) => {
+    console.log("Route changed from", from.path, "to", to.path);
 });
 
 // Entering new route
-TinyPine.router.on('route:enter', (to, from) => {
-    console.log('Entered:', to.path);
+TinyPine.router.on("route:enter", (to, from) => {
+    console.log("Entered:", to.path);
 });
 
 // Leaving current route
-TinyPine.router.on('route:leave', (from, to) => {
-    console.log('Left:', from.path);
+TinyPine.router.on("route:leave", (from, to) => {
+    console.log("Left:", from.path);
 });
 
 // Navigation error
-TinyPine.router.on('route:error', (error) => {
-    console.error('Navigation error:', error);
+TinyPine.router.on("route:error", (error) => {
+    console.error("Navigation error:", error);
 });
 ```
 
 ### Practical Examples
 
 **Page Analytics:**
+
 ```javascript
-TinyPine.router.on('route:change', (to, from) => {
+TinyPine.router.on("route:change", (to, from) => {
     // Track page views
-    if (typeof gtag !== 'undefined') {
-        gtag('config', 'GA_MEASUREMENT_ID', {
-            page_path: to.path
+    if (typeof gtag !== "undefined") {
+        gtag("config", "GA_MEASUREMENT_ID", {
+            page_path: to.path,
         });
     }
 });
 ```
 
 **Loading Indicators:**
+
 ```javascript
-TinyPine.router.on('route:before-enter', () => {
-    document.body.classList.add('loading');
+TinyPine.router.on("route:before-enter", () => {
+    document.body.classList.add("loading");
 });
 
-TinyPine.router.on('route:enter', () => {
-    document.body.classList.remove('loading');
+TinyPine.router.on("route:enter", () => {
+    document.body.classList.remove("loading");
 });
 ```
 
 **Scroll Management:**
+
 ```javascript
-TinyPine.router.on('route:enter', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+TinyPine.router.on("route:enter", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
 });
 ```
 
@@ -441,7 +456,7 @@ Configure scroll behavior on route change.
 
 ```javascript
 TinyPine.router({
-    scrollBehavior: 'smooth' // 'auto', 'smooth', or 'none'
+    scrollBehavior: "smooth", // 'auto', 'smooth', or 'none'
 });
 ```
 
@@ -453,22 +468,22 @@ TinyPine supports a single global router instance, but you can manage different 
 TinyPine.router({
     routes: {
         // Public routes
-        'home': {},
-        'about': {},
-        'contact': {},
+        home: {},
+        about: {},
+        contact: {},
 
         // Auth routes
-        'login': {},
-        'register': {},
+        login: {},
+        register: {},
 
         // Protected routes
-        'dashboard': {
-            beforeEnter: requireAuth
+        dashboard: {
+            beforeEnter: requireAuth,
         },
-        'profile': {
-            beforeEnter: requireAuth
-        }
-    }
+        profile: {
+            beforeEnter: requireAuth,
+        },
+    },
 });
 ```
 
@@ -476,20 +491,20 @@ TinyPine.router({
 
 ```javascript
 // Setup router with store integration
-TinyPine.store('router', {
-    currentPath: 'home',
-    previousPath: null
+TinyPine.store("router", {
+    currentPath: "home",
+    previousPath: null,
 });
 
-TinyPine.router.on('route:change', (to, from) => {
-    TinyPine.store('router').currentPath = to.path;
-    TinyPine.store('router').previousPath = from.path;
+TinyPine.router.on("route:change", (to, from) => {
+    TinyPine.store("router").currentPath = to.path;
+    TinyPine.store("router").previousPath = from.path;
 });
 
 // Use in templates
 <div t-data="{}">
     <p t-text="$store.router.currentPath"></p>
-</div>
+</div>;
 ```
 
 ---
@@ -501,15 +516,15 @@ TinyPine.router.on('route:change', (to, from) => {
 ```javascript
 TinyPine.router({
     beforeEnter(to, from) {
-        const publicRoutes = ['home', 'about', 'login'];
+        const publicRoutes = ["home", "about", "login"];
         const isPublic = publicRoutes.includes(to.path);
-        const isLoggedIn = TinyPine.store('auth').loggedIn;
+        const isLoggedIn = TinyPine.store("auth").loggedIn;
 
         if (!isPublic && !isLoggedIn) {
-            return '/login';
+            return "/login";
         }
         return true;
-    }
+    },
 });
 ```
 
@@ -517,18 +532,18 @@ TinyPine.router({
 
 ```javascript
 const routes = {
-    'home': { title: 'Home' },
-    'about': { title: 'About' },
-    'user/:id': {
-        title: 'User Profile',
+    home: { title: "Home" },
+    about: { title: "About" },
+    "user/:id": {
+        title: "User Profile",
         beforeEnter(to) {
             // Validate user ID
             return /^\d+$/.test(to.params.id);
-        }
-    }
+        },
+    },
 };
 
-TinyPine.router({ routes, default: 'home' });
+TinyPine.router({ routes, default: "home" });
 ```
 
 ### 3. Handle 404s Gracefully

@@ -3,7 +3,13 @@
  * Integrates the new router system with TinyPine core
  */
 
-import { TinyPineRouter, setupTLink, parseRoutePath, matchRoute, extractPathFromHash } from './router/index.js';
+import {
+    TinyPineRouter,
+    setupTLink,
+    parseRoutePath,
+    matchRoute,
+    extractPathFromHash,
+} from "./router/index.js";
 
 /**
  * Initialize TinyPine Router v1.5.0
@@ -19,7 +25,7 @@ export function initializeRouter(TinyPine, debugMode = false) {
      * @returns {Object} - TinyPine instance for chaining
      */
     TinyPine.router = function (config = {}) {
-        if (TinyPine._mode === 'lite') {
+        if (TinyPine._mode === "lite") {
             return TinyPine;
         }
 
@@ -28,15 +34,15 @@ export function initializeRouter(TinyPine, debugMode = false) {
 
         // Update _routerState for backwards compatibility
         TinyPine._routerState = {
-            currentRoute: routerInstance.currentRoute?.path || '',
+            currentRoute: routerInstance.currentRoute?.path || "",
             currentParams: routerInstance.currentRoute?.params || {},
             routes: new Map(),
             guards: new Map(),
-            fallbackRoute: null
+            fallbackRoute: null,
         };
 
         // Listen to router events and update state
-        routerInstance.on('route:change', (to, from) => {
+        routerInstance.on("route:change", (to, from) => {
             TinyPine._routerState.currentRoute = to.path;
             TinyPine._routerState.currentParams = to.params;
 
@@ -47,17 +53,20 @@ export function initializeRouter(TinyPine, debugMode = false) {
             updateAllLinks();
 
             if (debugMode) {
-                console.log('[TinyPine][Router v1.5.0] Route changed:', to.path);
+                console.log(
+                    "[TinyPine][Router v1.5.0] Route changed:",
+                    to.path
+                );
             }
         });
 
         // Handle navigation errors
-        routerInstance.on('route:error', (error) => {
-            console.error('[TinyPine][Router v1.5.0] Navigation error:', error);
+        routerInstance.on("route:error", (error) => {
+            console.error("[TinyPine][Router v1.5.0] Navigation error:", error);
         });
 
         if (debugMode) {
-            console.log('[TinyPine][Router v1.5.0] Initialized');
+            console.log("[TinyPine][Router v1.5.0] Initialized");
         }
 
         return TinyPine;
@@ -73,7 +82,7 @@ export function initializeRouter(TinyPine, debugMode = false) {
             return routerInstance.push(path, options);
         } else {
             // Fallback to basic navigation
-            window.location.hash = '#/' + path.replace(/^\//, '');
+            window.location.hash = "#/" + path.replace(/^\//, "");
             return Promise.resolve(true);
         }
     };
@@ -83,7 +92,7 @@ export function initializeRouter(TinyPine, debugMode = false) {
         if (routerInstance) {
             return routerInstance.replace(path, options);
         } else {
-            window.location.replace('#/' + path.replace(/^\//, ''));
+            window.location.replace("#/" + path.replace(/^\//, ""));
             return Promise.resolve(true);
         }
     };
@@ -111,11 +120,11 @@ export function initializeRouter(TinyPine, debugMode = false) {
         if (routerInstance) {
             return routerInstance.current();
         } else {
-            const hash = window.location.hash.replace('#/', '');
+            const hash = window.location.hash.replace("#/", "");
             return {
-                path: hash || 'home',
+                path: hash || "home",
                 params: {},
-                query: {}
+                query: {},
             };
         }
     };
@@ -123,7 +132,7 @@ export function initializeRouter(TinyPine, debugMode = false) {
     // Get current route (alias)
     TinyPine.router.getCurrent = function () {
         const route = TinyPine.router.current();
-        return route ? route.path : 'home';
+        return route ? route.path : "home";
     };
 
     // Navigate (alias for push)
@@ -157,10 +166,11 @@ export function initializeRouter(TinyPine, debugMode = false) {
             // Check if route matches
             let isMatch = false;
 
-            if (routeName === '*') {
+            if (routeName === "*") {
                 // Wildcard - only show if no other route matched
                 isMatch = !TinyPine.routeElements.some((otherItem) => {
-                    if (otherItem === item || otherItem.routeName === '*') return false;
+                    if (otherItem === item || otherItem.routeName === "*")
+                        return false;
                     const otherRouteInfo = parseRoutePath(otherItem.routeName);
                     const otherMatch = matchRoute(currentPath, otherRouteInfo);
                     return otherMatch && otherMatch.matched;
@@ -175,16 +185,16 @@ export function initializeRouter(TinyPine, debugMode = false) {
                 if (isMatch && element._tinypineState) {
                     element._tinypineState.$route = {
                         path: currentPath,
-                        params: matchResult.params
+                        params: matchResult.params,
                     };
                 }
             }
 
             // Show/hide element
             if (isMatch) {
-                element.style.display = '';
+                element.style.display = "";
             } else {
-                element.style.display = 'none';
+                element.style.display = "none";
             }
         });
     }
@@ -193,9 +203,9 @@ export function initializeRouter(TinyPine, debugMode = false) {
      * Update all t-link elements active state
      */
     function updateAllLinks() {
-        const links = document.querySelectorAll('[t-link]');
+        const links = document.querySelectorAll("[t-link]");
         links.forEach((link) => {
-            const href = link.getAttribute('href');
+            const href = link.getAttribute("href");
             if (href) {
                 updateLinkActiveState(link, href);
             }
@@ -208,25 +218,31 @@ export function initializeRouter(TinyPine, debugMode = false) {
      * @param {string} href - Link href
      */
     function updateLinkActiveState(element, href) {
-        const currentHash = window.location.hash || '#/';
+        const currentHash = window.location.hash || "#/";
         const currentPath = extractPathFromHash(currentHash);
         const linkPath = extractPathFromHash(href);
 
-        const isActive = currentPath === linkPath || currentPath.startsWith(linkPath + '/');
+        const isActive =
+            currentPath === linkPath || currentPath.startsWith(linkPath + "/");
 
         if (isActive) {
-            element.classList.add('active');
-            element.setAttribute('aria-current', 'page');
+            element.classList.add("active");
+            element.setAttribute("aria-current", "page");
         } else {
-            element.classList.remove('active');
-            element.removeAttribute('aria-current');
+            element.classList.remove("active");
+            element.removeAttribute("aria-current");
         }
     }
 
     /**
      * Setup t-link directive handler
      */
-    TinyPine._setupTLinkDirective = function (element, path, state, contextObj) {
+    TinyPine._setupTLinkDirective = function (
+        element,
+        path,
+        state,
+        contextObj
+    ) {
         setupTLink(element, path, state, contextObj, routerInstance);
     };
 
@@ -238,13 +254,13 @@ export function initializeRouter(TinyPine, debugMode = false) {
     };
 
     if (debugMode) {
-        console.log('[TinyPine][Router v1.5.0] Router integration initialized');
+        console.log("[TinyPine][Router v1.5.0] Router integration initialized");
     }
 }
 
 /**
  * Auto-initialize if TinyPine is available
  */
-if (typeof window !== 'undefined' && window.TinyPine) {
+if (typeof window !== "undefined" && window.TinyPine) {
     initializeRouter(window.TinyPine, window.TinyPine.debug);
 }

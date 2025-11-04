@@ -3,10 +3,10 @@
  * Complete routing system with guards, params, and nested routes
  */
 
-export { TinyPineRouter } from './core.js';
-export { RouterEvents, RouteEvents } from './events.js';
-export { RouteGuards } from './guards.js';
-export { setupTLink, cleanupTLink, updateActiveLinkState } from './link.js';
+export { TinyPineRouter } from "./core.js";
+export { RouterEvents, RouteEvents } from "./events.js";
+export { RouteGuards } from "./guards.js";
+export { setupTLink, cleanupTLink, updateActiveLinkState } from "./link.js";
 export {
     parseRoutePath,
     matchRoute,
@@ -15,5 +15,5 @@ export {
     extractPathFromHash,
     normalizeHash,
     isSameRoute,
-    scrollToTop
-} from './utils.js';
+    scrollToTop,
+} from "./utils.js";

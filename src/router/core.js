@@ -3,9 +3,17 @@
  * Smart routing engine with guards, params, and nested routes
  */
 
-import { parseRoutePath, matchRoute, parseQueryString, extractPathFromHash, buildPath, normalizeHash, scrollToTop } from './utils.js';
-import { RouterEvents, RouteEvents } from './events.js';
-import { RouteGuards } from './guards.js';
+import {
+    parseRoutePath,
+    matchRoute,
+    parseQueryString,
+    extractPathFromHash,
+    buildPath,
+    normalizeHash,
+    scrollToTop,
+} from "./utils.js";
+import { RouterEvents, RouteEvents } from "./events.js";
+import { RouteGuards } from "./guards.js";
 
 /**
  * TinyPine Router Core
@@ -18,8 +26,8 @@ export class TinyPineRouter {
         this.previousRoute = null;
         this.events = new RouterEvents();
         this.guards = new RouteGuards();
-        this.defaultRoute = config.default || 'home';
-        this.scrollBehavior = config.scrollBehavior || 'auto'; // 'auto', 'smooth', 'none'
+        this.defaultRoute = config.default || "home";
+        this.scrollBehavior = config.scrollBehavior || "auto"; // 'auto', 'smooth', 'none'
         this.isNavigating = false;
         this.fallbackRoute = null; // 404 handler
 
@@ -59,7 +67,7 @@ export class TinyPineRouter {
         const routeInfo = parseRoutePath(pattern);
         routeInfo.config = config;
 
-        if (pattern === '*' || routeInfo.isWildcard) {
+        if (pattern === "*" || routeInfo.isWildcard) {
             this.fallbackRoute = routeInfo;
         } else {
             this.routes.set(pattern, routeInfo);
@@ -69,7 +77,7 @@ export class TinyPineRouter {
         if (config.beforeEnter || config.beforeLeave) {
             this.guards.setRouteGuards(pattern, {
                 beforeEnter: config.beforeEnter,
-                beforeLeave: config.beforeLeave
+                beforeLeave: config.beforeLeave,
             });
         }
     }
@@ -159,7 +167,7 @@ export class TinyPineRouter {
      * @private
      */
     _setupHashListener() {
-        window.addEventListener('hashchange', async () => {
+        window.addEventListener("hashchange", async () => {
             await this._handleRouteChange();
         });
     }
@@ -187,7 +195,7 @@ export class TinyPineRouter {
         this.isNavigating = true;
 
         try {
-            const hash = window.location.hash || '#/';
+            const hash = window.location.hash || "#/";
             const path = extractPathFromHash(hash);
             const query = parseQueryString(hash);
 
@@ -195,7 +203,7 @@ export class TinyPineRouter {
             const matchResult = this._findMatchingRoute(path);
 
             if (!matchResult && !this.fallbackRoute) {
-                console.warn('[TinyPine][Router] No route matched:', path);
+                console.warn("[TinyPine][Router] No route matched:", path);
                 this.isNavigating = false;
                 return;
             }
@@ -205,32 +213,37 @@ export class TinyPineRouter {
                 path,
                 params: matchResult?.params || {},
                 query,
-                pattern: matchResult?.pattern || '*',
-                hash
+                pattern: matchResult?.pattern || "*",
+                hash,
             };
 
             const fromRoute = this.currentRoute || {
-                path: '',
+                path: "",
                 params: {},
                 query: {},
                 pattern: null,
-                hash: ''
+                hash: "",
             };
 
             // Run beforeLeave guards
             this.events.emit(RouteEvents.BEFORE_LEAVE, toRoute, fromRoute);
-            const beforeLeaveResult = await this.guards.runBeforeLeave(toRoute, fromRoute);
+            const beforeLeaveResult = await this.guards.runBeforeLeave(
+                toRoute,
+                fromRoute
+            );
 
             if (beforeLeaveResult === false) {
                 // Cancel navigation
-                console.log('[TinyPine][Router] Navigation cancelled by beforeLeave guard');
+                console.log(
+                    "[TinyPine][Router] Navigation cancelled by beforeLeave guard"
+                );
                 this.isNavigating = false;
                 // Restore previous hash
                 if (fromRoute.hash) {
                     window.location.hash = fromRoute.hash;
                 }
                 return;
-            } else if (typeof beforeLeaveResult === 'string') {
+            } else if (typeof beforeLeaveResult === "string") {
                 // Redirect to different route
                 this.isNavigating = false;
                 await this.push(beforeLeaveResult);
@@ -239,18 +252,23 @@ export class TinyPineRouter {
 
             // Run beforeEnter guards
             this.events.emit(RouteEvents.BEFORE_ENTER, toRoute, fromRoute);
-            const beforeEnterResult = await this.guards.runBeforeEnter(toRoute, fromRoute);
+            const beforeEnterResult = await this.guards.runBeforeEnter(
+                toRoute,
+                fromRoute
+            );
 
             if (beforeEnterResult === false) {
                 // Cancel navigation
-                console.log('[TinyPine][Router] Navigation cancelled by beforeEnter guard');
+                console.log(
+                    "[TinyPine][Router] Navigation cancelled by beforeEnter guard"
+                );
                 this.isNavigating = false;
                 // Restore previous hash
                 if (fromRoute.hash) {
                     window.location.hash = fromRoute.hash;
                 }
                 return;
-            } else if (typeof beforeEnterResult === 'string') {
+            } else if (typeof beforeEnterResult === "string") {
                 // Redirect to different route
                 this.isNavigating = false;
                 await this.push(beforeEnterResult);
@@ -269,12 +287,11 @@ export class TinyPineRouter {
             this.events.emit(RouteEvents.ENTER, toRoute, fromRoute);
 
             // Handle scroll behavior
-            if (this.scrollBehavior !== 'none') {
-                scrollToTop(this.scrollBehavior === 'smooth');
+            if (this.scrollBehavior !== "none") {
+                scrollToTop(this.scrollBehavior === "smooth");
             }
-
         } catch (error) {
-            console.error('[TinyPine][Router] Route change error:', error);
+            console.error("[TinyPine][Router] Route change error:", error);
             this.events.emit(RouteEvents.ERROR, error);
         } finally {
             this.isNavigating = false;
@@ -295,7 +312,7 @@ export class TinyPineRouter {
                 return {
                     pattern,
                     params: matchResult.params,
-                    routeInfo
+                    routeInfo,
                 };
             }
         }
@@ -303,9 +320,9 @@ export class TinyPineRouter {
         // No match found - use fallback if available
         if (this.fallbackRoute) {
             return {
-                pattern: '*',
+                pattern: "*",
                 params: {},
-                routeInfo: this.fallbackRoute
+                routeInfo: this.fallbackRoute,
             };
         }
 
